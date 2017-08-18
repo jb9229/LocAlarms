@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { TouchableOpacity, Text } from 'react-native'
+import {Text, TouchableOpacity} from 'react-native'
 import styles from './Styles/RoundedButtonStyles'
 import ExamplesRegistry from '../Services/ExamplesRegistry'
 
@@ -15,7 +15,7 @@ ExamplesRegistry.addComponentExample('Rounded Button', () =>
     text='real buttons have curves'
     onPress={() => window.alert('Rounded Button Pressed!')}
   />
-)
+);
 
 export default class RoundedButton extends Component {
   static propTypes = {
@@ -23,14 +23,14 @@ export default class RoundedButton extends Component {
     text: PropTypes.string,
     children: PropTypes.string,
     navigator: PropTypes.object
-  }
+  };
 
-  getText () {
-    const buttonText = this.props.text || this.props.children || ''
+  getText() {
+    const buttonText = this.props.text || this.props.children || '';
     return buttonText.toUpperCase()
   }
 
-  render () {
+  render() {
     return (
       <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
         <Text style={styles.buttonText}>{this.getText()}</Text>
