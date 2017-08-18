@@ -22,7 +22,9 @@ export default class LaunchScreen extends Component {
               in that case, congrats! You're ready to ship. For everyone else, this is where you'll see a live preview
               of your fully functioning app using Ignite.
             </Text>
-            <RoundedButton onPress={() => {console.log("pressed")}} text="abc"/>
+            <RoundedButton onPress={() => {
+              console.log("pressed")
+            }} text="abc"/>
           </View>
 
         </ScrollView>
