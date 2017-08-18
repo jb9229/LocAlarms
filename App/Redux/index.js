@@ -1,13 +1,16 @@
 import {combineReducers} from 'redux'
 import configureStore from './CreateStore'
-import rootSaga from '../Sagas/'
+import rootSaga from '../Sagas'
+import {reducer as navReducer} from "./NavigationRedux"
+import {reducer as githubReducer} from "./GithubRedux"
+import {reducer as searchReducer} from "./SearchRedux"
 
 export default () => {
   /* ------------- Assemble The Reducers ------------- */
   const rootReducer = combineReducers({
-    nav: require('./NavigationRedux').reducer,
-    github: require('./GithubRedux').reducer,
-    search: require('./SearchRedux').reducer
+    nav: navReducer,
+    github: githubReducer,
+    search: searchReducer
   });
 
   return configureStore(rootReducer, rootSaga)
