@@ -9,7 +9,7 @@ export default class AlertMessage extends Component {
   static propTypes = {
     title: PropTypes.string,
     icon: PropTypes.string,
-    style: PropTypes.object,
+    style: View.propTypes.style,
     show: PropTypes.bool
   };
 

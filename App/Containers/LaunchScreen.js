@@ -3,7 +3,6 @@ import {Image, ScrollView, Text, View} from 'react-native'
 import {Images} from '../Themes'
 // Styles
 import styles from './Styles/LaunchScreenStyles'
-import RoundedButton from "../Components/RoundedButton";
 
 export default class LaunchScreen extends Component {
   render() {
@@ -22,11 +21,7 @@ export default class LaunchScreen extends Component {
               in that case, congrats! You're ready to ship. For everyone else, this is where you'll see a live preview
               of your fully functioning app using Ignite.
             </Text>
-            <RoundedButton onPress={() => {
-              console.log("pressed")
-            }} text="abc"/>
           </View>
-
         </ScrollView>
       </View>
     )

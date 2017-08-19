@@ -19,7 +19,7 @@ export function* startup(action) {
 
     // fully customized!
     const subObject = {a: 1, b: [1, 2, 3], c: true};
-    subObject.circularDependency = subObject; // osnap!
+    subObject.circularDependency = subObject;
     console.tron.display({
       name: '🔥 IGNITE 🔥',
       preview: 'You should totally expand this',

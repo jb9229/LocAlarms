@@ -27,6 +27,7 @@ class App extends Component {
   }
 }
 
+console.ignoredYellowBox = ['Setting a timer'];
 // allow reactotron overlay for fast design in dev mode
 export default DebugConfig.useReactotron
   ? console.tron.overlay(App)
