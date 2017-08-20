@@ -1,5 +1,5 @@
 import {put, select} from 'redux-saga/effects'
-import GithubActions from '../Redux/GithubRedux'
+import GithubActions from '../GithubRedux'
 import {is} from 'ramda'
 
 // exported to make available for tests

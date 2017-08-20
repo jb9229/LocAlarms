@@ -1,20 +1,20 @@
 import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
-import { Callout } from 'react-native-maps'
-import Styles from './Styles/TestMapCalloutStyles'
+import {Text, TouchableOpacity} from 'react-native'
+import {Callout} from 'react-native-maps'
+import Styles from './Styles/MapCalloutStyles'
 
-export default class TestMapCallout extends React.Component {
-  constructor (props) {
+export default class MapCallout extends React.Component {
+  constructor(props) {
     super(props)
     this.onPress = this.props.onPress.bind(this, this.props.location)
   }
 
-  render () {
+  render() {
     /* ***********************************************************
     * Customize the appearance of the callout that opens when the user interacts with a marker.
     * Note: if you don't want your callout surrounded by the default tooltip, pass `tooltip={true}` to `Callout`
     *************************************************************/
-    const { location } = this.props
+    const {location} = this.props
     return (
       <Callout style={Styles.callout}>
         <TouchableOpacity onPress={this.onPress}>

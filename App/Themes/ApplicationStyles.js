@@ -30,12 +30,12 @@ const ApplicationStyles = {
     sectionText: {
       ...Fonts.style.normal,
       paddingVertical: Metrics.doubleBaseMargin,
-      color: Colors.snow,
+      color: Colors.accent,
       marginVertical: Metrics.smallMargin,
       textAlign: 'center'
     },
     subtitle: {
-      color: Colors.snow,
+      color: Colors.accent,
       padding: Metrics.smallMargin,
       marginBottom: Metrics.smallMargin,
       marginHorizontal: Metrics.smallMargin
@@ -49,13 +49,13 @@ const ApplicationStyles = {
   darkLabelContainer: {
     padding: Metrics.smallMargin,
     paddingBottom: Metrics.doubleBaseMargin,
-    borderBottomColor: Colors.border,
+    borderBottomColor: Colors.divider,
     borderBottomWidth: 1,
     marginBottom: Metrics.baseMargin
   },
   darkLabel: {
     fontFamily: Fonts.type.bold,
-    color: Colors.snow
+    color: Colors.accent
   },
   groupContainer: {
     margin: Metrics.smallMargin,
@@ -65,13 +65,13 @@ const ApplicationStyles = {
   },
   sectionTitle: {
     ...Fonts.style.h4,
-    color: Colors.coal,
-    backgroundColor: Colors.ricePaper,
+    color: Colors.secondaryText,
+    backgroundColor: Colors.divider,
     padding: Metrics.smallMargin,
     marginTop: Metrics.smallMargin,
     marginHorizontal: Metrics.baseMargin,
     borderWidth: 1,
-    borderColor: Colors.ember,
+    borderColor: Colors.accent,
     alignItems: 'center',
     textAlign: 'center'
   }

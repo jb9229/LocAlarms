@@ -1,11 +1,12 @@
 import {takeLatest} from 'redux-saga/effects'
-import API from '../Services/Api'
-import FixtureAPI from '../Services/FixtureApi'
-import DebugConfig from '../Config/DebugConfig'
-import {StartupTypes} from '../Redux/StartupRedux'
-import {GithubTypes} from '../Redux/GithubRedux'
+import API from '../../Services/Api'
+import FixtureAPI from '../../Services/FixtureApi'
+import DebugConfig from '../../Config/DebugConfig'
+import {StartupTypes} from '../StartupRedux'
+import {GithubTypes} from '../GithubRedux'
 import {startup} from './StartupSagas'
 import {getUserAvatar} from './GithubSagas'
+import {logger} from "./Alarms";
 
 /* ------------- Types ------------- */
 
@@ -23,6 +24,7 @@ export default function* root() {
   yield [
     // some sagas only receive an action
     takeLatest(StartupTypes.STARTUP, startup),
+    takeLatest("ADD", logger, api),
 
     // some sagas receive extra parameters in addition to an action
     takeLatest(GithubTypes.USER_REQUEST, getUserAvatar, api)

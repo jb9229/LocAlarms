@@ -1,6 +1,6 @@
 import FixtureAPI from '../../App/Services/FixtureApi'
 import { put, call } from 'redux-saga/effects'
-import { getUserAvatar } from '../../App/Sagas/GithubSagas'
+import { getUserAvatar } from '../../App/Redux/Sagas/GithubSagas'
 import GithubActions from '../../App/Redux/GithubRedux'
 import { path } from 'ramda'
 
