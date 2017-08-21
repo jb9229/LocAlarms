@@ -57,8 +57,4 @@ const create = (baseURL = 'https://api.github.com/') => {
     getUser
   }
 };
-
-// let's return back our create method as the default.
-export default {
-  create
-}
+export const API = create();

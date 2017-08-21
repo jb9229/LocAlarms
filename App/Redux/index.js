@@ -1,18 +1,29 @@
-import {combineReducers} from 'redux'
+import {bindActionCreators} from 'redux'
 import configureStore from './CreateStore'
-import rootSaga from './Sagas'
-import {reducer as navReducer} from "./NavigationRedux"
-import {reducer as githubReducer} from "./GithubRedux"
-import {reducer as searchReducer} from "./SearchRedux"
-import {reducer as alarmReducer} from "./Reducers/Alarms"
+import {reducer as navReducer} from "./Navigator"
+import {actions as alarmActions, reducers as alarmReducer, sagas as alarmSagas} from "./Alarms";
+import {combineActions, combineReducers, combineSagas} from "./utils";
+
+function* rootSaga() {
+  yield combineSagas({
+    alarms: alarmSagas
+  });
+}
+
+
 export default () => {
-  /* ------------- Assemble The Reducers ------------- */
   const rootReducer = combineReducers({
     nav: navReducer,
-    github: githubReducer,
-    search: searchReducer,
     alarms: alarmReducer
   });
 
   return configureStore(rootReducer, rootSaga)
 }
+
+export const actionCreators = combineActions({
+  alarms: alarmActions
+});
+
+export const actionDispatcher = (dispatch) => Object.keys(actionCreators).reduce((map, key) => {
+  return Object.assign({}, map, {[key]: bindActionCreators(actionCreators[key], dispatch)})
+}, {});

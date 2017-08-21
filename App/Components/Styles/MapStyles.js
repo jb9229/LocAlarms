@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import {StyleSheet} from 'react-native'
 
 // Enable this if you have app-wide application styles
 // import { ApplicationStyles } from '../../Themes/'

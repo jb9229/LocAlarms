@@ -1,17 +1,15 @@
 import React, {Component} from 'react'
 import {Animated, Text, View} from 'react-native'
 import styles from './Styles/HomeStyles'
-import {Body, Card, CardItem, Container, Header, Icon, Right, Title} from "native-base";
+import {Body, Card, CardItem, Container, Header, Icon, Title} from "native-base";
 import Map from "../Components/Map";
 import {connect} from "react-redux";
-import {add, remove} from "../Redux/Actions/Alarms";
-import {bindActionCreators} from "redux";
+import {actionDispatcher} from "../Redux/index";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
 
   render() {
-    this.props.add({x:"a"});
     return (
       <Container>
         <Header>
@@ -46,4 +44,4 @@ export class Home extends Component {
   }
 }
 
-export const HomeContainer = connect(null, (dispatch) => bindActionCreators({add, remove}, dispatch))(Home);
+export const HomeContainer = connect(null, actionDispatcher)(Home);
