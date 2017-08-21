@@ -16,8 +16,13 @@ export default () => {
     nav: navReducer,
     alarms: alarmReducer
   });
-
-  return configureStore(rootReducer, rootSaga)
+  const store = configureStore(rootReducer, rootSaga);
+  if (module.hot) { // enable hot reload
+    module.hot.accept(() => {
+      store.replaceReducer(rootReducer);
+    });
+  }
+  return store
 }
 
 export const actionCreators = combineActions({
