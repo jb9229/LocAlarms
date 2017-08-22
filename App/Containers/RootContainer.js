@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
-import {StatusBar, View} from 'react-native'
+import {StatusBar} from 'react-native'
 import ReduxNavigation from '../Navigation/ReduxNavigation'
 import {connect} from 'react-redux'
 import {actionDispatcher} from '../Redux'
 import ReduxPersist from '../Config/ReduxPersist'
+import {View} from "native-base";
 // Styles
-import styles from './Styles/RootContainerStyles'
-
 class RootContainer extends Component {
   componentDidMount() {
     // if redux persist is not active fire startup action
@@ -17,7 +16,7 @@ class RootContainer extends Component {
 
   render() {
     return (
-      <View style={styles.applicationView}>
+      <View>
         <StatusBar barStyle='light-content'/>
         <ReduxNavigation/>
       </View>

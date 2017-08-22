@@ -4,5 +4,3 @@ Application specific themes
 * Fonts
 * Metrics
 * Colors
-
-etc.
