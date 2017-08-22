@@ -1,8 +1,18 @@
-import React from 'react'
+import React, {Component} from 'react'
 import MapView from 'react-native-maps'
 import MapCallout from './MapCallout'
+import PropTypes from "prop-types";
 
-export default class Map extends React.Component {
+export class Map extends Component {
+  static propTypes = {
+    locations: PropTypes.arrayOf(PropTypes.shape({
+      latitude: PropTypes.number,
+      longitude: PropTypes.number,
+      radius: PropTypes.number,
+      title: PropTypes.string
+    })).isRequired
+  };
+
   constructor(props) {
     super(props);
     const locations = [
@@ -10,31 +20,13 @@ export default class Map extends React.Component {
       {title: 'Location B', latitude: 37.75825, longitude: -122.4624}
     ];
     const region = {latitude: 123, longitude: 123, latitudeDelta: 0.1, longitudeDelta: 0.1};
-    this.state = {
-      region,
-      locations,
-      showUserLocation: true
-    };
     this.renderMapMarkers = this.renderMapMarkers.bind(this);
-    this.onRegionChange = this.onRegionChange.bind(this)
-  }
-
-  componentWillReceiveProps(newProps) {
-
-  }
-
-  onRegionChange(newRegion) {
-
-  }
-
-  calloutPress(location) {
-
   }
 
   renderMapMarkers(location) {
     return (
-      <MapView.Marker key={location.title} coordinate={{latitude: location.latitude, longitude: location.longitude}}>
-        <MapCallout location={location} onPress={this.calloutPress}/>
+      <MapView.Marker key={location.title} coordinate={location}>
+        <MapCallout location={location}/>
       </MapView.Marker>
     )
   }
@@ -51,8 +43,7 @@ export default class Map extends React.Component {
           bottom: 0
         }}
         initialRegion={this.state.region}
-        onRegionChangeComplete={this.onRegionChange}
-        showsUserLocation={this.state.showUserLocation}
+        showsUserLocation={true}
       >
         {this.state.locations.map((location) => this.renderMapMarkers(location))}
       </MapView>

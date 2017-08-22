@@ -175,6 +175,9 @@ export default (variables = variable) => {
 			'NativeBase.IconNB': {
 				color: variables.inputErrorBorderColor,
 			},
+      'NativeBase.Label': {
+			  color: variables.inputErrorBorderColor
+      },
 			'.rounded': {
 				borderRadius: 30,
 				borderColor: variables.inputErrorBorderColor,

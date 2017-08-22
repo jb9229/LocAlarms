@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Animated, Text, TouchableOpacity, View, StyleSheet, Dimensions} from 'react-native'
+import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {Body, Card, CardItem, Container, Header, Icon, Left, Right, Title} from "native-base";
-import Map from "../Components/Map";
+import {Map} from "../Components/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../Redux";
 import {Metrics} from "../Theme/Metrics";
@@ -14,8 +14,8 @@ export class Home extends Component {
       <Container>
         <Header>
           <Left>
-            <TouchableOpacity>
-              <Icon name="menu"/>
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate('DrawerOpen')}}>
+              <Icon name="menu" inverse/>
             </TouchableOpacity>
           </Left>
           <Body>
@@ -37,7 +37,7 @@ export class Home extends Component {
               <View>
                 <Card>
                   <CardItem>
-                    <Icon active name="alarm" inverse/>
+                    <Icon active name="alarm"/>
                     <Text>Google Plus</Text>
                   </CardItem>
                 </Card>

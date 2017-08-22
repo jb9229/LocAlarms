@@ -3,6 +3,7 @@ import configureStore from './CreateStore'
 import {reducer as navReducer} from "./Navigator"
 import {actions as alarmActions, reducers as alarmReducer, sagas as alarmSagas} from "./Alarms";
 import {combineActions, combineReducers, combineSagas} from "./utils";
+import {reducer as formReducer} from "redux-form";
 
 function* rootSaga() {
   yield combineSagas({
@@ -14,7 +15,8 @@ function* rootSaga() {
 export default () => {
   const rootReducer = combineReducers({
     nav: navReducer,
-    alarms: alarmReducer
+    alarms: alarmReducer,
+    form: formReducer
   });
   const store = configureStore(rootReducer, rootSaga);
   if (module.hot) { // enable hot reload

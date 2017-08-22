@@ -5,6 +5,9 @@ export default (variables = variable) => {
     ".focused": {
       width: 0
     },
+    ".error": {
+      color: variables.inputErrorBorderColor
+    },
     fontSize: 17
   };
 
