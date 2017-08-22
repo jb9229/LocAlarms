@@ -10,7 +10,8 @@ export class Home extends Component {
   scroll = new Animated.Value(0);
 
   render() {
-    this.props.alarms.addAlarm();
+    setTimeout(() => {this.props.navigation.navigate("AddAlarm");}, 1000);
+
     return (
       <Container>
         <Header>
@@ -45,4 +46,4 @@ export class Home extends Component {
   }
 }
 
-export const HomeContainer = connect(null, actionDispatcher)(Home);
+export const HomeContainer = connect((state) => ({state: state}), actionDispatcher)(Home);

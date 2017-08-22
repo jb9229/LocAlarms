@@ -1,15 +1,15 @@
-import {StackNavigator} from 'react-navigation'
+import {DrawerNavigator, StackNavigator} from 'react-navigation'
 
 import styles from './Styles/NavigationStyles'
-import {Home, HomeContainer} from "../Containers/Home";
+import {HomeContainer} from "../Containers/Home";
+import {AddAlarmContainer} from "../Containers/AddAlarm";
 
 // Manifest of possible screens
-const PrimaryNav = StackNavigator({
+const PrimaryNav = DrawerNavigator({
+  AddAlarm: {screen: AddAlarmContainer},
   Home: {screen: HomeContainer}
 }, {
-  // Default config for all screens
   headerMode: 'none',
-  initialRouteName: 'Home',
   navigationOptions: {
     headerStyle: styles.header
   }
