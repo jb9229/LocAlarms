@@ -26,7 +26,8 @@ export default () => {
 }
 
 export const actionCreators = combineActions({
-  alarms: alarmActions
+  alarms: alarmActions,
+  startup: null
 });
 
 export const actionDispatcher = (dispatch) => Object.keys(actionCreators).reduce((map, key) => {

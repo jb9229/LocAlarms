@@ -5,7 +5,7 @@ export class GeoService {
   });
 
 
-  static subscribe(success: (Geolocation) => any) {
+  static subscribe(success: (GeoData) => any) {
     GeoService.subscribers.push(success);
     navigator.geolocation.getCurrentPosition((location) => {
       success(location)
@@ -17,22 +17,26 @@ export class GeoService {
     navigator.geolocation.clearWatch(GeoService.watchID);
   }
 
-  static pushLocation(location: Geolocation) {
+  static pushLocation(location: GeoData) {
     GeoService.subscribers.forEach((callback) => {
       callback(location);
     })
   }
 }
 
-export type Geolocation = {
-  coords: {
+export type GeoData = {
+  coords: GeoLocation & {
     accuracy: number,
     altitude: number,
     altitudeAccuracy: number,
     heading: number,
-    latitude: number,
-    longitude: number,
+
     speed: number,
   },
   timestamp: number
+}
+
+export type GeoLocation = {
+  latitude: number,
+  longitude: number
 }

@@ -4,12 +4,13 @@ import styles from './Styles/HomeStyles'
 import {Body, Card, CardItem, Container, Header, Icon, Title} from "native-base";
 import Map from "../Components/Map";
 import {connect} from "react-redux";
-import {actionDispatcher} from "../Redux/index";
+import {actionDispatcher} from "../Redux";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
 
   render() {
+    this.props.alarms.addAlarm();
     return (
       <Container>
         <Header>
