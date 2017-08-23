@@ -4,7 +4,7 @@ import {Callout} from 'react-native-maps'
 
 export default class MapCallout extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.onPress = this.props.onPress.bind(this, this.props.location)
   }
 

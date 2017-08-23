@@ -21,8 +21,12 @@ export const sagas = {
   [types.addAlarm]: [logger, API]
 };
 
-export function* logger(api, action) {
+function* logger(_, action) {
   console.log("this is action", action);
+}
+
+export default {
+  types, actions, reducers, sagas
 }
 
 

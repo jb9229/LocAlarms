@@ -4,6 +4,11 @@ export class GeoService {
     GeoService.pushLocation(location);
   });
 
+  static getLocation() {
+    return new Promise<GeoData>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve)
+    });
+  }
 
   static subscribe(success: (GeoData) => any) {
     GeoService.subscribers.push(success);

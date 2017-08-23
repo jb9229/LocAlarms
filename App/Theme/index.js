@@ -1,3 +1,3 @@
 import Colors from './Colors'
-
-export {Colors}
+import Metrics from './Metrics'
+export {Colors, Metrics}

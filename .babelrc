@@ -1,5 +1,6 @@
 {
   "presets": ["react-native"],
+  "plugins": ["idx"],
   "env": {
     "production": {
       "plugins": ["ignite-ignore-reactotron"]

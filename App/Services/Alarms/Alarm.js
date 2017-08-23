@@ -1,4 +1,4 @@
-import type {GeoLocation} from "../Geolocation";
+import type {GeoLocation} from "../Geo";
 import {Moment} from "moment";
 
 export type Time = {

@@ -1,13 +1,13 @@
 import {bindActionCreators} from 'redux'
 import configureStore from './CreateStore'
 import {reducer as navReducer} from "./Navigator"
-import {actions as alarmActions, reducers as alarmReducer, sagas as alarmSagas} from "./Alarms";
+import alarmRedux from "./Alarms";
 import {combineActions, combineReducers, combineSagas} from "./utils";
 import {reducer as formReducer} from "redux-form";
 
 function* rootSaga() {
   yield combineSagas({
-    alarms: alarmSagas
+    alarms: alarmRedux.sagas
   });
 }
 
@@ -15,7 +15,7 @@ function* rootSaga() {
 export default () => {
   const rootReducer = combineReducers({
     nav: navReducer,
-    alarms: alarmReducer,
+    alarms: alarmRedux.reducers,
     form: formReducer
   });
   const store = configureStore(rootReducer, rootSaga);
@@ -28,7 +28,7 @@ export default () => {
 }
 
 export const actionCreators = combineActions({
-  alarms: alarmActions,
+  alarms: alarmRedux.actions,
   startup: null
 });
 
