@@ -1,4 +1,3 @@
-import {List} from "immutable";
 import {API} from "../Services/Api";
 
 export const types = {
@@ -11,10 +10,10 @@ export const actions = {
 };
 export const reducers = {
   reducer: {
-    [types.addAlarm]: (state: List, {payload}) => {
-      return state.push(payload);
+    [types.addAlarm]: (state: any[], {payload}) => {
+      return [...state, payload];
     }
-  }, initialState: List()
+  }, initialState: []
 };
 
 export const sagas = {

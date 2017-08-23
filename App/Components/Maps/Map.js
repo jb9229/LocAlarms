@@ -20,14 +20,23 @@ export class Map extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(props) {
-    const maxRadius = Math.ceil(Math.max(props.locations.map(location => location.radius)) * 1.1);
-    setTimeout(() => {
-      this.mapView.fitToCoordinates(props.locations, {
+  fitLocations(locations) {
+    if (this.mapView && locations.length > 0) {
+      setTimeout(() => {
+        const maxRadius = Math.ceil(Math.max(locations.map(location => location.radius)) * 1.1);
+        this.mapView.fitToCoordinates(locations, {
           edgePadding: {top: maxRadius, bottom: maxRadius, left: maxRadius, right: maxRadius},
           animated: true
         });
-    }, 500);
+      }, 500);
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.locations.length !== this.props.locations.length ||
+      props.locations.some((location, index) => location.latitude !== this.props.locations[index].latitude || location.longitude !== this.props.locations[index].longitude)) {
+      this.fitLocations(props.locations)
+    }
   }
 
   render() {
@@ -37,6 +46,7 @@ export class Map extends Component {
         ref={(elem) => {
           if (!this.mapView) {
             this.mapView = elem;
+            this.fitLocations(this.props.locations);
           }
         }}
         followsUserLocation

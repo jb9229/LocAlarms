@@ -6,19 +6,21 @@ export class GeoService {
     GeoService.pushLocation(location);
   });
 
-  static getLocation(callback: (geo: GeoData) => any): void {
-    navigator.geolocation.getCurrentPosition(data => callback(data), () => callback({
-      coords: {
-        latitude: 0,
-        longitude: 0,
-        accuracy: 0,
-        altitude: 0,
-        altitudeAccuracy: 0,
-        heading: 0,
-        speed: 0,
-      },
-      timestamp: 0
-    }))
+  static getLocation(): Promise<GeoData> {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(data => resolve(data), () => resolve({
+        coords: {
+          latitude: 0,
+          longitude: 0,
+          accuracy: 0,
+          altitude: 0,
+          altitudeAccuracy: 0,
+          heading: 0,
+          speed: 0,
+        },
+        timestamp: 0
+      }))
+    });
   }
 
   static subscribe(success: (GeoData) => any) {
@@ -43,7 +45,17 @@ export class GeoService {
     return Http.getRequest("https://maps.googleapis.com/maps/api/geocode/json", {
       key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
       latlng: `${location.latitude},${location.longitude}`
-    }).then(res => res.result);
+    });
+  }
+
+  static search(address: string, radius): Promise<any> {
+    return GeoService.getLocation().then((geo: GeoData) => {
+      return Http.getRequest("https://maps.googleapis.com/maps/api/place/textsearch/json", Object.assign({
+        key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
+        query: address
+      }, radius? {location: `${geo.coords.latitude},${geo.coords.longitude}`,
+        radius: 10000,}: {}));
+    });
   }
 }
 
@@ -53,7 +65,6 @@ export type GeoData = {
     altitude: number,
     altitudeAccuracy: number,
     heading: number,
-
     speed: number,
   },
   timestamp: number

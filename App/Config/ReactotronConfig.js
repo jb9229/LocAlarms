@@ -1,5 +1,4 @@
 import Config from '../Config/DebugConfig'
-import Immutable from 'immutable'
 import Reactotron from 'reactotron-react-native'
 import {reactotronRedux as reduxPlugin} from 'reactotron-redux'
 import sagaPlugin from 'reactotron-redux-saga'
@@ -9,7 +8,7 @@ if (Config.useReactotron) {
   Reactotron
     .configure({name: 'Ignite App'})
     .useReactNative()
-    .use(reduxPlugin({onRestore: Immutable}))
+    .use(reduxPlugin())
     .use(sagaPlugin())
     .connect();
 

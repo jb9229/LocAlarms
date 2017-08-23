@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import {Button, Content, Form, Input, Item, Label, Text} from 'native-base';
 import {Field, formValueSelector, reduxForm} from 'redux-form';
-import {Slider, StyleSheet, View} from "react-native";
+import {Modal, Slider, StyleSheet, View} from "react-native";
 import {Map} from "./Maps/Map";
 import {Metrics} from "../Theme";
 import {connect} from "react-redux";
 import type {GeoData, GeoLocation} from "../Services/Geo";
 import {GeoService} from "../Services/Geo";
 import * as idx from "idx";
+import {AddressSearch} from "./AddressSearch";
 
 const validate = values => {
   const errors = {};
@@ -24,7 +25,7 @@ const validate = values => {
 };
 const fields = {
   name: {label: "Name", name: "name", required: true, initialValue: "Your alarm"},
-  location: {name: "location", initialValue: {latitude: 0, longitude: 0}},
+  location: {name: "location", initialValue: {latitude: 43.661331, longitude: -79.398625}},
   address: {name: "address", label: "Address"},
   radius: {name: "radius", label: "Radius", initialValue: 100}
 };
@@ -33,26 +34,32 @@ class AlarmFormComponent extends Component {
   constructor(props) {
     super(props);
     this.renderInput = this.renderInput.bind(this);
-    GeoService.getLocation((loc: GeoData) => {
+    GeoService.getLocation().then((loc: GeoData) => {
+      console.tron.log(loc.coords);
       this.changeAddress(loc.coords);
       this.props.change(fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
-    })
+    });
+    this.state = {
+      searchOpen: false
+    }
   }
 
   changeAddress(location: GeoLocation) {
     GeoService.geocode(location).then((data) => {
-      this.props.change(fields.address.name, idx(data, (x) => x[0].formatted_address))
+      console.tron.log(data);
+      this.props.change(fields.address.name, idx(data, (x) => x.results[0].formatted_address))
     });
   }
 
   renderInput({input, label, type, meta: {touched, error}}) {
     if (typeof input.value.latitude !== "undefined" && typeof input.value.longitude !== "undefined") {
+      console.tron.log(input.value);
       return <View style={styles.mapContainer}>
-        <Map locations={[Object.assign({}, input.value, {
+        <Map locations={[Object.assign({
+          onDragEnd: input.onChange,
           title: this.props.value[fields.name.name],
-          radius: 100,
-          onDragEnd: input.onChange
-        })]}/>
+          radius: this.props.value[fields.radius.name]
+        }, input.value)]}/>
       </View>
     } else if (typeof input.value === "number") {
       return (<Item style={styles.sliderContainer}>
@@ -67,9 +74,11 @@ class AlarmFormComponent extends Component {
       </Item>)
     } else {
       let hasError = error && touched;
+      let inp = Object.assign({}, input);
+      delete inp["onFocus"];
       return ( <Item error={hasError} style={styles.inputContainer}>
         <Label>{label}</Label>
-        <Input {...input} secureTextEntry={type === "password"}/>
+        <Input {...inp} secureTextEntry={type === "password"} onFocus={() => {input.onFocus()}}/>
       </Item> )
     }
   }
@@ -78,12 +87,27 @@ class AlarmFormComponent extends Component {
     const {change} = this.props;
     return (
       <Content>
-        <Form>
-          <Field {...fields.location} component={this.renderInput} onChange={(evt, newValue) => {
-            this.changeAddress(newValue);
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          onRequestClose={() => {}}
+          visible={this.state.searchOpen}>
+          <AddressSearch initialValue={this.props.value[fields.address.name]} onBack={() => {
+            this.setState({searchOpen: false})
           }}/>
+        </Modal>
+        <Form>
+          <Field {...fields.location} component={this.renderInput}
+                 onChange={(evt, newValue) => {
+                   this.changeAddress(newValue);
+                 }}/>
           <Field {...fields.name} component={this.renderInput}/>
-          <Field {...fields.address} component={this.renderInput}/>
+          <Field {...fields.address} component={this.renderInput} onFocus={(event) => {
+            event.preventDefault();
+            this.setState({
+              searchOpen: true
+            })
+          }}/>
           <Field {...fields.radius} component={this.renderInput}/>
           <Button style={{margin: 10}} primary onPress={() => {
             change("email", "abc")
