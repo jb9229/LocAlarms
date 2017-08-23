@@ -1,4 +1,4 @@
-import {DrawerNavigator, StackNavigator} from 'react-navigation'
+import {DrawerNavigator} from 'react-navigation'
 
 import styles from './Styles/NavigationStyles'
 import {HomeContainer} from "../Containers/Home";

@@ -4,7 +4,7 @@ import {Body, Card, CardItem, Container, Content, Header, Icon, Left, Right, Tit
 import {Map} from "../Components/Maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../Redux";
-import {Metrics, Colors} from "../Theme";
+import {Colors, Metrics} from "../Theme";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
@@ -14,7 +14,9 @@ export class Home extends Component {
       <Container>
         <Header>
           <Left>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('DrawerOpen')}}>
+            <TouchableOpacity onPress={() => {
+              this.props.navigation.navigate('DrawerOpen')
+            }}>
               <Icon name="menu" inverse/>
             </TouchableOpacity>
           </Left>

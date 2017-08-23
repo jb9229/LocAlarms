@@ -10,8 +10,10 @@ export class AddAlarm extends Component {
     return <Container>
       <Header>
         <Left>
-          <TouchableOpacity onPress={() => {this.props.navigation.navigate('DrawerOpen')}}>
-          <Icon name="menu" inverse/>
+          <TouchableOpacity onPress={() => {
+            this.props.navigation.navigate('DrawerOpen')
+          }}>
+            <Icon name="menu" inverse/>
           </TouchableOpacity>
         </Left>
         <Body>

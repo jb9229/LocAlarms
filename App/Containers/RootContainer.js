@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {actionDispatcher} from '../Redux'
 import ReduxPersist from '../Config/ReduxPersist'
 import {View} from "native-base";
+
 // Styles
 class RootContainer extends Component {
   componentDidMount() {

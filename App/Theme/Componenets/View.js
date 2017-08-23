@@ -5,7 +5,7 @@ export default (variables = variable) => {
     ".padder": {
       padding: variables.contentPadding
     },
-    flex:1
+    flex: 1
   };
 
   return viewTheme;

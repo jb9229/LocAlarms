@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import MapView from 'react-native-maps'
-import MapCallout from './MapCallout'
 import PropTypes from "prop-types";
 import {AlarmPin} from "./AlarmPin";
 

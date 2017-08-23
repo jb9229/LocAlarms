@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {Button, Content, Form, Input, Item, Label, Text} from 'native-base';
 import {Field, formValueSelector, reduxForm} from 'redux-form';
-import {StyleSheet, View} from "react-native";
+import {Slider, StyleSheet, View} from "react-native";
 import {Map} from "./Maps/Map";
 import {Metrics} from "../Theme";
 import {connect} from "react-redux";
+import type {GeoData, GeoLocation} from "../Services/Geo";
+import {GeoService} from "../Services/Geo";
+import * as idx from "idx";
 
 const validate = values => {
   const errors = {};
@@ -21,13 +24,25 @@ const validate = values => {
 };
 const fields = {
   name: {label: "Name", name: "name", required: true, initialValue: "Your alarm"},
-  location: {label: "Location", name: "location", required: true, initialValue: {latitude: 37.784563, longitude: -122.1999405}}
+  location: {name: "location", initialValue: {latitude: 0, longitude: 0}},
+  address: {name: "address", label: "Address"},
+  radius: {name: "radius", label: "Radius", initialValue: 100}
 };
 
 class AlarmFormComponent extends Component {
   constructor(props) {
     super(props);
     this.renderInput = this.renderInput.bind(this);
+    GeoService.getLocation((loc: GeoData) => {
+      this.changeAddress(loc.coords);
+      this.props.change(fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
+    })
+  }
+
+  changeAddress(location: GeoLocation) {
+    GeoService.geocode(location).then((data) => {
+      this.props.change(fields.address.name, idx(data, (x) => x[0].formatted_address))
+    });
   }
 
   renderInput({input, label, type, meta: {touched, error}}) {
@@ -35,13 +50,24 @@ class AlarmFormComponent extends Component {
       return <View style={styles.mapContainer}>
         <Map locations={[Object.assign({}, input.value, {
           title: this.props.value[fields.name.name],
-          radius: 5,
+          radius: 100,
           onDragEnd: input.onChange
         })]}/>
       </View>
+    } else if (typeof input.value === "number") {
+      return (<Item style={styles.sliderContainer}>
+        <Label style={styles.sliderLabel}>{label}</Label>
+        <Text style={styles.sliderText}>100m</Text>
+        <Slider style={styles.slider}
+                onSlidingComplete={input.onChange}
+                minimumValue={100}
+                maximumValue={1000}
+                value={input.value}/>
+        <Text style={styles.sliderText}>1000m</Text>
+      </Item>)
     } else {
       let hasError = error && touched;
-      return ( <Item style={{margin: 10}} error={hasError} floatingLabel>
+      return ( <Item error={hasError} style={styles.inputContainer}>
         <Label>{label}</Label>
         <Input {...input} secureTextEntry={type === "password"}/>
       </Item> )
@@ -49,17 +75,16 @@ class AlarmFormComponent extends Component {
   }
 
   render() {
-    const {change, value} = this.props;
+    const {change} = this.props;
     return (
       <Content>
         <Form>
-          <Field {...fields.location}
-                 component={this.renderInput}
-                 parse={(val: string) => {
-                   const split = val.split(",");
-                   return {latitude: split[0], longitude: split[1]}
-                 }}/>
+          <Field {...fields.location} component={this.renderInput} onChange={(evt, newValue) => {
+            this.changeAddress(newValue);
+          }}/>
           <Field {...fields.name} component={this.renderInput}/>
+          <Field {...fields.address} component={this.renderInput}/>
+          <Field {...fields.radius} component={this.renderInput}/>
           <Button style={{margin: 10}} primary onPress={() => {
             change("email", "abc")
           }}>
@@ -74,6 +99,22 @@ class AlarmFormComponent extends Component {
 const styles = StyleSheet.create({
   mapContainer: {
     height: Metrics.screenHeight * 0.5
+  },
+  sliderContainer: {
+    paddingVertical: 10,
+    marginRight: 15
+  },
+  slider: {
+    width: "62%"
+  },
+  sliderLabel: {
+    marginRight: 10
+  },
+  sliderText: {
+    fontSize: 13
+  },
+  inputContainer: {
+    marginHorizontal: 15
   }
 });
 const selector = formValueSelector('test');
