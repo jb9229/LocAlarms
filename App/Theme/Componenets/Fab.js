@@ -16,7 +16,8 @@ export default (variables = variable) => {
         fontSize: 20,
         lineHeight: platform === "ios" ? 24 : undefined
       }
-    }
+    },
+    backgroundColor: variables.brandPrimary
   };
 
   return fabTheme;

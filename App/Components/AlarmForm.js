@@ -35,7 +35,6 @@ class AlarmFormComponent extends Component {
     super(props);
     this.renderInput = this.renderInput.bind(this);
     GeoService.getLocation().then((loc: GeoData) => {
-      console.tron.log(loc.coords);
       this.changeAddress(loc.coords);
       this.props.change(fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
     });
@@ -46,14 +45,12 @@ class AlarmFormComponent extends Component {
 
   changeAddress(location: GeoLocation) {
     GeoService.geocode(location).then((data) => {
-      console.tron.log(data);
       this.props.change(fields.address.name, idx(data, (x) => x.results[0].formatted_address))
     });
   }
 
   renderInput({input, label, type, meta: {touched, error}}) {
     if (typeof input.value.latitude !== "undefined" && typeof input.value.longitude !== "undefined") {
-      console.tron.log(input.value);
       return <View style={styles.mapContainer}>
         <Map locations={[Object.assign({
           onDragEnd: input.onChange,

@@ -1,6 +1,9 @@
 import React, {Component} from 'react'
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {Body, Card, CardItem, Container, Content, Header, Icon, Left, Right, Title} from "native-base";
+import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native'
+import {
+  Body, Button, Card, CardItem, Container, Content, Fab, Header, Icon, Left, Right, Title,
+  View
+} from "native-base";
 import {Map} from "../Components/Maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../Redux";
@@ -8,6 +11,9 @@ import {Colors, Metrics} from "../Theme";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
+  state = {
+    active: false
+  };
 
   render() {
     return (
@@ -48,6 +54,11 @@ export class Home extends Component {
             </Content>
           </Animated.ScrollView>
         </View>
+        <Fab position="bottomRight" onPress={() => {
+          this.props.navigation.navigate("AddAlarm");
+        }}>
+          <Icon name="add"/>
+        </Fab>
       </Container>
     )
   }

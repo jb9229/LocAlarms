@@ -26,7 +26,6 @@ export class AddressSearch extends Component {
     this.setState({
       searchText: text
     });
-    console.tron.log(text);
     GeoService.search(text).then((data) => {
       this.locations = data.results.map((x) => x.formatted_address);
     })

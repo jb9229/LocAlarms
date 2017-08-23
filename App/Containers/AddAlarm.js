@@ -11,9 +11,9 @@ export class AddAlarm extends Component {
       <Header>
         <Left>
           <TouchableOpacity onPress={() => {
-            this.props.navigation.navigate('DrawerOpen')
+            this.props.navigation.goBack();
           }}>
-            <Icon name="menu" inverse/>
+            <Icon name="arrow-back" inverse/>
           </TouchableOpacity>
         </Left>
         <Body>
