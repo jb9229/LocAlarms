@@ -1,9 +1,6 @@
 import React, {Component} from 'react'
 import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native'
-import {
-  Body, Button, Card, CardItem, Container, Content, Fab, Header, Icon, Left, Right, Title,
-  View
-} from "native-base";
+import {Body, Card, CardItem, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
 import {Map} from "../Components/Maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../Redux";

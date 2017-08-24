@@ -33,7 +33,7 @@ export class AlarmPin extends Component {
       <MapView.Circle
         radius={this.props.radius}
         strokeColor={Colors.primary}
-        fillColor ={Color(Colors.primary).lighten(0.65).alpha(0.5).string()}
+        fillColor={Color(Colors.primary).lighten(0.65).alpha(0.5).string()}
         center={{latitude: this.props.latitude, longitude: this.props.longitude}}>
       </MapView.Circle>
     </View>

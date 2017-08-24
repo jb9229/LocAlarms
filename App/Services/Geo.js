@@ -48,14 +48,16 @@ export class GeoService {
     });
   }
 
-  static search(address: string, radius): Promise<any> {
+  static search(address: string, radius): Promise<{ formatted_address: string, geometry: {location: {lat: number, lng: number}} }[]> {
     return GeoService.getLocation().then((geo: GeoData) => {
       return Http.getRequest("https://maps.googleapis.com/maps/api/place/textsearch/json", Object.assign({
         key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
         query: address
-      }, radius? {location: `${geo.coords.latitude},${geo.coords.longitude}`,
-        radius: 10000,}: {}));
-    });
+      }, radius ? {
+        location: `${geo.coords.latitude},${geo.coords.longitude}`,
+        radius: 10000,
+      } : {}));
+    }).then((res) => res.results);
   }
 }
 

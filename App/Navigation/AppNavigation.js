@@ -1,6 +1,4 @@
 import {DrawerNavigator, StackNavigator} from 'react-navigation'
-
-import styles from './Styles/NavigationStyles'
 import {HomeContainer} from "../Containers/Home";
 import {AddAlarmContainer} from "../Containers/AddAlarm";
 import {Preferences} from "../Containers/Preferences";

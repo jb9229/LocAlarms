@@ -51,6 +51,7 @@ class AlarmFormComponent extends Component {
 
   renderInput({input, label, type, meta: {touched, error}}) {
     if (typeof input.value.latitude !== "undefined" && typeof input.value.longitude !== "undefined") {
+
       return <View style={styles.mapContainer}>
         <Map locations={[Object.assign({
           onDragEnd: input.onChange,
@@ -75,7 +76,11 @@ class AlarmFormComponent extends Component {
       delete inp["onFocus"];
       return ( <Item error={hasError} style={styles.inputContainer}>
         <Label>{label}</Label>
-        <Input {...inp} secureTextEntry={type === "password"} onFocus={() => {input.onFocus()}}/>
+        <Input {...inp}
+               secureTextEntry={type === "password"}
+               onFocus={() => {
+                 input.onFocus()
+               }}/>
       </Item> )
     }
   }
@@ -83,15 +88,22 @@ class AlarmFormComponent extends Component {
   render() {
     const {change} = this.props;
     return (
-      <Content>
+      <Content keyboardShouldPersistTaps="always">
         <Modal
           animationType={"slide"}
           transparent={false}
-          onRequestClose={() => {}}
+          onRequestClose={() => {
+          }}
           visible={this.state.searchOpen}>
-          <AddressSearch initialValue={this.props.value[fields.address.name]} onBack={() => {
-            this.setState({searchOpen: false})
-          }}/>
+          <AddressSearch
+            initialValue={this.props.value[fields.address.name]}
+            onBack={(data: ?{ loc: GeoLocation, address: string }) => {
+              if (data) {
+                change(fields.location.name, data.loc);
+                change(fields.address.name, data.address);
+              }
+              this.setState({searchOpen: false})
+            }}/>
         </Modal>
         <Form>
           <Field {...fields.location} component={this.renderInput}
@@ -99,12 +111,14 @@ class AlarmFormComponent extends Component {
                    this.changeAddress(newValue);
                  }}/>
           <Field {...fields.name} component={this.renderInput}/>
-          <Field {...fields.address} component={this.renderInput} onFocus={(event) => {
-            event.preventDefault();
-            this.setState({
-              searchOpen: true
-            })
-          }}/>
+          <Field {...fields.address}
+                 component={this.renderInput}
+                 onFocus={(event) => {
+                   event.preventDefault();
+                   this.setState({
+                     searchOpen: true
+                   })
+                 }}/>
           <Field {...fields.radius} component={this.renderInput}/>
           <Button style={{margin: 10}} primary onPress={() => {
             change("email", "abc")

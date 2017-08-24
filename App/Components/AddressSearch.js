@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Card, CardItem, Container, Content, Header, Icon, Input, Item, Text} from "native-base";
 import {GeoService} from "../Services/Geo";
-import {TouchableOpacity} from "react-native";
+import {StyleSheet, TouchableOpacity} from "react-native";
+import _ from "lodash";
 
 export class AddressSearch extends Component {
   static propTypes = {
@@ -11,24 +12,20 @@ export class AddressSearch extends Component {
     onBack: PropTypes.func
   };
   locations: string[] = [];
+  changeText: (text) => void;
 
   constructor(props) {
     super(props);
     this.state = {
-      searchText: ""
+      searchText: props.initialValue,
+      locations: []
     };
-    GeoService.search(this.state.searchText).then((data) => {
-      this.locations = data.results.map((x) => x.formatted_address);
-    })
-  }
-
-  changeText(text) {
-    this.setState({
-      searchText: text
-    });
-    GeoService.search(text).then((data) => {
-      this.locations = data.results.map((x) => x.formatted_address);
-    })
+    this.changeText = _.debounce((text) => {
+      GeoService.search(text).then((data) => {
+        this.setState({locations: data});
+      })
+    }, 250);
+    this.changeText(props.initialValue);
   }
 
   render() {
@@ -44,25 +41,44 @@ export class AddressSearch extends Component {
                  defaultValue={this.props.initialValue}
                  value={this.state.searchText}
                  autoFocus
-                 onChangeText={(value) => {
-                   this.changeText(value)
+                 onChangeText={(text) => {
+                   this.setState({
+                     searchText: text
+                   });
+                   this.changeText(text)
                  }}/>
           <TouchableOpacity onPress={() => {
+            this.setState({searchText: ""});
+            this.changeText("");
           }}>
             <Icon name="close"/>
           </TouchableOpacity>
         </Item>
       </Header>
-      <Content>
-        <Card>
-          {this.locations.map((name, i) => <CardItem key={i}>
-            <Icon active name="pin"/>
-            <Text numberOfLines={1}>
-              {name}
-            </Text>
-          </CardItem>)}
+      <Content keyboardShouldPersistTaps="always">
+        <Card style={styles.locationList}>
+          {this.state.locations.map((data, i) =>
+            <TouchableOpacity onPress={() => {this.props.onBack({
+              loc: {latitude: data.geometry.location.lat,
+              longitude: data.geometry.location.lng},
+              address: data.formatted_address
+            })}} key={i}>
+              <CardItem>
+                <Icon active name="pin"/>
+                <Text numberOfLines={1}>
+                  {data.formatted_address}
+                </Text>
+              </CardItem>
+            </TouchableOpacity>
+          )}
         </Card>
       </Content>
     </Container>
   }
 }
+
+const styles = StyleSheet.create({
+  locationList: {
+    paddingRight: 40
+  }
+});

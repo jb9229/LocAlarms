@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import MapView from 'react-native-maps'
 import PropTypes from "prop-types";
+import {StyleSheet} from "react-native";
 import {AlarmPin} from "./AlarmPin";
+import {filterUndefined} from "../../Lib/NullCheck";
 
 export class Map extends Component {
-  mapView;
-
   static propTypes = {
     locations: PropTypes.arrayOf(PropTypes.shape({
       latitude: PropTypes.number,
@@ -15,6 +15,7 @@ export class Map extends Component {
       onDragEnd: PropTypes.func
     })).isRequired
   };
+  mapView;
 
   constructor(props) {
     super(props);
@@ -33,27 +34,31 @@ export class Map extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.locations.length !== this.props.locations.length ||
-      props.locations.some((location, index) => location.latitude !== this.props.locations[index].latitude || location.longitude !== this.props.locations[index].longitude)) {
-      this.fitLocations(props.locations)
+    const locations = filterUndefined(props.locations), oldLocations = this.props.locations;
+    if (locations.some((location, index) =>
+        location.latitude !== oldLocations[index].latitude ||
+        location.longitude !== oldLocations[index].longitude)
+    ) {
+      this.fitLocations(locations)
     }
   }
 
   render() {
+    const locations = filterUndefined(this.props.locations);
     return (
       <MapView
-        style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}}
+        style={StyleSheet.absoluteFill}
         ref={(elem) => {
           if (!this.mapView) {
             this.mapView = elem;
-            this.fitLocations(this.props.locations);
+            this.fitLocations(locations);
           }
         }}
-        provider="google"
+        provider={MapView.PROVIDER_GOOGLE}
         followsUserLocation
         loadingEnabled
         showsUserLocation>
-        {this.props.locations.map((location, i) => (
+        {locations.map((location, i) => (
           <AlarmPin {...location} key={i}/>))
         }
       </MapView>
