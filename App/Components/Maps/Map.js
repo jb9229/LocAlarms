@@ -49,6 +49,7 @@ export class Map extends Component {
             this.fitLocations(this.props.locations);
           }
         }}
+        provider="google"
         followsUserLocation
         loadingEnabled
         showsUserLocation>
