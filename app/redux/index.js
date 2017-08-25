@@ -4,6 +4,7 @@ import {reducer as navReducer} from "./Navigator"
 import alarmRedux from "./Alarms";
 import {combineActions, combineReducers, combineSagas} from "./utils";
 import {reducer as formReducer} from "redux-form";
+import {objectMap} from "../lib/Operators";
 
 function* rootSaga() {
   yield combineSagas({
@@ -32,6 +33,4 @@ export const actionCreators = combineActions({
   startup: null
 });
 
-export const actionDispatcher = (dispatch) => Object.keys(actionCreators).reduce((map, key) => {
-  return Object.assign({}, map, {[key]: bindActionCreators(actionCreators[key], dispatch)})
-}, {});
+export const actionDispatcher = (dispatch) => objectMap(actionCreators, (value) => bindActionCreators(value, dispatch));

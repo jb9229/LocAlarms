@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Card, CardItem, Container, Content, Header, Icon, Input, Item, Text} from "native-base";
-import {GeoService} from "../services/Geo";
+import {GeoService} from "../../services/Geo";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import _ from "lodash";
 
@@ -12,7 +12,7 @@ export class AddressSearch extends Component {
     onBack: PropTypes.func
   };
   locations: string[] = [];
-  changeText: (text) => void;
+  changeText: (text: string) => void;
 
   constructor(props) {
     super(props);

@@ -143,7 +143,6 @@ export default (variables = variable) => {
       borderRadius: 30,
       borderColor: variables.inputBorderColor,
     },
-
     '.success': {
       'NativeBase.Icon': {
         color: variables.inputSuccessBorderColor,
@@ -167,7 +166,6 @@ export default (variables = variable) => {
       },
       borderColor: variables.inputSuccessBorderColor,
     },
-
     '.error': {
       'NativeBase.Icon': {
         color: variables.inputErrorBorderColor,
@@ -201,6 +199,18 @@ export default (variables = variable) => {
       'NativeBase.IconNB': {
         color: '#384850',
       },
+    },
+    ".itemDivider": {
+      borderBottomWidth: null,
+      marginLeft: null,
+      padding: variables.listItemPadding,
+      paddingLeft: variables.listItemPadding + 5,
+      backgroundColor: variables.listDividerBg,
+      flexDirection: "row",
+      borderColor: variables.listBorderColor,
+      "NativeBase.Text": {
+        fontSize: variables.inputFontSize + 2
+      }
     },
 
     borderWidth: variables.borderWidth * 2,

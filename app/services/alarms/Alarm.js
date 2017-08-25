@@ -12,9 +12,8 @@ export type Date = {
 };
 
 export const ScheduleTypes = {
-  ONCE: "one",
-  DAILY: "daily",
-  WEEKLY: "weekly"
+  ONCE: "Once",
+  DAILY: "Daily"
 };
 
 export type Schedule = {
