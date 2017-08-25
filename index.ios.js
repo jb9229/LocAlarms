@@ -1,5 +1,5 @@
-import './App/Config/ReactotronConfig'
+import './app/config/ReactotronConfig'
 import { AppRegistry } from 'react-native'
-import App from './App/Containers/App'
+import App from './app/containers/App'
 
 AppRegistry.registerComponent('LocAlarms', () => App)
