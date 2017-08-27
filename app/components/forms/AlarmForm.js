@@ -3,7 +3,7 @@ import {Body, Button, Content, Form, Input, Item, Label, Text} from 'native-base
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
 import {Modal, Slider, StyleSheet, View} from "react-native";
 import {Map} from "../maps/Map";
-import {Metrics} from "../../theme/index";
+
 import {connect} from "react-redux";
 import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
@@ -12,6 +12,7 @@ import {AddressSearch} from "./AddressSearch";
 import {formTypes} from "../../lib/FormTypes";
 import {fields as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
+import {Metrics} from "../../theme";
 
 const fields = {
   name: {label: "Name", name: "name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -62,22 +63,18 @@ class AlarmFormComponent extends Component {
           <Text style={styles.sliderText}>1000m</Text>
         </Item>);
       default: {
-        let hasError = error && touched;
-        let inp = Object.assign({}, input);
-        delete inp["onFocus"];
-        return ( <Item error={hasError} style={styles.inputContainer}>
+        return ( <Item error={error && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
-          <Input {...inp}
-                 onFocus={() => {
-                   input.onFocus()
-                 }}/>
+          <Input {...input} onFocus={() => {
+            input.onFocus()
+          }}/>
         </Item> )
       }
     }
   }
 
   render() {
-    const {change} = this.props;
+    const {change, handleSubmit} = this.props;
     return (
       <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         <Modal
@@ -99,14 +96,13 @@ class AlarmFormComponent extends Component {
         <Form>
           <Field {...fields.location}
                  component={this.renderInput}
-                 onChange={(evt, newValue) => {
+                 onChange={(_, newValue) => {
                    this.changeAddress(newValue);
                  }}/>
           <Field {...fields.name} component={this.renderInput}/>
           <Field {...fields.address}
                  component={this.renderInput}
-                 onFocus={(event) => {
-                   event.preventDefault();
+                 onFocus={() => {
                    this.setState({
                      searchOpen: true
                    })
@@ -116,9 +112,7 @@ class AlarmFormComponent extends Component {
             <ScheduleForm/>
           </FormSection>
           <Body>
-          <Button style={{margin: 10}} primary onPress={() => {
-            change("email", "abc")
-          }}>
+          <Button style={{margin: 10}} primary onPress={handleSubmit}>
             <Text>Submit</Text>
           </Button>
           </Body>
@@ -150,16 +144,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const selector = formValueSelector('AlarmForm');
-export const AlarmForm = connect(state => ({value: selector(state, ...Object.values(fields).map(field => field.name))}), null)(reduxForm({
-  form: 'AlarmForm',
+export const alarmFormName = 'AlarmForm';
+const selector = formValueSelector(alarmFormName);
+export const AlarmForm = connect(state =>
+  ({value: selector(state, ...Object.values(fields).map(field => field.name))}), null)(reduxForm({
+  form: alarmFormName,
   validate: values => {
     const errors = {};
-    if (values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = 'Invalid email address'
-    }
-    const requiredFields = Object.values(fields).filter(val => val.required).map(data => data.name);
-    requiredFields.forEach(field => {
+    Object.values(fields).filter(val => val.required).map(data => data.name).forEach(field => {
       if (!values[field]) {
         errors[field] = 'Required'
       }

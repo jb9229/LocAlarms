@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native'
-import {Body, Card, CardItem, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
+import {Animated, StyleSheet, TouchableOpacity} from 'react-native'
+import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
-import {actionDispatcher} from "../redux";
-import {Colors, Metrics} from "../theme";
+import {actionDispatcher, propsMerger, selectors} from "../redux";
+import {Metrics} from "../theme";
+import {AlarmCard} from "../components/AlarmCard";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
@@ -40,12 +41,9 @@ export class Home extends Component {
               <Map locations={[]}/>
             </Animated.View>
             <Content style={styles.alarmList}>
-              <View style={styles.bgFill}>
+              <View>
                 <Card>
-                  <CardItem>
-                    <Icon active name="alarm"/>
-                    <Text>Google Plus</Text>
-                  </CardItem>
+                  {this.props.alarms.state.map((alarm, i) => <AlarmCard alarm={alarm} key={i}/>)}
                 </Card>
               </View>
             </Content>
@@ -67,10 +65,7 @@ const styles = StyleSheet.create({
   },
   alarmList: {
     minHeight: Metrics.screenHeight * 0.4 - Metrics.navHeaderHeight
-  },
-  bgFill: {
-    backgroundColor: Colors.background
   }
 });
 
-export const HomeContainer = connect((state) => ({state: state}), actionDispatcher)(Home);
+export const HomeContainer = connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)(Home);

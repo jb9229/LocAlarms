@@ -3,9 +3,9 @@ import {Field} from "redux-form";
 import {ScheduleTypes} from "../../services/alarms/Alarm";
 import {formTypes} from "../../lib/FormTypes";
 import {Icon, Item, Label, Picker, Text} from "native-base";
-import {View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";
-import {StyleSheet} from "react-native";
+
 export const fields = {
   type: {label: "Type", name: "type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
   dateStart: {label: "Start Date", name: "startDate", initialValue: "2016-05-05", type: formTypes.date}
@@ -73,5 +73,5 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     color: "#7a7a7a"
   },
-  datePicker: {width:140, paddingHorizontal: 12, paddingVertical: 3}
+  datePicker: {width: 140, paddingHorizontal: 12, paddingVertical: 3}
 });

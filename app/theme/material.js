@@ -1,7 +1,6 @@
 import color from "color";
 
 import {Dimensions, PixelRatio, Platform} from "react-native";
-import Colors from "../Colors";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -47,11 +46,6 @@ export default {
   segmentActiveTextColor: "#3F51B5",
   segmentBorderColor: "#fff",
   segmentBorderColorMain: "#3F51B5",
-
-  // New Variable
-  get defaultTextColor() {
-    return this.textColor;
-  },
 
   get btnPrimaryBg() {
     return this.brandPrimary;
@@ -203,7 +197,7 @@ export default {
 
   // List
   listBorderColor: "#c9c9c9",
-  listDividerBg: color(Colors.background).darken(0.05).string(),
+  listDividerBg: this.cardDefaultBg,
   listItemHeight: 45,
   listBtnUnderlayColor: "#DDD",
 

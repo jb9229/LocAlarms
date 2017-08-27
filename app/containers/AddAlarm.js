@@ -20,7 +20,10 @@ export class AddAlarm extends Component {
         <Title>Redux Form</Title>
         </Body>
       </Header>
-      <AlarmForm/>
+      <AlarmForm onSubmit={(values) => {
+        this.props.alarms.alarmFormSubmit(values);
+        this.props.navigation.goBack();
+      }}/>
     </Container>
   }
 }

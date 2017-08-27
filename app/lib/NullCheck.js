@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 /**
  * Returns if a list of objects has entries where every property is defined
  * @param array
@@ -8,10 +10,10 @@ export function all(array: any[]): boolean {
 
 export function allProperties(obj): boolean {
   return Object.keys(obj).every((key) => {
-    if (obj[key] !== null && typeof obj[key] === "object") {
+    if (!_.isNull(obj[key]) && _.isObject(obj[key])) {
       return allProperties(obj[key])
     } else {
-      return obj[key] !== null && typeof obj[key] !== "undefined"
+      return !_.isNull(obj[key]) && !_.isUndefined(obj[key])
     }
   })
 }
@@ -24,6 +26,3 @@ export function filterUndefined(array: any[]): any[] {
   return array.filter(allProperties);
 }
 
-export function isDefined(obj): boolean {
-  return obj !== null && typeof obj !== "undefined";
-}

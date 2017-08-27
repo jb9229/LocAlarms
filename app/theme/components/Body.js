@@ -1,4 +1,4 @@
-import variable from '../variables/default';
+import variable from '../material';
 
 export default (variables = variable) => {
   const bodyTheme = {

@@ -40,7 +40,7 @@ import cardItemTheme from "./CardItem";
 import listItemTheme from "./ListItem";
 import formTheme from "./Form";
 import separatorTheme from "./Separator";
-import variable from "../variables/default";
+import variable from "../material";
 
 export default (variables = variable) => {
   const theme = {

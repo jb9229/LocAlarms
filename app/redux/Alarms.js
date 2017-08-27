@@ -1,10 +1,14 @@
-import {API} from "../services/Api";
+import {put} from "redux-saga/effects";
+import {reset} from "redux-form";
+import {alarmFormName} from "../components/forms/AlarmForm";
 
 export const types = {
-  addAlarm: "add_alarm",
-  removeAlarm: "remove_alarm"
+  alarmFormSubmit: "alarmFormSubmit",
+  addAlarm: "addAlarm",
+  removeAlarm: "removeAlarm"
 };
 export const actions = {
+  [types.alarmFormSubmit]: null,
   [types.addAlarm]: null,
   [types.removeAlarm]: null
 };
@@ -15,17 +19,21 @@ export const reducers = {
     }
   }, initialState: []
 };
-
-export const sagas = {
-  [types.addAlarm]: [logger, API]
+export const selectors = {
+  all: (state) => state
 };
 
-function* logger(_, action) {
-  console.log("this is action", action);
+export const sagas = {
+  [types.alarmFormSubmit]: [formSubmit]
+};
+
+function* formSubmit(action) {
+  yield put({type: types.addAlarm, payload: action.payload});
+  yield put(reset(alarmFormName))
 }
 
 export default {
-  types, actions, reducers, sagas
+  types, actions, reducers, sagas, selectors
 }
 
 

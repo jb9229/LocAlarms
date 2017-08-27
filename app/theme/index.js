@@ -1,4 +1,7 @@
-import Colors from './Colors'
-import Metrics from './Metrics'
+import Metrics from "./Metrics";
+import Colors from "./material";
 
-export {Colors, Metrics}
+export {
+  Metrics,
+  Colors
+};

@@ -1,4 +1,4 @@
-import variable from "../variables/default";
+import variable from "../material";
 import {Platform} from "react-native";
 
 export default (variables = variable) => {

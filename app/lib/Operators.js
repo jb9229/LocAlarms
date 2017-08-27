@@ -1,5 +1,6 @@
-export function objectMap(obj, mapFunction) {
+export function objectMap(obj, mapFunction, keyMap: ?(key) => any) {
   return Object.keys(obj).reduce((val, x) => {
-    return Object.assign({}, val, {[x]: mapFunction(obj[x])})
+    let key = keyMap ? keyMap(x) : x;
+    return Object.assign({}, val, {[key]: mapFunction(obj[x], key)})
   }, {})
 }
