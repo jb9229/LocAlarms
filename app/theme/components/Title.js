@@ -11,6 +11,12 @@ export default (variables = variable) => {
     textAlign: "center",
     ".inverse": {
       color :variables.textColor
+    },
+    ".thin": {
+      fontWeight: "100"
+    },
+    ".large": {
+      fontSize: variables.titleFontSize + 10
     }
   };
 

@@ -14,8 +14,14 @@ export class Home extends Component {
     outputRange: [1, 0],
     extrapolate: "clamp"
   });
+  mapScale = this.scroll.interpolate({
+    inputRange: [-35, 0],
+    outputRange: [1.1, 1],
+    extrapolateRight: "clamp"
+  });
   state = {
-    active: false
+    active: false,
+    editPanelOpen: -1
   };
 
   constructor(props) {
@@ -43,17 +49,25 @@ export class Home extends Component {
         <View>
           <Animated.ScrollView
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
-            style={styles.bgFill}
             showsVerticalScrollIndicator={false}
             scrollEventThrottle={5}>
             <Animated.View
-              style={[styles.mapContainer, {transform: [{translateY: Animated.divide(this.scroll, 4)}]}]}>
+              style={[styles.mapContainer, {transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]}]}>
               <Map locations={[]}/>
             </Animated.View>
             <Content style={styles.alarmList}>
               <View>
                 <Card>
-                  {this.props.alarms.state.map((alarm, i) => <AlarmCard alarm={alarm} key={i}/>)}
+                  {this.props.alarms.state.map((alarm, i) =>
+                    <AlarmCard alarm={alarm}
+                               key={i}
+                               onEditPanelOpen={() => {
+                                 this.setState({
+                                   editPanelOpen: i
+                                 })
+                               }}
+                               editPanelOpen={this.state.editPanelOpen === i}/>)
+                  }
                 </Card>
               </View>
             </Content>
@@ -81,9 +95,10 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     bottom: 0,
-    right:0,
+    right: 0,
     backgroundColor: Colors.brandPrimary,
-    justifyContent: "center", alignItems: "center"
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
