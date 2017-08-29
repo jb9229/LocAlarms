@@ -5,6 +5,9 @@ export default (variables = variable) => {
     ".inverse": {
       color: variables.inverseTextColor
     },
+    ".small": {
+      fontSize: variables.iconFontSize - 10
+    },
     fontSize: variables.iconFontSize,
     color: variables.textColor
   };

@@ -5,6 +5,9 @@ export default (variables = variable) => {
     ".padder": {
       padding: variables.contentPadding
     },
+    ".right": {
+      alignSelf: "flex-end"
+    },
     flex: 1,
     backgroundColor: variables.cardDefaultBg
   };

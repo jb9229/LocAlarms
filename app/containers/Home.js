@@ -4,14 +4,23 @@ import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, V
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher, propsMerger, selectors} from "../redux";
-import {Metrics} from "../theme";
+import {Colors, Metrics} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
+  fabScale = this.scroll.interpolate({
+    inputRange: [0, 20],
+    outputRange: [1, 0],
+    extrapolate: "clamp"
+  });
   state = {
     active: false
   };
+
+  constructor(props) {
+    super(props);
+  }
 
   render() {
     return (
@@ -35,6 +44,7 @@ export class Home extends Component {
           <Animated.ScrollView
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
             style={styles.bgFill}
+            showsVerticalScrollIndicator={false}
             scrollEventThrottle={5}>
             <Animated.View
               style={[styles.mapContainer, {transform: [{translateY: Animated.divide(this.scroll, 4)}]}]}>
@@ -49,11 +59,13 @@ export class Home extends Component {
             </Content>
           </Animated.ScrollView>
         </View>
-        <Fab position="bottomRight" onPress={() => {
-          this.props.navigation.navigate("AddAlarm");
-        }}>
-          <Icon name="add"/>
-        </Fab>
+        <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
+          <Fab onPress={() => {
+            this.props.navigation.navigate("AddAlarm");
+          }}>
+            <Icon name="add"/>
+          </Fab>
+        </Animated.View>
       </Container>
     )
   }
@@ -61,10 +73,17 @@ export class Home extends Component {
 
 const styles = StyleSheet.create({
   mapContainer: {
-    height: Metrics.screenHeight * 0.6
+    height: Metrics.screenHeight * 0.75
   },
   alarmList: {
-    minHeight: Metrics.screenHeight * 0.4 - Metrics.navHeaderHeight
+    minHeight: Metrics.screenHeight * 0.25 - Metrics.navHeaderHeight + 10
+  },
+  fab: {
+    position: "absolute",
+    bottom: 0,
+    right:0,
+    backgroundColor: Colors.brandPrimary,
+    justifyContent: "center", alignItems: "center"
   }
 });
 
