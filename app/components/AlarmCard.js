@@ -3,13 +3,16 @@ import PropTypes from "prop-types";
 import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
 import {Colors} from "../theme"
-const EDIT_PANEL_HEIGHT = 30;
+
+const EDIT_PANEL_HEIGHT = 35;
 
 export class AlarmCard extends Component {
   static propTypes = {
     alarm: PropTypes.object.isRequired,
     onEditPanelOpen: PropTypes.func,
-    editPanelOpen: PropTypes.bool
+    editPanelOpen: PropTypes.bool,
+    editPressed: PropTypes.func,
+    deletePressed: PropTypes.func,
   };
   animatedHeight = new Animated.Value(0);
   arrowOrientation = this.animatedHeight.interpolate({
@@ -39,15 +42,21 @@ export class AlarmCard extends Component {
       <Text subtitle>{this.props.alarm.name}</Text>
       <View style={styles.fullWidth}>
         <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={() => {
+            this.props.editPressed()
+          }}>
             <View style={styles.editPanelItem}>
-              <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/><Text style={styles.green}>Edit</Text>
+              <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/>
+              <Text style={styles.green}>Edit</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity  style={styles.item}>
-          <View style={styles.editPanelItem}>
-            <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/><Text style={styles.red}>Delete</Text>
-          </View>
+          <TouchableOpacity style={styles.item} onPress={() => {
+            this.props.deletePressed()
+          }}>
+            <View style={styles.editPanelItem}>
+              <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/>
+              <Text style={styles.red}>Delete</Text>
+            </View>
           </TouchableOpacity>
         </Animated.View>
         <TouchableOpacity style={styles.right} onPress={() => {

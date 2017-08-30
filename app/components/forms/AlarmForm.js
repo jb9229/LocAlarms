@@ -9,22 +9,25 @@ import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
 import * as idx from "idx";
 import {AddressSearch} from "./AddressSearch";
-import {formTypes} from "../../lib/FormTypes";
+import {createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fields as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import {Metrics} from "../../theme";
 
-const fields = {
-  name: {label: "Name", name: "name", required: true, initialValue: "Your alarm", type: formTypes.string},
-  location: {name: "location", initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
-  address: {name: "address", label: "Address", type: formTypes.string},
-  radius: {name: "radius", label: "Radius", initialValue: 100, type: formTypes.number},
-  schedule: {name: "schedule", initialValue: objectMap(scheduleField, val => val.initialValue)}
-};
+const fields = createFields({
+  name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
+  location: { initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
+  address: { label: "Address", type: formTypes.string},
+  radius: {label: "Radius", initialValue: 100, type: formTypes.number},
+  schedule: { initialValue: objectMap(scheduleField, val => val.initialValue)}
+});
 
 class AlarmFormComponent extends Component {
   constructor(props) {
     super(props);
+    if (props.initialAlarm) {
+      setFormValues(this.props.change, props.initialAlarm);
+    }
     this.renderInput = this.renderInput.bind(this);
     GeoService.getLocation().then((loc: GeoData) => {
       this.changeAddress(loc.coords);

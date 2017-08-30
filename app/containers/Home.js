@@ -4,8 +4,9 @@ import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, V
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher, propsMerger, selectors} from "../redux";
-import {Colors, Metrics} from "../theme";
+import {Metrics} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
+import {Routes} from "../navigation/AppNavigation";
 
 export class Home extends Component {
   scroll = new Animated.Value(0);
@@ -24,17 +25,13 @@ export class Home extends Component {
     editPanelOpen: -1
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Container>
         <Header>
           <Left>
             <TouchableOpacity onPress={() => {
-              this.props.navigation.navigate('DrawerOpen')
+              this.props.navigation.navigate(Routes.openDrawer)
             }}>
               <Icon name="menu" inverse/>
             </TouchableOpacity>
@@ -57,25 +54,30 @@ export class Home extends Component {
             </Animated.View>
             <Content style={styles.alarmList}>
               <View>
+                {(this.props.alarms.state.length > 0) &&
                 <Card>
-                  {this.props.alarms.state.map((alarm, i) =>
-                    <AlarmCard alarm={alarm}
-                               key={i}
-                               onEditPanelOpen={() => {
-                                 this.setState({
-                                   editPanelOpen: i
-                                 })
-                               }}
-                               editPanelOpen={this.state.editPanelOpen === i}/>)
-                  }
-                </Card>
+                  {this.props.alarms.state.map((alarm, i) => <AlarmCard alarm={alarm}
+                                                                        key={i}
+                                                                        onEditPanelOpen={() => {
+                                                                          this.setState({
+                                                                            editPanelOpen: i
+                                                                          })
+                                                                        }}
+                                                                        editPressed={() => {
+                                                                          this.props.navigation.navigate(Routes.alarmEditor, {alarm})
+                                                                        }}
+                                                                        deletePressed={() => {
+                                                                          this.props.alarms.actions.deleteAlarm(alarm.id);
+                                                                        }}
+                                                                        editPanelOpen={this.state.editPanelOpen === i}/>)}
+                </Card>}
               </View>
             </Content>
           </Animated.ScrollView>
         </View>
         <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
           <Fab onPress={() => {
-            this.props.navigation.navigate("AddAlarm");
+            this.props.navigation.navigate(Routes.alarmEditor);
           }}>
             <Icon name="add"/>
           </Fab>
@@ -95,10 +97,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     bottom: 0,
-    right: 0,
-    backgroundColor: Colors.brandPrimary,
-    justifyContent: "center",
-    alignItems: "center"
+    right: 0
   }
 });
 

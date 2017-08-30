@@ -13,7 +13,8 @@ export default (variables = variable) => {
       color :variables.textColor
     },
     ".thin": {
-      fontWeight: "100"
+      fontWeight: "100",
+      fontFamily: Platform.OS === 'android' ? 'sans-serif-light' : undefined
     },
     ".large": {
       fontSize: variables.titleFontSize + 10

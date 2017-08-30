@@ -1,21 +1,30 @@
 import React from "react";
 import {DrawerNavigator, StackNavigator} from 'react-navigation'
 import {HomeContainer} from "../containers/Home";
-import {AddAlarmContainer} from "../containers/AddAlarm";
+import {AddAlarmContainer} from "../containers/AlarmEditor";
 import {Preferences} from "../containers/Preferences";
 import {AppDrawer} from "./AppDrawer";
 
+export const Routes = {
+  home: "Home",
+  main: "Main",
+  alarmEditor: "AlarmEditor",
+  preferences: "Preferences",
+  openDrawer: "DrawerOpen",
+  closeDrawer: "DrawerClose"
+};
+
 // Manifest of possible screens
 const PrimaryNav = DrawerNavigator({
-  Home: {
+  [Routes.home]: {
     screen: StackNavigator({
-      Main: {screen: HomeContainer},
-      AddAlarm: {screen: AddAlarmContainer}
+      [Routes.main]: {screen: HomeContainer},
+      [Routes.alarmEditor]: {screen: AddAlarmContainer}
     }, {
       headerMode: 'none'
     })
   },
-  Preferences: {screen: Preferences},
+  [Routes.preferences]: {screen: Preferences},
 }, {
   headerMode: 'none',
   contentComponent: props => <AppDrawer {...props}/>

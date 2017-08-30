@@ -4,9 +4,11 @@ import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
 import {TouchableOpacity} from "react-native";
+import idx from "idx";
 
-export class AddAlarm extends Component {
+export class AlarmEditor extends Component {
   render() {
+    const initialAlarm = idx(this.props, props => props.navigation.state.params.alarm);
     return <Container>
       <Header>
         <Left>
@@ -20,12 +22,14 @@ export class AddAlarm extends Component {
         <Title>Redux Form</Title>
         </Body>
       </Header>
-      <AlarmForm onSubmit={(values) => {
-        this.props.alarms.alarmFormSubmit(values);
-        this.props.navigation.goBack();
-      }}/>
+      <AlarmForm
+        onSubmit={(values) => {
+          this.props.alarms.alarmFormSubmit(values, idx(initialAlarm, (x) => x.id));
+          this.props.navigation.goBack();
+        }}
+        initialAlarm={initialAlarm}/>
     </Container>
   }
 }
 
-export const AddAlarmContainer = connect(null, actionDispatcher)(AddAlarm);
+export const AddAlarmContainer = connect(null, actionDispatcher)(AlarmEditor);

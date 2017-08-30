@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
 import {ScheduleTypes} from "../../services/alarms/Alarm";
-import {formTypes} from "../../lib/FormTypes";
+import {formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";

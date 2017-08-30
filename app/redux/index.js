@@ -14,18 +14,11 @@ function* rootSaga() {
 
 
 export default () => {
-  const rootReducer = combineReducers({
+  return configureStore(combineReducers({
     nav: navReducer,
     alarms: alarmRedux.reducers,
     form: formReducer
-  });
-  const store = configureStore(rootReducer, rootSaga);
-  if (module.hot) { // enable hot reload
-    module.hot.accept(() => {
-      store.replaceReducer(rootReducer);
-    });
-  }
-  return store
+  }), rootSaga)
 }
 
 export const actionCreators = combineActions({
