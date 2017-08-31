@@ -16,13 +16,31 @@ import {Metrics} from "../../theme";
 
 const fields = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
-  location: { initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
-  address: { label: "Address", type: formTypes.string},
+  location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
+  address: {label: "Address", type: formTypes.string},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
-  schedule: { initialValue: objectMap(scheduleField, val => val.initialValue)}
+  schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)}
 });
 
-class AlarmFormComponent extends Component {
+export const alarmFormName = 'AlarmForm';
+const selector = formValueSelector(alarmFormName);
+
+@connect(state => ({value: selector(state, ...Object.values(fields).map(field => field.name))}), null)
+@reduxForm({
+  form: alarmFormName,
+  validate: values => {
+    const errors = {};
+    Object.values(fields).filter(val => val.required).map(data => data.name).forEach(field => {
+      if (!values[field]) {
+        errors[field] = 'Required'
+      }
+    });
+    return errors
+  },
+  initialValues: objectMap(fields, (value) => value.initialValue),
+  keepDirtyOnReinitialize: true
+})
+export class AlarmForm extends Component {
   constructor(props) {
     super(props);
     if (props.initialAlarm) {
@@ -146,22 +164,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 15
   }
 });
-
-export const alarmFormName = 'AlarmForm';
-const selector = formValueSelector(alarmFormName);
-export const AlarmForm = connect(state =>
-  ({value: selector(state, ...Object.values(fields).map(field => field.name))}), null)(reduxForm({
-  form: alarmFormName,
-  validate: values => {
-    const errors = {};
-    Object.values(fields).filter(val => val.required).map(data => data.name).forEach(field => {
-      if (!values[field]) {
-        errors[field] = 'Required'
-      }
-    });
-    return errors
-  },
-  initialValues: objectMap(fields, (value) => value.initialValue),
-  keepDirtyOnReinitialize: true
-})(AlarmFormComponent));
-

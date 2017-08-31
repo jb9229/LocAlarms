@@ -1,7 +1,7 @@
 import React from "react";
 import {DrawerNavigator, StackNavigator} from 'react-navigation'
-import {HomeContainer} from "../containers/Home";
-import {AddAlarmContainer} from "../containers/AlarmEditor";
+import {Home} from "../containers/Home";
+import {AlarmEditor} from "../containers/AlarmEditor";
 import {Preferences} from "../containers/Preferences";
 import {AppDrawer} from "./AppDrawer";
 
@@ -18,8 +18,8 @@ export const Routes = {
 const PrimaryNav = DrawerNavigator({
   [Routes.home]: {
     screen: StackNavigator({
-      [Routes.main]: {screen: HomeContainer},
-      [Routes.alarmEditor]: {screen: AddAlarmContainer}
+      [Routes.main]: {screen: Home},
+      [Routes.alarmEditor]: {screen: AlarmEditor}
     }, {
       headerMode: 'none'
     })

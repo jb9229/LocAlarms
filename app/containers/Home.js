@@ -7,7 +7,9 @@ import {actionDispatcher, propsMerger, selectors} from "../redux";
 import {Metrics} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
+import autobind from 'autobind-decorator'
 
+@connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
@@ -21,9 +23,24 @@ export class Home extends Component {
     extrapolateRight: "clamp"
   });
   state = {
-    active: false,
     editPanelOpen: -1
   };
+
+  @autobind
+  deleteAlarm(alarm) {
+    this.props.alarms.actions.deleteAlarm(alarm.id);
+    this.setState({
+      editPanelOpen: -1
+    })
+  }
+
+  @autobind
+  editAlarm(alarm) {
+    this.props.navigation.navigate(Routes.alarmEditor, {alarm});
+    this.setState({
+      editPanelOpen: -1
+    })
+  }
 
   render() {
     return (
@@ -63,12 +80,8 @@ export class Home extends Component {
                                                                             editPanelOpen: i
                                                                           })
                                                                         }}
-                                                                        editPressed={() => {
-                                                                          this.props.navigation.navigate(Routes.alarmEditor, {alarm})
-                                                                        }}
-                                                                        deletePressed={() => {
-                                                                          this.props.alarms.actions.deleteAlarm(alarm.id);
-                                                                        }}
+                                                                        editPressed={this.editAlarm}
+                                                                        deletePressed={this.deleteAlarm}
                                                                         editPanelOpen={this.state.editPanelOpen === i}/>)}
                 </Card>}
               </View>
@@ -100,5 +113,3 @@ const styles = StyleSheet.create({
     right: 0
   }
 });
-
-export const HomeContainer = connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)(Home);

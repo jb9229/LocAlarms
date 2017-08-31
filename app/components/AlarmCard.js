@@ -43,7 +43,7 @@ export class AlarmCard extends Component {
       <View style={styles.fullWidth}>
         <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
           <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.editPressed()
+            this.props.editPressed(this.props.alarm)
           }}>
             <View style={styles.editPanelItem}>
               <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/>
@@ -51,7 +51,7 @@ export class AlarmCard extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.deletePressed()
+            this.props.deletePressed(this.props.alarm)
           }}>
             <View style={styles.editPanelItem}>
               <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/>

@@ -6,6 +6,7 @@ import {AlarmForm} from "../components/forms/AlarmForm";
 import {TouchableOpacity} from "react-native";
 import idx from "idx";
 
+@connect(null, actionDispatcher)
 export class AlarmEditor extends Component {
   render() {
     const initialAlarm = idx(this.props, props => props.navigation.state.params.alarm);
@@ -31,5 +32,3 @@ export class AlarmEditor extends Component {
     </Container>
   }
 }
-
-export const AddAlarmContainer = connect(null, actionDispatcher)(AlarmEditor);

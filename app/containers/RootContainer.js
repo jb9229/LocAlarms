@@ -6,8 +6,8 @@ import {actionDispatcher} from '../redux'
 import ReduxPersist from '../config/ReduxPersist'
 import {View} from "native-base";
 
-// Styles
-class RootContainer extends Component {
+@connect(null, actionDispatcher)
+export class RootContainer extends Component {
   componentDidMount() {
     // if redux persist is not active fire startup action
     if (!ReduxPersist.active) {
@@ -24,5 +24,3 @@ class RootContainer extends Component {
     )
   }
 }
-
-export default connect(null, actionDispatcher)(RootContainer)
