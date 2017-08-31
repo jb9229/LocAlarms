@@ -3,7 +3,7 @@ import DebugConfig from '../config/DebugConfig'
 import React, {Component} from 'react'
 import {Provider} from 'react-redux'
 import {RootContainer} from './RootContainer'
-import createStore from '../redux'
+import {createStore} from '../redux'
 import {StyleProvider} from "native-base";
 
 import getTheme from "../theme/components";

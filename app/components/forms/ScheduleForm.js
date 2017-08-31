@@ -5,6 +5,7 @@ import {formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";
+import autobind from "autobind-decorator";
 
 export const fields = {
   type: {label: "Type", name: "type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
@@ -14,9 +15,9 @@ export const fields = {
 export class ScheduleForm extends Component {
   constructor(props) {
     super(props);
-    this.renderInput = this.renderInput.bind(this);
   }
 
+  @autobind
   renderInput({input, label, type, meta: {touched, error}}) {
     switch (type) {
       case formTypes.picker:

@@ -7,12 +7,13 @@ import {Map} from "../maps/Map";
 import {connect} from "react-redux";
 import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
-import * as idx from "idx";
+import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
 import {createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fields as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import {Metrics} from "../../theme";
+import PropTypes from "prop-types";
 
 const fields = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -41,6 +42,10 @@ const selector = formValueSelector(alarmFormName);
   keepDirtyOnReinitialize: true
 })
 export class AlarmForm extends Component {
+  static propTypes = {
+    initialAlarm: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     if (props.initialAlarm) {

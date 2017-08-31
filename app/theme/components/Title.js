@@ -10,7 +10,7 @@ export default (variables = variable) => {
     fontWeight: Platform.OS === "ios" ? "600" : undefined,
     textAlign: "center",
     ".inverse": {
-      color :variables.textColor
+      color: variables.textColor
     },
     ".thin": {
       fontWeight: "100",

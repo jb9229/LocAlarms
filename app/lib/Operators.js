@@ -14,7 +14,7 @@ export function arrPush<T>(array: T[], elem: T) {
   return [...array, elem];
 }
 
-export function arrRemove<T>(array: T[], matchFn:(elem: T, index: number) => boolean) {
+export function arrRemove<T>(array: T[], matchFn: (elem: T, index: number) => boolean) {
   const index = arrSearch(array, matchFn);
   return index !== null ? [...array.slice(0, index), ...array.slice(index + 1, array.length)] : array;
 }

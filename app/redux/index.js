@@ -13,13 +13,13 @@ function* rootSaga() {
 }
 
 
-export default () => {
+export const createStore = () => {
   return configureStore(combineReducers({
     nav: navReducer,
     alarms: alarmRedux.reducers,
     form: formReducer
   }), rootSaga)
-}
+};
 
 export const actionCreators = combineActions({
   alarms: alarmRedux.actions,
