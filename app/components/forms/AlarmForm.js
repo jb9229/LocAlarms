@@ -14,6 +14,7 @@ import {fields as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import {Metrics} from "../../theme";
 import PropTypes from "prop-types";
+import autobind from "autobind-decorator";
 
 const fields = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -51,7 +52,6 @@ export class AlarmForm extends Component {
     if (props.initialAlarm) {
       setFormValues(this.props.change, props.initialAlarm);
     }
-    this.renderInput = this.renderInput.bind(this);
     GeoService.getLocation().then((loc: GeoData) => {
       this.changeAddress(loc.coords);
       this.props.change(fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
@@ -67,6 +67,7 @@ export class AlarmForm extends Component {
     });
   }
 
+  @autobind
   renderInput({input, label, type, meta: {touched, error}}) {
     switch (type) {
       case formTypes.location:
