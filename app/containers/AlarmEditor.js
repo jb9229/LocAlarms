@@ -29,6 +29,6 @@ export class AlarmEditor extends Component {
           this.props.navigation.goBack();
         }}
         initialAlarm={initialAlarm}/>
-    </Container>
+    </Container>;
   }
 }

@@ -34,10 +34,10 @@ const selector = formValueSelector(alarmFormName);
     const errors = {};
     Object.values(fieldData).filter(val => val.required).map(data => data.name).forEach(field => {
       if (!values[field]) {
-        errors[field] = 'Required'
+        errors[field] = 'Required';
       }
     });
-    return errors
+    return errors;
   },
   initialValues: objectMap(fieldData, (value) => value.initialValue),
   keepDirtyOnReinitialize: true
@@ -59,12 +59,12 @@ export class AlarmForm extends Component {
     });
     this.state = {
       searchOpen: false
-    }
+    };
   }
 
   changeAddress(location: GeoLocation) {
     GeoService.geocode(location).then((data) => {
-      this.props.change(this.fields.address.name, idx(data, (x) => x.results[0].formatted_address))
+      this.props.change(this.fields.address.name, idx(data, (x) => x.results[0].formatted_address));
     });
   }
 
@@ -94,9 +94,9 @@ export class AlarmForm extends Component {
         return ( <Item error={error && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
           <Input {...input} onFocus={() => {
-            input.onFocus()
+            input.onFocus();
           }}/>
-        </Item> )
+        </Item> );
       }
     }
   }
@@ -118,7 +118,7 @@ export class AlarmForm extends Component {
                 change(this.fields.location.name, data.loc);
                 change(this.fields.address.name, data.address);
               }
-              this.setState({searchOpen: false})
+              this.setState({searchOpen: false});
             }}/>
         </Modal>
         <Form>
@@ -131,7 +131,7 @@ export class AlarmForm extends Component {
                  onFocus={() => {
                    this.setState({
                      searchOpen: true
-                   })
+                   });
                  }}/>
           <Field {...this.fields.radius}/>
           <FormSection {...this.fields.schedule}>
@@ -144,7 +144,7 @@ export class AlarmForm extends Component {
           </Body>
         </Form>
       </Content>
-    )
+    );
   }
 }
 

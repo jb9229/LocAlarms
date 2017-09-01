@@ -3,7 +3,7 @@ import variable from '../material';
 export default (variables = variable) => {
   const inputTheme = {
     '.multiline': {
-      height: null,
+      height: null
     },
     height: variables.inputHeightBase,
     color: variables.inputColor,
@@ -11,7 +11,7 @@ export default (variables = variable) => {
     paddingRight: 5,
     flex: 1,
     fontSize: variables.inputFontSize,
-    lineHeight: variables.inputLineHeight,
+    lineHeight: variables.inputLineHeight
   };
 
   return inputTheme;

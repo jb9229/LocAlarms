@@ -8,15 +8,15 @@ export class GeoService {
 
   static getLocation(): Promise<GeoData> {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject)
+      navigator.geolocation.getCurrentPosition(resolve, reject);
     });
   }
 
   static subscribe(success: (GeoData) => any) {
     GeoService.subscribers.push(success);
     navigator.geolocation.getCurrentPosition((location) => {
-      success(location)
-    })
+      success(location);
+    });
   }
 
   static destroy() {
@@ -27,7 +27,7 @@ export class GeoService {
   static pushLocation(location: GeoData) {
     GeoService.subscribers.forEach((callback) => {
       callback(location);
-    })
+    });
   }
 
   static geocode(location: GeoLocation): Promise<any[]> {
@@ -44,7 +44,7 @@ export class GeoService {
         query: address
       }, radius ? {
         location: `${geo.coords.latitude},${geo.coords.longitude}`,
-        radius: 10000,
+        radius: 10000
       } : {}));
     }).then((res) => res.results);
   }

@@ -5,6 +5,6 @@ export class Preferences extends Component {
   render() {
     return <Container>
 
-    </Container>
+    </Container>;
   }
 }

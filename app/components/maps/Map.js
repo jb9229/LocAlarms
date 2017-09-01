@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import MapView from 'react-native-maps'
+import React, {Component} from 'react';
+import MapView from 'react-native-maps';
 import PropTypes from "prop-types";
 import {StyleSheet} from "react-native";
 import {AlarmPin} from "./AlarmPin";
 import {filterUndefined, isDefined} from "../../lib/NullCheck";
-import {GeoService} from "../../services/Geo";
 import type {GeoData} from "../../services/Geo";
+import {GeoService} from "../../services/Geo";
 
 export class Map extends Component {
   static propTypes = {
@@ -44,8 +44,8 @@ export class Map extends Component {
             ...geo.coords,
             latitudeDelta: 0.0001,
             longitudeDelta: 0.0001
-          })
-        })
+          });
+        });
       }
     }
   }
@@ -57,7 +57,7 @@ export class Map extends Component {
         location.longitude !== oldLocations[index].longitude ||
         location.radius !== oldLocations[index].radius)
     ) {
-      this.fitLocations(locations)
+      this.fitLocations(locations);
     }
   }
 
@@ -69,7 +69,7 @@ export class Map extends Component {
         ref={(elem) => {
           if (!this.mapView) {
             this.mapView = elem;
-            this.fitLocations(this.props.locations)
+            this.fitLocations(this.props.locations);
           }
         }}
         provider={MapView.PROVIDER_GOOGLE}
@@ -80,7 +80,7 @@ export class Map extends Component {
           <AlarmPin {...location} key={i}/>))
         }
       </MapView>
-    )
+    );
   }
 }
 

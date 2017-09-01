@@ -6,7 +6,7 @@ import Color from "color";
 
 export class AppDrawer extends Component {
   render() {
-    return <ScrollView style={styles.drawer}><DrawerItems {...this.props} {...drawerProps}/></ScrollView>
+    return <ScrollView style={styles.drawer}><DrawerItems {...this.props} {...drawerProps}/></ScrollView>;
   }
 }
 

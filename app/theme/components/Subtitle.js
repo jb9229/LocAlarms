@@ -5,7 +5,7 @@ export default (variables = variable) => {
     fontSize: variables.subTitleFontSize,
     fontFamily: variables.titleFontfamily,
     color: variables.subtitleColor,
-    textAlign: 'center',
+    textAlign: 'center'
   };
 
   return subtitleTheme;

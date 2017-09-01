@@ -1,13 +1,13 @@
-import {applyMiddleware, bindActionCreators, compose} from 'redux'
-import {reducer as navReducer} from "./Navigator"
+import {applyMiddleware, bindActionCreators, compose} from 'redux';
+import {reducer as navReducer} from "./Navigator";
 import alarmRedux from "./Alarms";
 import {combineActions, combineReducers, combineSagas, combineSelectors} from "./utils";
 import {reducer as formReducer} from "redux-form";
 import {objectMap} from "../lib/Operators";
-import Config from '../config/DebugConfig'
-import createSagaMiddleware from 'redux-saga'
+import Config from '../config/DebugConfig';
+import createSagaMiddleware from 'redux-saga';
 import {persistReducer, persistStore} from "redux-persist";
-import storage from 'redux-persist/es/storage'
+import storage from 'redux-persist/es/storage';
 
 const initialState = {
   alarms: []
@@ -62,5 +62,5 @@ export const actionDispatcher = (dispatch) => objectMap(actionCreators, (value) 
 
 export const propsMerger = (stateProps, dispatchProps, additionalProps) =>
   Object.assign({}, additionalProps, Object.keys(dispatchProps).reduce((result, key) => {
-    return Object.assign({}, result, {[key]: Object.assign({}, {actions: dispatchProps[key]}, result[key])})
+    return Object.assign({}, result, {[key]: Object.assign({}, {actions: dispatchProps[key]}, result[key])});
   }, objectMap(stateProps, (val) => ({state: val}))));

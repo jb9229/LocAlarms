@@ -65,9 +65,9 @@ export class ScheduleForm extends Component {
       </Item>
       <Field {...this.fields.type}/>
       <Field {...this.fields.startDate} format={(x) => {
-        return moment(x).format("YYYY-MM-DD")
+        return moment(x).format("YYYY-MM-DD");
       }} parse={(string) => moment(string)}/>
-    </View>
+    </View>;
   }
 }
 

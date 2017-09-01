@@ -21,7 +21,7 @@ export class AlarmPin extends Component {
         draggable={Boolean(this.props.onDragEnd)}
         pinColor={Theme.brandPrimary}
         onDragEnd={e => {
-          if (this.props.onDragEnd) this.props.onDragEnd(e.nativeEvent.coordinate)
+          if (this.props.onDragEnd) this.props.onDragEnd(e.nativeEvent.coordinate);
         }}/>
       <MapView.Circle
         radius={this.props.radius}
@@ -29,6 +29,6 @@ export class AlarmPin extends Component {
         fillColor={Color(Theme.brandPrimary).lighten(0.65).alpha(0.5).string()}
         center={{latitude: this.props.latitude, longitude: this.props.longitude}}>
       </MapView.Circle>
-    </View>
+    </View>;
   }
 }

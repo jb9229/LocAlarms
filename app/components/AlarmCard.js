@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
-import {Theme} from "../theme"
+import {Theme} from "../theme";
 
 const EDIT_PANEL_HEIGHT = 35;
 
@@ -12,7 +12,7 @@ export class AlarmCard extends Component {
     onEditPanelOpen: PropTypes.func,
     editPanelOpen: PropTypes.bool,
     editPressed: PropTypes.func,
-    deletePressed: PropTypes.func,
+    deletePressed: PropTypes.func
   };
   animatedHeight = new Animated.Value(0);
   arrowOrientation = this.animatedHeight.interpolate({
@@ -43,7 +43,7 @@ export class AlarmCard extends Component {
       <View style={styles.fullWidth}>
         <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
           <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.editPressed(this.props.alarm)
+            this.props.editPressed(this.props.alarm);
           }}>
             <View style={styles.editPanelItem}>
               <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/>
@@ -51,7 +51,7 @@ export class AlarmCard extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.deletePressed(this.props.alarm)
+            this.props.deletePressed(this.props.alarm);
           }}>
             <View style={styles.editPanelItem}>
               <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/>
@@ -60,7 +60,7 @@ export class AlarmCard extends Component {
           </TouchableOpacity>
         </Animated.View>
         <TouchableOpacity style={styles.right} onPress={() => {
-          this.pressed()
+          this.pressed();
         }}>
           <Animated.View style={{transform: [{rotate: this.arrowOrientation}]}}>
             <Icon name="ios-arrow-down" small/>
@@ -69,7 +69,7 @@ export class AlarmCard extends Component {
       </View>
 
       </Body>
-    </CardItem>
+    </CardItem>;
   }
 }
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     flexDirection: "row",
     alignItems: "flex-end",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   editPanelIcon: {
     marginRight: 10

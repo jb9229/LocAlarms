@@ -37,12 +37,12 @@ function* formSubmit(actionCreators, action) {
     yield put(actionCreators.addAlarm({...action.payload.alarm, id: uuid()}));
   }
   yield delay(500);
-  yield put(resetForm(alarmFormName))
+  yield put(resetForm(alarmFormName));
 }
 
 export default {
   types, actions, reducers, sagas, selectors
-}
+};
 
 
 

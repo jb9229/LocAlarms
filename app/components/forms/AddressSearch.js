@@ -23,7 +23,7 @@ export class AddressSearch extends Component {
     this.changeText = _.debounce((text) => {
       GeoService.search(text).then((data) => {
         this.setState({locations: data});
-      })
+      });
     }, 250);
     this.changeText(props.initialValue);
   }
@@ -33,7 +33,7 @@ export class AddressSearch extends Component {
       <Header searchBar rounded>
         <Item>
           <TouchableOpacity onPress={() => {
-            this.props.onBack()
+            this.props.onBack();
           }}>
             <Icon name="arrow-back"/>
           </TouchableOpacity>
@@ -45,7 +45,7 @@ export class AddressSearch extends Component {
                    this.setState({
                      searchText: text
                    });
-                   this.changeText(text)
+                   this.changeText(text);
                  }}/>
           <TouchableOpacity onPress={() => {
             this.setState({searchText: ""});
@@ -65,7 +65,7 @@ export class AddressSearch extends Component {
                   longitude: data.geometry.location.lng
                 },
                 address: data.formatted_address
-              })
+              });
             }} key={i}>
               <CardItem>
                 <Icon active name="pin"/>
@@ -77,7 +77,7 @@ export class AddressSearch extends Component {
           )}
         </Card>
       </Content>
-    </Container>
+    </Container>;
   }
 }
 

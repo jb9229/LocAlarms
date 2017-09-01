@@ -1,5 +1,5 @@
 import React from "react";
-import {DrawerNavigator, StackNavigator} from 'react-navigation'
+import {DrawerNavigator, StackNavigator} from 'react-navigation';
 import {Home} from "../containers/Home";
 import {AlarmEditor} from "../containers/AlarmEditor";
 import {Preferences} from "../containers/Preferences";
@@ -24,10 +24,10 @@ const PrimaryNav = DrawerNavigator({
       headerMode: 'none'
     })
   },
-  [Routes.preferences]: {screen: Preferences},
+  [Routes.preferences]: {screen: Preferences}
 }, {
   headerMode: 'none',
   contentComponent: props => <AppDrawer {...props}/>
 });
 
-export default PrimaryNav
+export default PrimaryNav;

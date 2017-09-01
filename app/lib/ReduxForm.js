@@ -11,14 +11,14 @@ export const formTypes = {
 
 export function setFormValues(change: (name: string, data: any) => any, initialData: any) {
   Object.keys(initialData).forEach((key) => {
-    change(key, initialData[key])
-  })
+    change(key, initialData[key]);
+  });
 }
 
 export function createFields(fieldData) {
-  return objectMap(fieldData, (val, key) => ({...val, name: key}))
+  return objectMap(fieldData, (val, key) => ({...val, name: key}));
 }
 
 export function attachRender(fields, render) {
-  return objectMap(fields, (val) => ({...val, component: render}))
+  return objectMap(fields, (val) => ({...val, component: render}));
 }

@@ -44,7 +44,7 @@ export function generateActiveSchedule(schedule: Schedule, windowStart: Moment, 
 export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment, end: Moment }[]) {
   return activeScheduleWindows.reduce((inWindow: boolean, window: { start: Moment, end: Moment }) => {
     return inWindow || moment.isAfter(window.start) && moment.isBefore(window.end);
-  }, false)
+  }, false);
 }
 
 export type Alarm = {

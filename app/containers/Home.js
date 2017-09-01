@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Animated, StyleSheet, TouchableOpacity} from 'react-native'
+import React, {Component} from 'react';
+import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
 import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
@@ -7,7 +7,7 @@ import {actionDispatcher, propsMerger, selectors} from "../redux";
 import {Metrics, Theme} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
-import autobind from 'autobind-decorator'
+import autobind from 'autobind-decorator';
 import type {Alarm} from "../services/alarms/Alarm";
 
 @connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
@@ -38,7 +38,7 @@ export class Home extends Component {
     this.props.alarms.actions.deleteAlarm(alarm.id);
     this.setState({
       editPanelOpen: -1
-    })
+    });
   }
 
   @autobind
@@ -46,7 +46,7 @@ export class Home extends Component {
     this.props.navigation.navigate(Routes.alarmEditor, {alarm});
     this.setState({
       editPanelOpen: -1
-    })
+    });
   }
 
   render() {
@@ -56,7 +56,7 @@ export class Home extends Component {
         <Header>
           <Left>
             <TouchableOpacity onPress={() => {
-              this.props.navigation.navigate(Routes.openDrawer)
+              this.props.navigation.navigate(Routes.openDrawer);
             }}>
               <Icon name="menu" inverse/>
             </TouchableOpacity>
@@ -95,7 +95,7 @@ export class Home extends Component {
                                                        onEditPanelOpen={() => {
                                                          this.setState({
                                                            editPanelOpen: i
-                                                         })
+                                                         });
                                                        }}
                                                        editPressed={this.editAlarm}
                                                        deletePressed={this.deleteAlarm}
@@ -113,7 +113,7 @@ export class Home extends Component {
           </Fab>
         </Animated.View>
       </Container>
-    )
+    );
   }
 }
 
