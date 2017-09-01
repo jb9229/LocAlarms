@@ -9,14 +9,14 @@ import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
 import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
-import {createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
-import {fields as scheduleField, ScheduleForm} from "./ScheduleForm";
+import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
+import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import {Metrics} from "../../theme";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 
-const fields = createFields({
+const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
   location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
   address: {label: "Address", type: formTypes.string},
@@ -27,25 +27,26 @@ const fields = createFields({
 export const alarmFormName = 'AlarmForm';
 const selector = formValueSelector(alarmFormName);
 
-@connect(state => ({value: selector(state, ...Object.values(fields).map(field => field.name))}), null)
+@connect(state => ({value: selector(state, ...Object.values(fieldData).map(field => field.name))}), null)
 @reduxForm({
   form: alarmFormName,
   validate: values => {
     const errors = {};
-    Object.values(fields).filter(val => val.required).map(data => data.name).forEach(field => {
+    Object.values(fieldData).filter(val => val.required).map(data => data.name).forEach(field => {
       if (!values[field]) {
         errors[field] = 'Required'
       }
     });
     return errors
   },
-  initialValues: objectMap(fields, (value) => value.initialValue),
+  initialValues: objectMap(fieldData, (value) => value.initialValue),
   keepDirtyOnReinitialize: true
 })
 export class AlarmForm extends Component {
   static propTypes = {
     initialAlarm: PropTypes.object
   };
+  fields = attachRender(fieldData, this.renderInput);
 
   constructor(props) {
     super(props);
@@ -54,7 +55,7 @@ export class AlarmForm extends Component {
     }
     GeoService.getLocation().then((loc: GeoData) => {
       this.changeAddress(loc.coords);
-      this.props.change(fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
+      this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
     });
     this.state = {
       searchOpen: false
@@ -63,7 +64,7 @@ export class AlarmForm extends Component {
 
   changeAddress(location: GeoLocation) {
     GeoService.geocode(location).then((data) => {
-      this.props.change(fields.address.name, idx(data, (x) => x.results[0].formatted_address))
+      this.props.change(this.fields.address.name, idx(data, (x) => x.results[0].formatted_address))
     });
   }
 
@@ -74,8 +75,8 @@ export class AlarmForm extends Component {
         return <View style={styles.mapContainer}>
           <Map locations={[Object.assign({
             onDragEnd: input.onChange,
-            title: this.props.value[fields.name.name],
-            radius: this.props.value[fields.radius.name]
+            title: this.props.value[this.fields.name.name],
+            radius: this.props.value[this.fields.radius.name]
           }, input.value)]}/>
         </View>;
       case formTypes.number:
@@ -111,31 +112,29 @@ export class AlarmForm extends Component {
           }}
           visible={this.state.searchOpen}>
           <AddressSearch
-            initialValue={this.props.value[fields.address.name]}
+            initialValue={this.props.value[this.fields.address.name]}
             onBack={(data: ?{ loc: GeoLocation, address: string }) => {
               if (data) {
-                change(fields.location.name, data.loc);
-                change(fields.address.name, data.address);
+                change(this.fields.location.name, data.loc);
+                change(this.fields.address.name, data.address);
               }
               this.setState({searchOpen: false})
             }}/>
         </Modal>
         <Form>
-          <Field {...fields.location}
-                 component={this.renderInput}
+          <Field {...this.fields.location}
                  onChange={(_, newValue) => {
                    this.changeAddress(newValue);
                  }}/>
-          <Field {...fields.name} component={this.renderInput}/>
-          <Field {...fields.address}
-                 component={this.renderInput}
+          <Field {...this.fields.name}/>
+          <Field {...this.fields.address}
                  onFocus={() => {
                    this.setState({
                      searchOpen: true
                    })
                  }}/>
-          <Field {...fields.radius} component={this.renderInput}/>
-          <FormSection {...fields.schedule}>
+          <Field {...this.fields.radius}/>
+          <FormSection {...this.fields.schedule}>
             <ScheduleForm/>
           </FormSection>
           <Body>

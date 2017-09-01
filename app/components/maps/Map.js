@@ -19,14 +19,23 @@ export class Map extends Component {
 
   constructor(props) {
     super(props);
+    this.fitLocations(this.props.locations);
   }
 
   fitLocations(locations) {
     if (this.mapView && locations.length > 0) {
+      const PADDING = Math.max(this.props.locations.map(loc => loc.radius)) / 80000;
+      let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
+      for (let location of locations) {
+        [minLat, maxLat, minLng, maxLng] = [
+          Math.min(minLat, location.latitude - PADDING),
+          Math.max(maxLat, location.latitude + PADDING),
+          Math.min(minLng, location.longitude - PADDING),
+          Math.max(maxLng, location.longitude + PADDING)
+        ];
+      }
       setTimeout(() => {
-        const maxRadius = Math.ceil(Math.max(locations.map(location => location.radius)) * 1.1);
-        this.mapView.fitToCoordinates(locations, {
-          edgePadding: {top: maxRadius, bottom: maxRadius, left: maxRadius, right: maxRadius},
+        this.mapView.fitToCoordinates([...locations, {latitude: minLat, longitude: minLng}, {latitude: maxLat, longitude: maxLng}], {
           animated: true
         });
       }, 500);
@@ -37,7 +46,8 @@ export class Map extends Component {
     const locations = filterUndefined(props.locations), oldLocations = this.props.locations;
     if (locations.some((location, index) =>
         location.latitude !== oldLocations[index].latitude ||
-        location.longitude !== oldLocations[index].longitude)
+        location.longitude !== oldLocations[index].longitude ||
+        location.radius !== oldLocations[index].radius)
     ) {
       this.fitLocations(locations)
     }

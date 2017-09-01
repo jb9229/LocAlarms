@@ -16,16 +16,15 @@ export const ScheduleTypes = {
   DAILY: "Daily"
 };
 
+/**
+ * Time is seconds since midnight
+ */
 export type Schedule = {
   type: ScheduleTypes.ONCE | ScheduleTypes.DAILY;
-  dates: {
-    start: Date,
-    end?: Date
-  };
-  times: {
-    start: Time,
-    end: Time
-  };
+  startDate: Moment,
+  endDate?: Moment,
+  startTime: number,
+  endTime: number
 }
 
 export function generateActiveSchedule(schedule: Schedule, windowStart: Moment, windowEnd?: Moment): { start: Moment, end: Moment }[] {

@@ -18,3 +18,7 @@ export function setFormValues(change: (name: string, data: any) => any, initialD
 export function createFields(fieldData) {
   return objectMap(fieldData, (val, key) => ({...val, name: key}))
 }
+
+export function attachRender(fields, render) {
+  return objectMap(fields, (val) => ({...val, component: render}))
+}

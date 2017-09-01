@@ -1,18 +1,21 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
 import {ScheduleTypes} from "../../services/alarms/Alarm";
-import {formTypes} from "../../lib/ReduxForm";
+import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
+import moment from "moment";
 
-export const fields = {
-  type: {label: "Type", name: "type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
-  dateStart: {label: "Start Date", name: "startDate", initialValue: "2016-05-05", type: formTypes.date}
-};
+export const fieldData = createFields({
+  type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
+  startDate: {label: "Start Date", initialValue: moment().startOf("day"), type: formTypes.date}
+});
 
 export class ScheduleForm extends Component {
+  fields = attachRender(fieldData, this.renderInput);
+
   constructor(props) {
     super(props);
   }
@@ -58,8 +61,8 @@ export class ScheduleForm extends Component {
       <Item itemDivider>
         <Text>Schedule</Text>
       </Item>
-      <Field {...fields.type} component={this.renderInput}/>
-      <Field {...fields.dateStart} component={this.renderInput}/>
+      <Field {...this.fields.type}/>
+      <Field {...this.fields.startDate} format={(x) =>  {return moment(x).format("YYYY-MM-DD")}} parse={(string) => moment(string)}/>
     </View>
   }
 }

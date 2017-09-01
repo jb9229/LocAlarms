@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export function objectMap(obj, valMap, keyMap: ?(key) => any) {
   return Object.keys(obj).reduce((val, x) => {
     const key = keyMap ? keyMap(x) : x;
@@ -19,7 +21,7 @@ export function arrRemove<T>(array: T[], matchFn: (elem: T, index: number) => bo
   return index !== null ? [...array.slice(0, index), ...array.slice(index + 1, array.length)] : array;
 }
 
-export function arrSearch(array: T[], matchFn: (elem: T, index: number) => boolean) {
+export function arrSearch<T>(array: T[], matchFn: (elem: T, index: number) => boolean) {
   let index;
   array.forEach((x, i) => {
     if (matchFn(x, i)) {

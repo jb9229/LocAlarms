@@ -6,10 +6,19 @@ import {combineActions, combineReducers, combineSagas, combineSelectors} from ".
 import {reducer as formReducer} from "redux-form";
 import {objectMap} from "../lib/Operators";
 
+const initialState = {
+  alarms: []
+};
+
+export const actionCreators = combineActions({
+  alarms: alarmRedux.actions,
+  startup: null
+});
+
 function* rootSaga() {
   yield combineSagas({
     alarms: alarmRedux.sagas
-  });
+  }, actionCreators);
 }
 
 
@@ -18,13 +27,8 @@ export const createStore = () => {
     nav: navReducer,
     alarms: alarmRedux.reducers,
     form: formReducer
-  }), rootSaga)
+  }, initialState), rootSaga)
 };
-
-export const actionCreators = combineActions({
-  alarms: alarmRedux.actions,
-  startup: null
-});
 
 export const selectors = combineSelectors({
   alarms: alarmRedux.selectors
