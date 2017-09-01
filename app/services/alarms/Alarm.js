@@ -1,16 +1,23 @@
 import type {GeoData, GeoLocation} from "../Geo";
+import {GeoService} from "../Geo";
 import moment, {Moment} from "moment";
 import _ from "lodash";
-import {GeoService} from "../Geo";
 
-export type Time = {
-  hours: number,
-  minutes: number
-}
-
-export type Date = {
-  year: number,
-  day: number // number of days since start of year
+export const timeToString = (x: number) => {
+  const hours = Math.floor(x / 60);
+  const minutes = x - hours * 60;
+  const pm = hours > 12;
+  return `${pm ? hours - 12 : hours}:${minutes} ${pm ? "PM" : "AM"}`;
+};
+export const stringToTime = (x: string) => {
+  let [hours, _, minutes, _1, time] = x.split(/([: ])/);
+  [hours, minutes] = [parseInt(hours), parseInt(minutes)];
+  if (time === "PM") hours += 12;
+  return hours * 60 + minutes;
+};
+export const currentTimeToMinutes = () => {
+  const now = moment();
+  return now.get("hours") * 60 + now.get("minutes");
 };
 
 export const ScheduleTypes = {
@@ -19,28 +26,30 @@ export const ScheduleTypes = {
 };
 
 /**
- * Time is seconds since midnight
+ * Time is minutes since midnight
+ * Dates are in string format
  */
 export type Schedule = {
   type: ScheduleTypes.ONCE | ScheduleTypes.DAILY;
-  startDate: Moment,
-  endDate?: Moment,
+  startDate: string,
+  endDate?: string,
   startTime: number,
   endTime: number
 }
 
 export function generateActiveSchedule(schedule: Schedule, windowStart: ?Moment): { start: Moment, end: Moment }[] {
   let result = [];
-  let start = moment.max(windowStart, schedule.startDate);
   switch (schedule.type) {
     case ScheduleTypes.ONCE: {
-      result.push({start: start.add(schedule.startTime, "seconds"), end: start.add(schedule.endTime, "seconds")});
+      const start = moment(schedule.startDate);
+      result.push({start: start.add(schedule.startTime, "minutes"), end: start.add(schedule.endTime, "minutes")});
+      console.tron.log(moment().startOf("day"));
       break;
     }
     case ScheduleTypes.DAILY: {
-      let current = start;
+      let current = windowStart;
       _.times(15, _.constant(null)).forEach(() => {
-        result.push({start: current.add(schedule.startTime, "seconds"), end: current.add(schedule.endTime, "seconds")});
+        result.push({start: current.add(schedule.startTime, "minutes"), end: current.add(schedule.endTime, "minutes")});
         current = current.add(1, "day");
       });
       break;
@@ -55,6 +64,7 @@ export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment,
   }, false);
 }
 
+
 export class AlarmService {
   static subscribers = [];
 
@@ -62,11 +72,11 @@ export class AlarmService {
     GeoService.subscribe((geo: GeoData) => {
       getAlarms().forEach((alarm: Alarm) => {
         const now = moment();
-        if (inWindow(now, generateActiveSchedule(alarm.schedule, now))) {
-          AlarmService.subscribers.forEach((fn) => fn(alarm))
+        if (inWindow(now, generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
+          AlarmService.subscribers.forEach((fn) => fn(alarm));
         }
-      })
-    })
+      });
+    });
   }
 
   static subscribe(alarmActivate: (alarm: Alarm) => any) {

@@ -6,7 +6,8 @@ export const formTypes = {
   number: "Number",
   string: "Text",
   picker: "Enum",
-  date: "Date"
+  date: "Date",
+  time: "Time"
 };
 
 export function setFormValues(change: (name: string, data: any) => any, initialData: any) {

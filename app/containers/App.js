@@ -2,16 +2,23 @@ import '../config';
 import DebugConfig from '../config/DebugConfig';
 import React, {Component} from 'react';
 import {Provider} from 'react-redux';
+import {RootContainer} from './RootContainer';
 import {createStore} from '../redux';
 import {StyleProvider, View} from "native-base";
 import getTheme from "../theme/components";
 import {Theme} from "../theme";
 import {PersistGate} from 'redux-persist/es/integration/react';
-import {RootContainer} from "./RootContainer";
+import {AlarmService} from "../services/alarms/Alarm";
+import {selectors} from "../redux/index";
 
 const {store, persistor} = createStore();
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    AlarmService.start(() => selectors.alarms.all(store.getState()))
+  }
+
   render() {
     return (
       <Provider store={store}>

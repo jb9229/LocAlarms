@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
-import {ScheduleTypes} from "../../services/alarms/Alarm";
+import {currentTimeToMinutes, ScheduleTypes, stringToTime, timeToString} from "../../services/alarms/Alarm";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
@@ -11,7 +11,27 @@ import {Theme} from "../../theme";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
-  startDate: {label: "Start Date", initialValue: moment().startOf("day"), type: formTypes.date}
+  startDate: {
+    label: "Start Date",
+    initialValue: moment().startOf("day"),
+    type: formTypes.date,
+    format: (x) => moment(x).format("YYYY-MM-DD"),
+    parse: (string) => moment(string)
+  },
+  startTime: {
+    label: "Start Time",
+    initialValue: currentTimeToMinutes(),
+    type: formTypes.time,
+    format: timeToString,
+    parse: stringToTime
+  },
+  endTime: {
+    label: "End Time",
+    initialValue: currentTimeToMinutes(),
+    format: timeToString,
+    parse: stringToTime,
+    type: formTypes.time
+  }
 });
 
 export class ScheduleForm extends Component {
@@ -39,21 +59,15 @@ export class ScheduleForm extends Component {
       case formTypes.date:
         return <Item>
           <Label>{label}</Label>
-          <DatePicker
-            date={input.value}
-            mode="date"
-            iconComponent={<Icon name="arrow-dropdown" style={styles.icon}/>}
-            confirmBtnText="Confirm"
-            customStyles={{
-              dateInput: styles.noBorder,
-              dateText: styles.formText,
-              btnTextConfirm: styles.confirmText
-            }}
-            style={styles.datePicker}
-            cancelBtnText="Cancel"
-            format="YYYY-MM-DD"
-            onDateChange={input.onChange}
-          />
+          <DatePicker date={input.value} onDateChange={input.onChange} mode="date"
+                      style={styles.datePicker}
+                      format="YYYY-MM-DD" {...pickerProps}/>
+        </Item>;
+      case formTypes.time:
+        return <Item>
+          <Label>{label}</Label>
+          <DatePicker date={input.value} mode="time" format="h:mm A" onDateChange={input.onChange}
+                      style={styles.timePicker} {...pickerProps}/>
         </Item>;
     }
   }
@@ -64,9 +78,9 @@ export class ScheduleForm extends Component {
         <Text>Schedule</Text>
       </Item>
       <Field {...this.fields.type}/>
-      <Field {...this.fields.startDate} format={(x) => {
-        return moment(x).format("YYYY-MM-DD");
-      }} parse={(string) => moment(string)}/>
+      <Field {...this.fields.startDate}/>
+      <Field {...this.fields.startTime}/>
+      <Field {...this.fields.endTime}/>
     </View>;
   }
 }
@@ -80,5 +94,16 @@ const styles = StyleSheet.create({
   confirmText: {
     color: Theme.brandPrimary
   },
-  datePicker: {width: 140, paddingHorizontal: 12, paddingVertical: 3}
+  datePicker: {width: 120},
+  timePicker: {width: 100}
 });
+const pickerProps = {
+  iconComponent: <Icon name="arrow-dropdown" style={styles.icon}/>,
+  confirmBtnText: "Confirm",
+  customStyles: {
+    dateInput: styles.noBorder,
+    dateText: styles.formText,
+    btnTextConfirm: styles.confirmText
+  },
+  cancelBtnText: "Cancel"
+};
