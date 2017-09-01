@@ -4,20 +4,25 @@ import React, {Component} from 'react'
 import {Provider} from 'react-redux'
 import {RootContainer} from './RootContainer'
 import {createStore} from '../redux'
-import {StyleProvider} from "native-base";
+import {StyleProvider, View} from "native-base";
 
 import getTheme from "../theme/components";
 import {Theme} from "../theme";
+import {PersistGate} from 'redux-persist/es/integration/react'
 
-const store = createStore();
+const {store, persistor} = createStore();
 
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <StyleProvider style={getTheme(Theme)}>
-          <RootContainer/>
-        </StyleProvider>
+        <PersistGate
+          loading={<View/>}
+          persistor={persistor}>
+          <StyleProvider style={getTheme(Theme)}>
+            <RootContainer/>
+          </StyleProvider>
+        </PersistGate>
       </Provider>
     )
   }

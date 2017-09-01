@@ -12,30 +12,33 @@ import storage from 'redux-persist/es/storage'
 const initialState = {
   alarms: []
 };
+const namespaces = {
+  alarms: "alarms",
+  nav: "nav",
+  form: "form"
+};
 
 export const actionCreators = combineActions({
-  alarms: alarmRedux.actions,
-  startup: null
+  [namespaces.alarms]: alarmRedux.actions
 });
 
 function* rootSaga() {
   yield combineSagas({
-    alarms: alarmRedux.sagas
+    [namespaces.alarms]: alarmRedux.sagas
   }, actionCreators);
 }
-
 
 export const createStore = () => {
   const ReduxConfig = {
     key: 'root',
     storage,
-    blacklist: ['nav', 'form']
+    blacklist: [namespaces.nav, namespaces.form]
   };
 
   const rootReducer = persistReducer(ReduxConfig, combineReducers({
-    nav: navReducer,
-    alarms: alarmRedux.reducers,
-    form: formReducer
+    [namespaces.nav]: navReducer,
+    [namespaces.alarms]: alarmRedux.reducers,
+    [namespaces.form]: formReducer
   }, initialState));
   const middleware = [];
   const enhancers = [];
@@ -46,13 +49,13 @@ export const createStore = () => {
 
   const createAppropriateStore = Config.useReactotron ? console.tron.createStore : createStore;
   const store = createAppropriateStore(rootReducer, compose(...enhancers));
-  persistStore(store, ReduxConfig, () => store.dispatch(actionCreators.startup()));
+  let persistor = persistStore(store, ReduxConfig);
   sagaMiddleware.run(rootSaga);
-  return store;
+  return {store, persistor};
 };
 
 export const selectors = combineSelectors({
-  alarms: alarmRedux.selectors
+  [namespaces.alarms]: alarmRedux.selectors
 });
 
 export const actionDispatcher = (dispatch) => objectMap(actionCreators, (value) => bindActionCreators(value, dispatch));

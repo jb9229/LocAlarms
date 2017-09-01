@@ -7,6 +7,7 @@ import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
 import moment from "moment";
+import {Theme} from "../../theme";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
@@ -46,6 +47,7 @@ export class ScheduleForm extends Component {
             customStyles={{
               dateInput: styles.noBorder,
               dateText: styles.formText,
+              btnTextConfirm: styles.confirmText
             }}
             style={styles.datePicker}
             cancelBtnText="Cancel"
@@ -75,9 +77,8 @@ const styles = StyleSheet.create({
     fontFamily: "roboto",
     fontSize: 16.5
   },
-  icon: {
-    marginLeft: 3,
-    color: "#7a7a7a"
+  confirmText: {
+    color: Theme.brandPrimary
   },
   datePicker: {width: 140, paddingHorizontal: 12, paddingVertical: 3}
 });
