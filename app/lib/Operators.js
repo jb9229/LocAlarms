@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 export function objectMap(obj, valMap, keyMap: ?(key) => any) {
   return Object.keys(obj).reduce((val, x) => {
     const key = keyMap ? keyMap(x) : x;

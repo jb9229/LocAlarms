@@ -62,7 +62,9 @@ export class ScheduleForm extends Component {
         <Text>Schedule</Text>
       </Item>
       <Field {...this.fields.type}/>
-      <Field {...this.fields.startDate} format={(x) =>  {return moment(x).format("YYYY-MM-DD")}} parse={(string) => moment(string)}/>
+      <Field {...this.fields.startDate} format={(x) => {
+        return moment(x).format("YYYY-MM-DD")
+      }} parse={(string) => moment(string)}/>
     </View>
   }
 }

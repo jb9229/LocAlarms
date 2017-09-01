@@ -1,10 +1,13 @@
-import {bindActionCreators} from 'redux'
-import configureStore from './CreateStore'
+import {applyMiddleware, bindActionCreators, compose} from 'redux'
 import {reducer as navReducer} from "./Navigator"
 import alarmRedux from "./Alarms";
 import {combineActions, combineReducers, combineSagas, combineSelectors} from "./utils";
 import {reducer as formReducer} from "redux-form";
 import {objectMap} from "../lib/Operators";
+import Config from '../config/DebugConfig'
+import createSagaMiddleware from 'redux-saga'
+import {persistReducer, persistStore} from "redux-persist";
+import storage from 'redux-persist/es/storage'
 
 const initialState = {
   alarms: []
@@ -23,11 +26,29 @@ function* rootSaga() {
 
 
 export const createStore = () => {
-  return configureStore(combineReducers({
+  const ReduxConfig = {
+    key: 'root',
+    storage,
+    blacklist: ['nav', 'form']
+  };
+
+  const rootReducer = persistReducer(ReduxConfig, combineReducers({
     nav: navReducer,
     alarms: alarmRedux.reducers,
     form: formReducer
-  }, initialState), rootSaga)
+  }, initialState));
+  const middleware = [];
+  const enhancers = [];
+  const sagaMonitor = Config.useReactotron ? console.tron.createSagaMonitor() : null;
+  const sagaMiddleware = createSagaMiddleware({sagaMonitor});
+  middleware.push(sagaMiddleware);
+  enhancers.push(applyMiddleware(...middleware));
+
+  const createAppropriateStore = Config.useReactotron ? console.tron.createStore : createStore;
+  const store = createAppropriateStore(rootReducer, compose(...enhancers));
+  persistStore(store, ReduxConfig, () => store.dispatch(actionCreators.startup()));
+  sagaMiddleware.run(rootSaga);
+  return store;
 };
 
 export const selectors = combineSelectors({
