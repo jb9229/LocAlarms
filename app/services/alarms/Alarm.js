@@ -48,6 +48,7 @@ export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment,
 }
 
 export type Alarm = {
+  name: string;
   location: GeoLocation;
   radius: number;
   schedule: Schedule;

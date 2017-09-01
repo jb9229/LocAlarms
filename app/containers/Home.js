@@ -8,6 +8,7 @@ import {Metrics} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator'
+import type {Alarm} from "../services/alarms/Alarm";
 
 @connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
 export class Home extends Component {
@@ -67,7 +68,7 @@ export class Home extends Component {
             scrollEventThrottle={5}>
             <Animated.View
               style={[styles.mapContainer, {transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]}]}>
-              <Map locations={[]}/>
+              <Map locations={this.props.alarms.state.map((alarm: Alarm) => ({...alarm.location, radius: alarm.radius, title: alarm.name}))}/>
             </Animated.View>
             <Content style={styles.alarmList}>
               <View>

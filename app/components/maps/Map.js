@@ -24,27 +24,28 @@ export class Map extends Component {
 
   fitLocations(locations) {
     if (this.mapView && locations.length > 0) {
-      const PADDING = Math.max(this.props.locations.map(loc => loc.radius)) / 80000;
+      const PADDING = Math.max(...locations.map((loc) => loc.radius)) / 20000;
       let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
       for (let location of locations) {
         [minLat, maxLat, minLng, maxLng] = [
-          Math.min(minLat, location.latitude - PADDING),
-          Math.max(maxLat, location.latitude + PADDING),
-          Math.min(minLng, location.longitude - PADDING),
-          Math.max(maxLng, location.longitude + PADDING)
+          Math.min(minLat, location.latitude),
+          Math.max(maxLat, location.latitude),
+          Math.min(minLng, location.longitude),
+          Math.max(maxLng, location.longitude)
         ];
       }
-      setTimeout(() => {
-        this.mapView.fitToCoordinates([...locations, {latitude: minLat, longitude: minLng}, {latitude: maxLat, longitude: maxLng}], {
-          animated: true
-        });
+      this.mapView.animateToRegion({
+        latitude: (minLat + maxLat) / 2,
+        longitude: (minLng + maxLng) / 2,
+        latitudeDelta: PADDING,
+        longitudeDelta: PADDING
       }, 500);
     }
   }
 
   componentWillReceiveProps(props) {
     const locations = filterUndefined(props.locations), oldLocations = this.props.locations;
-    if (locations.some((location, index) =>
+    if (locations.length !== oldLocations.length || locations.some((location, index) =>
         location.latitude !== oldLocations[index].latitude ||
         location.longitude !== oldLocations[index].longitude ||
         location.radius !== oldLocations[index].radius)
@@ -61,7 +62,6 @@ export class Map extends Component {
         ref={(elem) => {
           if (!this.mapView) {
             this.mapView = elem;
-            this.fitLocations(locations);
           }
         }}
         provider={MapView.PROVIDER_GOOGLE}

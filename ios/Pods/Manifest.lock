@@ -4,43 +4,43 @@ PODS:
   - GoogleMaps/Base (2.1.1)
   - GoogleMaps/Maps (2.1.1):
     - GoogleMaps/Base
-  - React (0.47.1):
-    - React/Core (= 0.47.1)
+  - React (0.47.2):
+    - React/Core (= 0.47.2)
   - react-native-google-maps (0.16.2):
     - GoogleMaps (= 2.1.1)
     - React
   - react-native-maps (0.16.2):
     - React
-  - React/BatchedBridge (0.47.1):
+  - React/BatchedBridge (0.47.2):
     - React/Core
     - React/cxxreact_legacy
-  - React/Core (0.47.1):
-    - Yoga (= 0.47.1.React)
-  - React/cxxreact_legacy (0.47.1):
+  - React/Core (0.47.2):
+    - Yoga (= 0.47.2.React)
+  - React/cxxreact_legacy (0.47.2):
     - React/jschelpers_legacy
-  - React/jschelpers_legacy (0.47.1)
-  - React/RCTActionSheet (0.47.1):
+  - React/jschelpers_legacy (0.47.2)
+  - React/RCTActionSheet (0.47.2):
     - React/Core
-  - React/RCTAnimation (0.47.1):
+  - React/RCTAnimation (0.47.2):
     - React/Core
-  - React/RCTGeolocation (0.47.1):
+  - React/RCTGeolocation (0.47.2):
     - React/Core
-  - React/RCTImage (0.47.1):
+  - React/RCTImage (0.47.2):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.47.1):
+  - React/RCTLinkingIOS (0.47.2):
     - React/Core
-  - React/RCTNetwork (0.47.1):
+  - React/RCTNetwork (0.47.2):
     - React/Core
-  - React/RCTSettings (0.47.1):
+  - React/RCTSettings (0.47.2):
     - React/Core
-  - React/RCTText (0.47.1):
+  - React/RCTText (0.47.2):
     - React/Core
-  - React/RCTVibration (0.47.1):
+  - React/RCTVibration (0.47.2):
     - React/Core
-  - React/RCTWebSocket (0.47.1):
+  - React/RCTWebSocket (0.47.2):
     - React/Core
-  - Yoga (0.47.1.React)
+  - Yoga (0.47.2.React)
 
 DEPENDENCIES:
   - GoogleMaps
@@ -72,10 +72,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   GoogleMaps: a5b5bbe47734e2443bde781a6aa64e69fdb6d785
-  React: f705239a901cb3f95445c34468e5b37b6f80a0d4
+  React: fbe1a006550fb55871cb377ba7741f5d1cfff733
   react-native-google-maps: e499a22f9a9c0c91a0eb1400d6ee48a7ac815f33
   react-native-maps: da06bba7e02ade95c5604d97ae0cc4775900c65a
-  Yoga: 13a12502dfabb4c75b914071dcb542af800deed4
+  Yoga: ff8531e8cf9f7ec92a75dd44286a68c4a084c507
 
 PODFILE CHECKSUM: f8b5d892534f6d5000d38ac8b28fe7c91dc71c34
 
