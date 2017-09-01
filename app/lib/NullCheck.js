@@ -13,9 +13,13 @@ export function allProperties(obj): boolean {
     if (!_.isNull(obj[key]) && _.isObject(obj[key])) {
       return allProperties(obj[key])
     } else {
-      return !_.isNull(obj[key]) && !_.isUndefined(obj[key])
+      return isDefined(obj[key])
     }
   })
+}
+
+export function isDefined(x) {
+  return !_.isNull(x) && !_.isUndefined(x)
 }
 
 /**

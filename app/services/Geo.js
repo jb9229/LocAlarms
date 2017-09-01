@@ -7,19 +7,8 @@ export class GeoService {
   });
 
   static getLocation(): Promise<GeoData> {
-    return new Promise((resolve) => {
-      navigator.geolocation.getCurrentPosition(data => resolve(data), () => resolve({
-        coords: {
-          latitude: 0,
-          longitude: 0,
-          accuracy: 0,
-          altitude: 0,
-          altitudeAccuracy: 0,
-          heading: 0,
-          speed: 0,
-        },
-        timestamp: 0
-      }))
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject)
     });
   }
 
