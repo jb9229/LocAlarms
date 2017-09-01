@@ -9,12 +9,13 @@ import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator'
 import type {Alarm} from "../services/alarms/Alarm";
+import {Theme} from "../theme";
 
 @connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
-    inputRange: [0, 20],
+    inputRange: [0, 5],
     outputRange: [1, 0],
     extrapolate: "clamp"
   });
@@ -23,9 +24,15 @@ export class Home extends Component {
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
+  scrollRef;
+
   state = {
     editPanelOpen: -1
   };
+
+  componentWillReceiveProps(props) {
+    if (props.alarms.state.length === 0 && this.scrollRef) this.scrollRef.scrollTo({x: 0, y: 0, animated: true});
+  }
 
   @autobind
   deleteAlarm(alarm) {
@@ -44,6 +51,7 @@ export class Home extends Component {
   }
 
   render() {
+    const alarms = this.props.alarms.state;
     return (
       <Container>
         <Header>
@@ -64,26 +72,35 @@ export class Home extends Component {
         <View>
           <Animated.ScrollView
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
+            ref={(elem) => {
+              if (!this.scrollRef && elem && elem._component) this.scrollRef = elem._component;
+            }}
             showsVerticalScrollIndicator={false}
             scrollEventThrottle={5}>
             <Animated.View
-              style={[styles.mapContainer, {transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]}]}>
-              <Map locations={this.props.alarms.state.map((alarm: Alarm) => ({...alarm.location, radius: alarm.radius, title: alarm.name}))}/>
+              style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
+                transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
+              }]}>
+              <Map locations={alarms.map((alarm: Alarm) => ({
+                ...alarm.location,
+                radius: alarm.radius,
+                title: alarm.name
+              }))}/>
             </Animated.View>
-            <Content style={styles.alarmList}>
+            <Content>
               <View>
-                {(this.props.alarms.state.length > 0) &&
+                {(alarms.length > 0) &&
                 <Card>
-                  {this.props.alarms.state.map((alarm, i) => <AlarmCard alarm={alarm}
-                                                                        key={i}
-                                                                        onEditPanelOpen={() => {
-                                                                          this.setState({
-                                                                            editPanelOpen: i
-                                                                          })
-                                                                        }}
-                                                                        editPressed={this.editAlarm}
-                                                                        deletePressed={this.deleteAlarm}
-                                                                        editPanelOpen={this.state.editPanelOpen === i}/>)}
+                  {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
+                                                       key={i}
+                                                       onEditPanelOpen={() => {
+                                                         this.setState({
+                                                           editPanelOpen: i
+                                                         })
+                                                       }}
+                                                       editPressed={this.editAlarm}
+                                                       deletePressed={this.deleteAlarm}
+                                                       editPanelOpen={this.state.editPanelOpen === i}/>)}
                 </Card>}
               </View>
             </Content>
@@ -102,11 +119,11 @@ export class Home extends Component {
 }
 
 const styles = StyleSheet.create({
-  mapContainer: {
-    height: Metrics.screenHeight * 0.75
+  noAlarmMap: {
+    height: Metrics.screenHeight - Theme.toolbarHeight
   },
-  alarmList: {
-    minHeight: Metrics.screenHeight * 0.25 - Metrics.navHeaderHeight + 10
+  alarmMap: {
+    height: Metrics.screenHeight * 0.85 - Theme.toolbarHeight
   },
   fab: {
     position: "absolute",

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
-import {Colors} from "../theme"
+import {Theme} from "../theme"
 
 const EDIT_PANEL_HEIGHT = 35;
 
@@ -93,10 +93,10 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   green: {
-    color: Colors.brandSuccess
+    color: Theme.brandSuccess
   },
   red: {
-    color: Colors.brandDanger
+    color: Theme.brandDanger
   },
   item: {
     flex: 1

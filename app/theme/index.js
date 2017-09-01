@@ -1,7 +1,7 @@
 import Metrics from "./Metrics";
-import Colors from "./material";
+import Theme from "./material";
 
 export {
   Metrics,
-  Colors
+  Theme
 };

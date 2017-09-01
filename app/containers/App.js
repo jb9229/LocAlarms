@@ -7,7 +7,7 @@ import {createStore} from '../redux'
 import {StyleProvider} from "native-base";
 
 import getTheme from "../theme/components";
-import {Colors} from "../theme";
+import {Theme} from "../theme";
 
 const store = createStore();
 
@@ -15,7 +15,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <StyleProvider style={getTheme(Colors)}>
+        <StyleProvider style={getTheme(Theme)}>
           <RootContainer/>
         </StyleProvider>
       </Provider>
