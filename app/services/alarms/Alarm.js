@@ -1,5 +1,7 @@
-import type {GeoLocation} from "../Geo";
-import {Moment} from "moment";
+import type {GeoData, GeoLocation} from "../Geo";
+import moment, {Moment} from "moment";
+import _ from "lodash";
+import {GeoService} from "../Geo";
 
 export type Time = {
   hours: number,
@@ -27,15 +29,21 @@ export type Schedule = {
   endTime: number
 }
 
-export function generateActiveSchedule(schedule: Schedule, windowStart: Moment, windowEnd?: Moment): { start: Moment, end: Moment }[] {
+export function generateActiveSchedule(schedule: Schedule, windowStart: ?Moment): { start: Moment, end: Moment }[] {
   let result = [];
-  if (schedule.type === ScheduleTypes.ONCE) {
-    if (windowStart.isBefore()) {
-      return [];
+  let start = moment.max(windowStart, schedule.startDate);
+  switch (schedule.type) {
+    case ScheduleTypes.ONCE: {
+      result.push({start: start.add(schedule.startTime, "seconds"), end: start.add(schedule.endTime, "seconds")});
+      break;
     }
-  } else {
-    if (windowEnd) {
-      let current: Moment = windowStart;
+    case ScheduleTypes.DAILY: {
+      let current = start;
+      _.times(15, _.constant(null)).forEach(() => {
+        result.push({start: current.add(schedule.startTime, "seconds"), end: current.add(schedule.endTime, "seconds")});
+        current = current.add(1, "day");
+      });
+      break;
     }
   }
   return result;
@@ -45,6 +53,25 @@ export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment,
   return activeScheduleWindows.reduce((inWindow: boolean, window: { start: Moment, end: Moment }) => {
     return inWindow || moment.isAfter(window.start) && moment.isBefore(window.end);
   }, false);
+}
+
+export class AlarmService {
+  static subscribers = [];
+
+  static start(getAlarms: () => Alarm[]) {
+    GeoService.subscribe((geo: GeoData) => {
+      getAlarms().forEach((alarm: Alarm) => {
+        const now = moment();
+        if (inWindow(now, generateActiveSchedule(alarm.schedule, now))) {
+          AlarmService.subscribers.forEach((fn) => fn(alarm))
+        }
+      })
+    })
+  }
+
+  static subscribe(alarmActivate: (alarm: Alarm) => any) {
+    AlarmService.subscribers.push(alarmActivate);
+  }
 }
 
 export type Alarm = {
