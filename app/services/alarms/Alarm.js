@@ -42,7 +42,7 @@ export function generateActiveSchedule(schedule: Schedule, windowStart: ?Moment)
   switch (schedule.type) {
     case ScheduleTypes.ONCE: {
       const start = moment(schedule.startDate);
-      result.push({start: start.add(schedule.startTime, "minutes"), end: start.add(schedule.endTime, "minutes")});
+      result.push({start: moment(start).add(schedule.startTime, "m"), end: moment(start).add(schedule.endTime, "m")});
       break;
     }
     case ScheduleTypes.DAILY: {
@@ -66,21 +66,26 @@ export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment,
 
 export class AlarmService {
   static subscribers = [];
+  static getAlarms: () => Alarm[];
 
   static start(getAlarms: () => Alarm[]) {
-    console.log(getAlarms());
+    this.getAlarms = getAlarms;
     GeoService.subscribe((geo: GeoData) => {
-      getAlarms().forEach((alarm: Alarm) => {
-        const now = moment();
-        if (inWindow(now, generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
-          AlarmService.subscribers.forEach((fn) => fn(alarm));
-        }
-      });
+      this.updateSubscribers(geo)
+    });
+  }
+
+  static updateSubscribers(geo: GeoData) {
+    const now = moment();
+    this.getAlarms().forEach((alarm: Alarm) => {
+      if (inWindow(now, generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
+        this.subscribers.forEach((fn) => fn(alarm));
+      }
     });
   }
 
   static subscribe(alarmActivate: (alarm: Alarm) => any) {
-    AlarmService.subscribers.push(alarmActivate);
+    this.subscribers.push(alarmActivate);
   }
 }
 

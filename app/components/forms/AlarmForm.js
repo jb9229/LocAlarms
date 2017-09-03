@@ -52,11 +52,12 @@ export class AlarmForm extends Component {
     super(props);
     if (props.initialAlarm) {
       setFormValues(this.props.change, props.initialAlarm);
+    } else {
+      GeoService.getLocation().then((loc: GeoData) => {
+        this.changeAddress(loc.coords);
+        this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
+      });
     }
-    GeoService.getLocation().then((loc: GeoData) => {
-      this.changeAddress(loc.coords);
-      this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
-    });
     this.state = {
       searchOpen: false
     };

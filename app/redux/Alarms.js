@@ -1,9 +1,11 @@
 import {delay} from "redux-saga";
-import {put} from "redux-saga/effects";
+import {put, call} from "redux-saga/effects";
 import {reset as resetForm} from "redux-form";
 import {alarmFormName} from "../components/forms/AlarmForm";
 import {arrPush, arrRemove, arrReplace} from "../lib/Operators";
 import uuid from "uuid/v4";
+import {AlarmService} from "../services/alarms/Alarm";
+import {GeoService} from "../services/Geo";
 
 const types = {
   alarmFormSubmit: "alarmFormSubmit",
@@ -36,8 +38,10 @@ function* formSubmit(actionCreators, action) {
   } else {
     yield put(actionCreators.addAlarm({...action.payload.alarm, id: uuid()}));
   }
-  yield delay(500);
+  yield delay(500); // visual delay
   yield put(resetForm(alarmFormName));
+  const geo = yield call(GeoService.getLocation);
+  AlarmService.updateSubscribers(geo);
 }
 
 export default {
