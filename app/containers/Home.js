@@ -14,8 +14,8 @@ import type {Alarm} from "../services/alarms/Alarm";
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
-    inputRange: [0, 10, 100],
-    outputRange: [1, 0.4, 0.01], // bug on android where scale 0 causes issues
+    inputRange: [0, 30],
+    outputRange: [1, 0.01], // bug on android where scale 0 causes issues
     extrapolate: "clamp"
   });
   mapScale = this.scroll.interpolate({
@@ -74,7 +74,7 @@ export class Home extends Component {
               if (!this.scrollRef && elem && elem._component) this.scrollRef = elem._component;
             }}
             showsVerticalScrollIndicator={false}
-            scrollEventThrottle={5}>
+            scrollEventThrottle={2}>
             <Animated.View
               style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
                 transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
@@ -104,13 +104,19 @@ export class Home extends Component {
             </Content>
           </Animated.ScrollView>
         </View>
-        <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
-          <Fab onPress={() => {
+        {alarms.length > 0 ?
+          <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
+            <Fab onPress={() => {
+              this.props.navigation.navigate(Routes.alarmEditor);
+            }}>
+              <Icon name="add"/>
+            </Fab>
+          </Animated.View> : <Fab onPress={() => {
             this.props.navigation.navigate(Routes.alarmEditor);
           }}>
             <Icon name="add"/>
-          </Fab>
-        </Animated.View>
+          </Fab>}
+
       </Container>
     );
   }
