@@ -25,13 +25,13 @@ export class AlarmCard extends Component {
     if (closed) {
       this.props.onEditPanelOpen();
     }
-    const config = {toValue: closed ? EDIT_PANEL_HEIGHT : 0, duration: 200};
+    const config = {toValue: closed ? EDIT_PANEL_HEIGHT : 0, duration: 300};
     Animated.timing(this.animatedHeight, config).start();
   }
 
   componentWillReceiveProps(next) {
     if (next.editPanelOpen === false && this.animatedHeight.__getValue() !== 0) {
-      Animated.timing(this.animatedHeight, {toValue: 0, duration: 200}).start();
+      Animated.timing(this.animatedHeight, {toValue: 0, duration: 300}).start();
     }
   }
 

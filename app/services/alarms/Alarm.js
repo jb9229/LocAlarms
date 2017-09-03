@@ -43,7 +43,6 @@ export function generateActiveSchedule(schedule: Schedule, windowStart: ?Moment)
     case ScheduleTypes.ONCE: {
       const start = moment(schedule.startDate);
       result.push({start: start.add(schedule.startTime, "minutes"), end: start.add(schedule.endTime, "minutes")});
-      console.tron.log(moment().startOf("day"));
       break;
     }
     case ScheduleTypes.DAILY: {
@@ -69,6 +68,7 @@ export class AlarmService {
   static subscribers = [];
 
   static start(getAlarms: () => Alarm[]) {
+    console.log(getAlarms());
     GeoService.subscribe((geo: GeoData) => {
       getAlarms().forEach((alarm: Alarm) => {
         const now = moment();

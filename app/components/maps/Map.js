@@ -18,9 +18,10 @@ export class Map extends Component {
     })).isRequired
   };
   mapView;
+  mapReady = false;
 
   fitLocations(locations) {
-    if (this.mapView) {
+    if (this.mapView && this.mapReady) {
       if (locations.length > 0) {
         const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 20000 : 0.005;
         let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
@@ -66,12 +67,8 @@ export class Map extends Component {
     return (
       <MapView
         style={StyleSheet.absoluteFill}
-        ref={(elem) => {
-          if (!this.mapView) {
-            this.mapView = elem;
-            this.fitLocations(this.props.locations);
-          }
-        }}
+        ref={(elem) => {if (!this.mapView) this.mapView = elem}}
+        onMapReady={() => {this.mapReady = true; this.fitLocations(this.props.locations);}}
         provider={MapView.PROVIDER_GOOGLE}
         followsUserLocation
         loadingEnabled

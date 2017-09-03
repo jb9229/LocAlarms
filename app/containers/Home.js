@@ -14,8 +14,8 @@ import type {Alarm} from "../services/alarms/Alarm";
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
-    inputRange: [0, 5],
-    outputRange: [1, 0],
+    inputRange: [0, 10, 100],
+    outputRange: [1, 0.4, 0.01], // bug on android where scale 0 causes issues
     extrapolate: "clamp"
   });
   mapScale = this.scroll.interpolate({
@@ -25,12 +25,11 @@ export class Home extends Component {
   });
   scrollRef;
 
-  state = {
-    editPanelOpen: -1
-  };
-
-  componentWillReceiveProps(props) {
-    if (props.alarms.state.length === 0 && this.scrollRef) this.scrollRef.scrollTo({x: 0, y: 0, animated: true});
+  constructor(props) {
+    super(props);
+    this.state = {
+      editPanelOpen: -1
+    };
   }
 
   @autobind
@@ -105,7 +104,7 @@ export class Home extends Component {
             </Content>
           </Animated.ScrollView>
         </View>
-        <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
+        <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
           <Fab onPress={() => {
             this.props.navigation.navigate(Routes.alarmEditor);
           }}>
@@ -127,6 +126,8 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     bottom: 0,
-    right: 0
+    right: 0,
+    height: 100,
+    width: 100
   }
 });
