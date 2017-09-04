@@ -3,9 +3,10 @@ import {all, call, put} from "redux-saga/effects";
 import {reset as resetForm} from "redux-form";
 import {alarmFormName} from "../components/forms/AlarmForm";
 import uuid from "uuid/v4";
-import type {Alarm} from "../services/alarms/Alarm";
-import {AlarmService} from "../services/alarms/Alarm";
+import type {Alarm} from "../services/Alarm";
+import {AlarmService} from "../services/Alarm";
 import _ from "lodash";
+import {AudioService} from "../services/Audio";
 
 const types = {
   alarmFormSubmit: "alarmFormSubmit",
@@ -25,8 +26,8 @@ const reducers = {
   [types.addAlarm]: (state: any[], {payload: alarm}) => [...state, alarm],
   [types.editAlarm]: (state: any[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
   [types.deleteAlarm]: (state: any[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
-  [types.deactivateAlarm]: (state: any[], {payload: {id, now}}) => state.map((alarm: Alarm) =>
-    alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm
+  [types.deactivateAlarm]: (state: any[], {payload: {id, now}}) => state.map((alarm: Alarm) => {
+    return alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm}
   )
 };
 const selectors = {
@@ -35,7 +36,7 @@ const selectors = {
 
 const sagas = {
   [types.alarmFormSubmit]: [formSubmit],
-  [types.deactivateAlarm]: [updateAlarms]
+  [types.deactivateAlarm]: [deactivateAlarm]
 };
 
 function* formSubmit(actionCreators, action) {
@@ -53,8 +54,11 @@ function* formSubmit(actionCreators, action) {
   ]);
 }
 
-function* updateAlarms() {
-  yield call(AlarmService.update);
+function* deactivateAlarm() {
+  yield all([
+    call(AudioService.stop, AlarmService.ALARM_AUDIO_ID),
+    call(AlarmService.update)
+  ]);
 }
 
 export default {

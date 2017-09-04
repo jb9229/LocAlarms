@@ -8,7 +8,7 @@ import {Metrics, Theme} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
-import type {Alarm} from "../services/alarms/Alarm";
+import type {Alarm} from "../services/Alarm";
 
 @connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
 export class Home extends Component {

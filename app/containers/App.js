@@ -8,15 +8,18 @@ import {StyleProvider, View} from "native-base";
 import getTheme from "../theme/components";
 import {Theme} from "../theme";
 import {PersistGate} from 'redux-persist/es/integration/react';
-import {AlarmService} from "../services/alarms/Alarm";
-import {selectors} from "../redux/index";
+import {AlarmService} from "../services/Alarm";
+import {actionCreators, selectors} from "../redux/index";
+import moment from "moment";
 
 const {store, persistor} = createStore();
 
 class App extends Component {
   constructor(props) {
     super(props);
-    AlarmService.start(() => selectors.alarms.all(store.getState()))
+    AlarmService.start(() => selectors.alarms.all(store.getState()), (id) => {
+      store.dispatch(actionCreators.alarms.deactivateAlarm(id, moment()));
+    });
   }
 
   render() {

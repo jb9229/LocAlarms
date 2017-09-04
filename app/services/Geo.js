@@ -5,24 +5,23 @@ export class GeoService {
   static subscribers = [];
   static watchID = navigator.geolocation.watchPosition((location) => {
     GeoService.pushLocation(location);
-  });
+  }, () => {});
 
   static requestAuthorization() {
-    console.log(navigator);
     if (Platform.OS === "ios") navigator.geolocation.requestAuthorization();
   }
 
   static getLocation(): Promise<GeoData> {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
+      navigator.geolocation.getCurrentPosition(resolve, () => {});
     });
   }
 
   static subscribe(success: (GeoData) => any) {
     GeoService.subscribers.push(success);
-    navigator.geolocation.getCurrentPosition((location) => {
+    GeoService.getLocation().then((location) => {
       success(location);
-    }, () => {});
+    });
   }
 
   static destroy() {

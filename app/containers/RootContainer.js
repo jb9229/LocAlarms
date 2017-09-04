@@ -4,7 +4,7 @@ import ReduxNavigation from '../navigation/ReduxNavigation';
 import {connect} from 'react-redux';
 import {actionDispatcher} from '../redux';
 import {View} from "native-base";
-import {AlarmService} from "../services/alarms/Alarm";
+import {AlarmService} from "../services/Alarm";
 import Color from "color";
 import {Theme} from "../theme";
 import {isDefined} from "../lib/NullCheck";

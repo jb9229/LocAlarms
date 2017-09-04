@@ -1,10 +1,11 @@
 import React, {Component} from "react";
-import {Body, Container, Header, Icon, Left, Title} from "native-base";
+import {Body, Container, Header, Icon, Left, Right, Title} from "native-base";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
 import {TouchableOpacity} from "react-native";
 import idx from "idx";
+import {isDefined} from "../lib/NullCheck";
 
 @connect(null, actionDispatcher)
 export class AlarmEditor extends Component {
@@ -20,8 +21,9 @@ export class AlarmEditor extends Component {
           </TouchableOpacity>
         </Left>
         <Body>
-        <Title>Redux Form</Title>
+        <Title>{isDefined(initialAlarm) ? "Edit Alarm" : "Add Alarm"}</Title>
         </Body>
+        <Right/>
       </Header>
       <AlarmForm
         onSubmit={(values) => {
