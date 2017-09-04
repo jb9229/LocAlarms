@@ -2,23 +2,7 @@ import type {GeoData, GeoLocation} from "../Geo";
 import {GeoService} from "../Geo";
 import moment, {Moment} from "moment";
 import _ from "lodash";
-
-export const timeToString = (x: number) => {
-  const hours = Math.floor(x / 60);
-  const minutes = x - hours * 60;
-  const pm = hours > 12;
-  return `${pm ? hours - 12 : hours}:${minutes} ${pm ? "PM" : "AM"}`;
-};
-export const stringToTime = (x: string) => {
-  let [hours, _, minutes, _1, time] = x.split(/([: ])/);
-  [hours, minutes] = [parseInt(hours), parseInt(minutes)];
-  if (time === "PM") hours += 12;
-  return hours * 60 + minutes;
-};
-export const currentTimeToMinutes = () => {
-  const now = moment();
-  return now.get("hours") * 60 + now.get("minutes");
-};
+import {isDefined} from "../../lib/NullCheck";
 
 export const ScheduleTypes = {
   ONCE: "Once",
@@ -34,62 +18,108 @@ export type Schedule = {
   startDate: string,
   endDate?: string,
   startTime: number,
-  endTime: number
+  endTime: number,
+  lastDeactivated: string
 }
 
-export function generateActiveSchedule(schedule: Schedule, windowStart: ?Moment): { start: Moment, end: Moment }[] {
-  let result = [];
-  switch (schedule.type) {
-    case ScheduleTypes.ONCE: {
-      const start = moment(schedule.startDate);
-      result.push({start: moment(start).add(schedule.startTime, "m"), end: moment(start).add(schedule.endTime, "m")});
-      break;
+
+export class ScheduleService {
+  static generateActiveSchedule(schedule: Schedule, windowStart: ?Moment): { start: Moment, end: Moment }[] {
+    let result = [];
+    switch (schedule.type) {
+      case ScheduleTypes.ONCE: {
+        const start = moment(schedule.startDate);
+        result.push({
+          start: ScheduleService.addMoment(start, schedule.startTime, "m"),
+          end: ScheduleService.addMoment(start, schedule.endTime, "m")
+        });
+        break;
+      }
+      case ScheduleTypes.DAILY: {
+        let current = windowStart;
+        _.times(15, _.constant(null)).forEach(() => {
+          result.push({
+            start: ScheduleService.addMoment(current, schedule.startTime, "m"),
+            end: ScheduleService.addMoment(current, schedule.endTime, "m")
+          });
+          current = ScheduleService.addMoment(current, 1, "d");
+        });
+        break;
+      }
     }
-    case ScheduleTypes.DAILY: {
-      let current = windowStart;
-      _.times(15, _.constant(null)).forEach(() => {
-        result.push({start: current.add(schedule.startTime, "minutes"), end: current.add(schedule.endTime, "minutes")});
-        current = current.add(1, "day");
-      });
-      break;
-    }
+    return result.filter((range) => !(isDefined(schedule.lastDeactivated) && ScheduleService.inWindow(moment(schedule.lastDeactivated), range)));
   }
-  return result;
-}
 
-export function inWindow(moment: Moment, activeScheduleWindows: { start: Moment, end: Moment }[]) {
-  return activeScheduleWindows.reduce((inWindow: boolean, window: { start: Moment, end: Moment }) => {
-    return inWindow || moment.isAfter(window.start) && moment.isBefore(window.end);
-  }, false);
+  static inWindow(moment: Moment, activeScheduleWindows: { start: Moment, end: Moment }[] | { start: Moment, end: Moment }) {
+    if (_.isArray(activeScheduleWindows))
+      return activeScheduleWindows.reduce((inWindow: boolean, window: { start: Moment, end: Moment }) => {
+        return inWindow || moment.isAfter(window.start) && moment.isBefore(window.end);
+      }, false);
+    else
+      return moment.isAfter(activeScheduleWindows.start) && moment.isBefore(activeScheduleWindows.end);
+  }
+
+  static addMoment(mmt, quantity, unit) {
+    return moment(mmt).add(quantity, unit);
+  }
+
+  static timeToString(x: number) {
+    const hours = Math.floor(x / 60);
+    const minutes = x - hours * 60;
+    const pm = hours > 12;
+    return `${pm ? hours - 12 : hours}:${minutes} ${pm ? "PM" : "AM"}`;
+  };
+
+  static stringToTime(x: string) {
+    let [hours, _, minutes, _1, time] = x.split(/([: ])/);
+    [hours, minutes] = [parseInt(hours), parseInt(minutes)];
+    if (time === "PM") hours += 12;
+    else if (time === "AM" && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  };
+
+  static currentTimeToMinutes() {
+    const now = moment();
+    return now.get("hours") * 60 + now.get("minutes");
+  };
 }
 
 
 export class AlarmService {
   static subscribers = [];
   static getAlarms: () => Alarm[];
+  static ALARM_AUDIO_ID = "alarm";
 
   static start(getAlarms: () => Alarm[]) {
-    this.getAlarms = getAlarms;
+    AlarmService.getAlarms = getAlarms;
     GeoService.subscribe((geo: GeoData) => {
-      this.updateSubscribers(geo)
+      AlarmService.updateSubscribers(geo);
     });
   }
 
-  static updateSubscribers(geo: GeoData) {
+  static updateSubscribers(geo: ?GeoData) {
     const now = moment();
-    this.getAlarms().forEach((alarm: Alarm) => {
-      if (inWindow(now, generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
-        this.subscribers.forEach((fn) => fn(alarm));
-      }
+    const update = (geo: GeoData) => {
+      AlarmService.getAlarms().forEach((alarm: Alarm) => {
+        if (ScheduleService.inWindow(now, ScheduleService.generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
+          // AudioService.loop(require("../../res/audio/analogue.mp3"), AlarmService.ALARM_AUDIO_ID);
+          AlarmService.subscribers.forEach((fn) => fn(alarm));
+        }
+      });
+    };
+    if (geo) update(geo);
+    else GeoService.getLocation().then((geo: GeoData) => {
+      update(geo);
     });
   }
 
   static subscribe(alarmActivate: (alarm: Alarm) => any) {
-    this.subscribers.push(alarmActivate);
+    AlarmService.subscribers.push(alarmActivate);
   }
 }
 
 export type Alarm = {
+  id: string;
   name: string;
   location: GeoLocation;
   radius: number;

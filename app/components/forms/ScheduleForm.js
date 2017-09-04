@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
-import {currentTimeToMinutes, ScheduleTypes, stringToTime, timeToString} from "../../services/alarms/Alarm";
+import {ScheduleService, ScheduleTypes} from "../../services/alarms/Alarm";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
@@ -20,16 +20,16 @@ export const fieldData = createFields({
   },
   startTime: {
     label: "Start Time",
-    initialValue: currentTimeToMinutes(),
+    initialValue: ScheduleService.currentTimeToMinutes(),
     type: formTypes.time,
-    format: timeToString,
-    parse: stringToTime
+    format: ScheduleService.timeToString,
+    parse: ScheduleService.stringToTime
   },
   endTime: {
     label: "End Time",
-    initialValue: currentTimeToMinutes(),
-    format: timeToString,
-    parse: stringToTime,
+    initialValue: ScheduleService.currentTimeToMinutes(),
+    format: ScheduleService.timeToString,
+    parse: ScheduleService.stringToTime,
     type: formTypes.time
   }
 });

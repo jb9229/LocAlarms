@@ -8,6 +8,8 @@ import {AlarmService} from "../services/alarms/Alarm";
 import Color from "color";
 import {Theme} from "../theme";
 import {isDefined} from "../lib/NullCheck";
+import autobind from "autobind-decorator";
+import moment from "moment";
 
 @connect(null, actionDispatcher)
 export class RootContainer extends Component {
@@ -23,6 +25,12 @@ export class RootContainer extends Component {
     });
   }
 
+  @autobind
+  cancelAlarm() {
+    this.props.alarms.deactivateAlarm(this.state.activeAlarm.id, moment());
+    this.setState({activeAlarm: null});
+  }
+
   render() {
     return (
       <View>
@@ -34,9 +42,7 @@ export class RootContainer extends Component {
           onRequestClose={() => {
           }}>
           <View style={styles.modal}>
-            <TouchableOpacity style={styles.stopBtn} onPress={() => {
-              this.setState({activeAlarm: null});
-            }}>
+            <TouchableOpacity style={styles.stopBtn} onPress={this.cancelAlarm}>
               <RView style={styles.stopBtnIcon}/>
             </TouchableOpacity>
           </View>

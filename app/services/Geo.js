@@ -3,7 +3,7 @@ import {Http} from "./Http";
 export class GeoService {
   static subscribers = [];
   static watchID = navigator.geolocation.watchPosition((location) => {
-    this.pushLocation(location);
+    GeoService.pushLocation(location);
   });
 
   static getLocation(): Promise<GeoData> {
@@ -13,19 +13,19 @@ export class GeoService {
   }
 
   static subscribe(success: (GeoData) => any) {
-    this.subscribers.push(success);
+    GeoService.subscribers.push(success);
     navigator.geolocation.getCurrentPosition((location) => {
       success(location);
     });
   }
 
   static destroy() {
-    this.subscribers = [];
-    navigator.geolocation.clearWatch(this.watchID);
+    GeoService.subscribers = [];
+    navigator.geolocation.clearWatch(GeoService.watchID);
   }
 
   static pushLocation(location: GeoData) {
-    this.subscribers.forEach((callback) => {
+    GeoService.subscribers.forEach((callback) => {
       callback(location);
     });
   }
@@ -38,7 +38,7 @@ export class GeoService {
   }
 
   static search(address: string, radius): Promise<{ formatted_address: string, geometry: { location: { lat: number, lng: number } } }[]> {
-    return this.getLocation().then((geo: GeoData) => {
+    return GeoService.getLocation().then((geo: GeoData) => {
       return Http.getRequest("https://maps.googleapis.com/maps/api/place/textsearch/json", Object.assign({
         key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
         query: address
@@ -63,7 +63,7 @@ export class GeoService {
   }
 
   static inRadius(center: GeoLocation, radius: number, target: GeoLocation) {
-    return this.coordsToMeters(center, target) <= radius;
+    return GeoService.coordsToMeters(center, target) <= radius;
   }
 }
 
