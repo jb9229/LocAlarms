@@ -110,6 +110,7 @@ export default {
   brandWarning: "#f0ad4e",
   brandSidebar: "#252932",
 
+  pickerIconColor: "#8F8E95",
   // Font
   fontFamily: "Roboto",
   fontSizeBase: 15,

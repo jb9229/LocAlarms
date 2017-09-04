@@ -35,7 +35,7 @@ const selectors = {
 
 const sagas = {
   [types.alarmFormSubmit]: [formSubmit],
-  [types.deactivateAlarm]: [AlarmService.updateSubscribers]
+  [types.deactivateAlarm]: [updateAlarms]
 };
 
 function* formSubmit(actionCreators, action) {
@@ -49,8 +49,12 @@ function* formSubmit(actionCreators, action) {
       yield call(delay, 500); // visual delay
       yield put(resetForm(alarmFormName));
     }),
-    call(AlarmService.updateSubscribers)
+    call(AlarmService.update)
   ]);
+}
+
+function* updateAlarms() {
+  yield call(AlarmService.update);
 }
 
 export default {

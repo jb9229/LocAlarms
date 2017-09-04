@@ -7,7 +7,8 @@ export const formTypes = {
   string: "Text",
   picker: "Enum",
   date: "Date",
-  time: "Time"
+  time: "Time",
+  customOnFocus: "customOnFocus"
 };
 
 export function setFormValues(change: (name: string, data: any) => any, initialData: any) {

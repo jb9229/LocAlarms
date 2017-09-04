@@ -23,6 +23,7 @@ export class AudioService {
   }
 
   static stop(id: string) {
-    AudioService.sounds.get(id).stop();
+    const sound = AudioService.sounds.get(id);
+    if (sound) sound.stop();
   }
 }

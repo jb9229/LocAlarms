@@ -51,6 +51,7 @@ export class ScheduleForm extends Component {
             mode="dropdown"
             iosIcon={<Icon name="arrow-dropdown"/>}
             selectedValue={input.value}
+            style={styles.picker}
             onValueChange={input.onChange}>
             <Picker.Item label={ScheduleTypes.ONCE} value={ScheduleTypes.ONCE}/>
             <Picker.Item label={ScheduleTypes.DAILY} value={ScheduleTypes.DAILY}/>
@@ -59,9 +60,12 @@ export class ScheduleForm extends Component {
       case formTypes.date:
         return <Item>
           <Label>{label}</Label>
-          <DatePicker date={input.value} onDateChange={input.onChange} mode="date"
+          <DatePicker date={input.value}
+                      onDateChange={input.onChange}
+                      mode="date"
                       style={styles.datePicker}
-                      format="YYYY-MM-DD" {...pickerProps}/>
+                      format="YYYY-MM-DD"
+                      {...pickerProps}/>
         </Item>;
       case formTypes.time:
         return <Item>
@@ -95,7 +99,9 @@ const styles = StyleSheet.create({
     color: Theme.brandPrimary
   },
   datePicker: {width: 120},
-  timePicker: {width: 100}
+  timePicker: {width: 100},
+  picker: {width: 120},
+  icon: {fontSize: Theme.iconSizeSmall, color: Theme.pickerIconColor}
 });
 const pickerProps = {
   iconComponent: <Icon name="arrow-dropdown" style={styles.icon}/>,

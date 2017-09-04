@@ -10,6 +10,7 @@ import {Theme} from "../theme";
 import {isDefined} from "../lib/NullCheck";
 import autobind from "autobind-decorator";
 import moment from "moment";
+import {GeoService} from "../services/Geo";
 
 @connect(null, actionDispatcher)
 export class RootContainer extends Component {
@@ -18,6 +19,7 @@ export class RootContainer extends Component {
     this.state = {
       activeAlarm: null
     };
+    GeoService.requestAuthorization();
     AlarmService.subscribe((alarm) => {
       this.setState({
         activeAlarm: alarm

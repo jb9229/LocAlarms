@@ -3,6 +3,7 @@ import {GeoService} from "../Geo";
 import moment, {Moment} from "moment";
 import _ from "lodash";
 import {isDefined} from "../../lib/NullCheck";
+import {AudioService} from "../Audio";
 
 export const ScheduleTypes = {
   ONCE: "Once",
@@ -93,23 +94,26 @@ export class AlarmService {
   static start(getAlarms: () => Alarm[]) {
     AlarmService.getAlarms = getAlarms;
     GeoService.subscribe((geo: GeoData) => {
-      AlarmService.updateSubscribers(geo);
+      AlarmService.update(geo);
     });
   }
 
-  static updateSubscribers(geo: ?GeoData) {
+  static update(geo: ?GeoData) {
     const now = moment();
-    const update = (geo: GeoData) => {
-      AlarmService.getAlarms().forEach((alarm: Alarm) => {
-        if (ScheduleService.inWindow(now, ScheduleService.generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords)) {
-          // AudioService.loop(require("../../res/audio/analogue.mp3"), AlarmService.ALARM_AUDIO_ID);
+    const updateSubscribers = (geo: GeoData) => {
+      const anyAlarmActivated = AlarmService.getAlarms().reduce((anyActivated: boolean, alarm: Alarm) => {
+        const shouldActivate = ScheduleService.inWindow(now, ScheduleService.generateActiveSchedule(alarm.schedule, now)) && GeoService.inRadius(alarm.location, alarm.radius, geo.coords);
+        if (shouldActivate) {
+          AudioService.loop(require("../../res/audio/analogue.mp3"), AlarmService.ALARM_AUDIO_ID);
           AlarmService.subscribers.forEach((fn) => fn(alarm));
         }
-      });
+        return anyActivated || shouldActivate;
+      }, false);
+      if (!anyAlarmActivated) AudioService.stop(AlarmService.ALARM_AUDIO_ID)
     };
-    if (geo) update(geo);
+    if (geo) updateSubscribers(geo);
     else GeoService.getLocation().then((geo: GeoData) => {
-      update(geo);
+      updateSubscribers(geo);
     });
   }
 

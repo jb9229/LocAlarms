@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Body, Button, Content, Form, Input, Item, Label, Text} from 'native-base';
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
-import {Modal, Slider, StyleSheet, View} from "react-native";
+import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
-
+import {Theme} from "../../theme";
 import {connect} from "react-redux";
 import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
@@ -19,7 +19,7 @@ import autobind from "autobind-decorator";
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
   location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
-  address: {label: "Address", type: formTypes.string},
+  address: {label: "Address", type: formTypes.customOnFocus},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
   schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)}
 });
@@ -81,22 +81,29 @@ export class AlarmForm extends Component {
           }, input.value)]}/>
         </View>;
       case formTypes.number:
-        return (<Item style={styles.sliderContainer}>
+        return (<Item style={styles.noInputContainer}>
           <Label style={styles.sliderLabel}>{label}</Label>
           <Text style={styles.sliderText}>100m</Text>
           <Slider style={styles.slider}
+                  thumbTintColor={Theme.brandPrimary}
+                  maximumTrackTintColor={Theme.brandPrimary}
                   onSlidingComplete={input.onChange}
                   minimumValue={100}
                   maximumValue={1000}
                   value={input.value}/>
           <Text style={styles.sliderText}>1000m</Text>
         </Item>);
+      case formTypes.customOnFocus:
+        return ( <Item error={error && touched} style={styles.inputContainer}>
+          <Label>{label}</Label>
+          <TouchableOpacity onPress={() => {input.onFocus()}} style={styles.noInputContainer}>
+            <Text numberOfLines={1}>{input.value}</Text>
+          </TouchableOpacity>
+        </Item> );
       default: {
         return ( <Item error={error && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
-          <Input {...input} onFocus={() => {
-            input.onFocus();
-          }}/>
+          <Input {...input}/>
         </Item> );
       }
     }
@@ -153,12 +160,12 @@ const styles = StyleSheet.create({
   mapContainer: {
     height: Metrics.screenHeight * 0.5
   },
-  sliderContainer: {
-    paddingVertical: 10,
-    marginRight: 15
-  },
   slider: {
     width: "62%"
+  },
+  noInputContainer: {
+    paddingVertical: 10,
+    marginRight: 15
   },
   sliderLabel: {
     marginRight: 10
