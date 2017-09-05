@@ -13,6 +13,7 @@ export class AlarmService {
 
   static start(getAlarms: () => Alarm[], cancelAlarm: (alarmId: string) => any) {
     AlarmService.getAlarms = getAlarms;
+    GeoService.requestAuthorization();
     GeoService.subscribe((geo: GeoData) => {
       AlarmService.update(geo);
     });

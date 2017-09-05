@@ -1,18 +1,39 @@
-import React from 'react';
-import * as ReactNavigation from 'react-navigation';
+import React, {Component} from 'react';
+import {BackHandler} from "react-native";
+import {addNavigationHelpers} from 'react-navigation';
 import {connect} from 'react-redux';
-import AppNavigation from './AppNavigation';
+import AppNavigation, {Routes} from './AppNavigation';
+import _ from "lodash";
 
-// here is our redux-aware our smart component
-function ReduxNavigation(props) {
-  const {dispatch, nav} = props;
-  const navigation = ReactNavigation.addNavigationHelpers({
-    dispatch,
-    state: nav
-  });
+const getCurrentRouteName = (navigationState) => {
+  if (!navigationState) {
+    return null
+  }
+  const route = navigationState.routes[navigationState.index];
+  if (route.routes) {
+    return getCurrentRouteName(route)
+  }
+  return route.routeName
+};
 
-  return <AppNavigation navigation={navigation}/>;
+@connect((state) => ({nav: state.nav}), null)
+export class ReduxNavigation extends Component {
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      const {dispatch, nav} = this.props;
+      if (_.includes([Routes.main, Routes.preferences], getCurrentRouteName(nav))) {
+        return false;
+      }
+      dispatch({type: 'Navigation/BACK'});
+      return true;
+    });
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+  }
+
+  render() {
+    return <AppNavigation navigation={addNavigationHelpers({dispatch: this.props.dispatch, state: this.props.nav})}/>;
+  }
 }
-
-const mapStateToProps = state => ({nav: state.nav});
-export default connect(mapStateToProps, null)(ReduxNavigation);

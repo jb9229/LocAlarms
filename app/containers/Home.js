@@ -50,8 +50,12 @@ export class Home extends Component {
 
   render() {
     const alarms = this.props.alarms.state;
-    return (
-      <Container>
+    const fab = <Fab onPress={() => {
+      this.props.navigation.navigate(Routes.alarmEditor);
+    }}>
+      <Icon name="add"/>
+    </Fab>;
+    return <Container>
         <Header>
           <Left>
             <TouchableOpacity onPress={() => {
@@ -106,19 +110,10 @@ export class Home extends Component {
         </View>
         {alarms.length > 0 ?
           <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
-            <Fab onPress={() => {
-              this.props.navigation.navigate(Routes.alarmEditor);
-            }}>
-              <Icon name="add"/>
-            </Fab>
-          </Animated.View> : <Fab onPress={() => {
-            this.props.navigation.navigate(Routes.alarmEditor);
-          }}>
-            <Icon name="add"/>
-          </Fab>}
+            {fab}
+          </Animated.View> : fab}
 
       </Container>
-    );
   }
 }
 

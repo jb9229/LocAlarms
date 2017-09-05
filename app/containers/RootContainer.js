@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Modal, StatusBar, StyleSheet, TouchableOpacity, View as RView} from 'react-native';
-import ReduxNavigation from '../navigation/ReduxNavigation';
+import {BackHandler, Modal, StatusBar, StyleSheet, TouchableOpacity, View as RView} from 'react-native';
+import {ReduxNavigation} from '../navigation/ReduxNavigation';
 import {connect} from 'react-redux';
 import {actionDispatcher} from '../redux';
 import {View} from "native-base";
@@ -10,7 +10,6 @@ import {Theme} from "../theme";
 import {isDefined} from "../lib/NullCheck";
 import autobind from "autobind-decorator";
 import moment from "moment";
-import {GeoService} from "../services/Geo";
 
 @connect(null, actionDispatcher)
 export class RootContainer extends Component {
@@ -19,7 +18,6 @@ export class RootContainer extends Component {
     this.state = {
       activeAlarm: null
     };
-    GeoService.requestAuthorization();
     AlarmService.subscribe((alarm) => {
       this.setState({
         activeAlarm: alarm
