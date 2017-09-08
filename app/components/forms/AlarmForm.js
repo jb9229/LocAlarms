@@ -14,6 +14,7 @@ import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
+import {isDefined} from "../../lib/NullCheck";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -36,6 +37,10 @@ const selector = formValueSelector(alarmFormName);
         errors[field] = 'Required';
       }
     });
+    if(values.schedule.startTime > values.schedule.endTime) {
+      errors.schedule = {};
+      errors.schedule.startTime = errors.schedule.endTime = 'End time must be after start time'
+    }
     return errors;
   },
   initialValues: objectMap(fieldData, (value) => value.initialValue),
@@ -69,7 +74,8 @@ export class AlarmForm extends Component {
   }
 
   @autobind
-  renderInput({input, label, type, meta: {touched, error}}) {
+  renderInput({input, label, type, meta: {error}}) {
+    const hasError = isDefined(error);
     switch (type) {
       case formTypes.location:
         return <View style={styles.mapContainer}>
@@ -93,16 +99,16 @@ export class AlarmForm extends Component {
           <Text style={styles.sliderText}>1000m</Text>
         </Item>);
       case formTypes.customOnFocus:
-        return ( <Item error={error && touched} style={styles.inputContainer}>
+        return ( <Item error={hasError} style={styles.inputContainer}>
           <Label>{label}</Label>
           <TouchableOpacity onPress={() => {
             input.onFocus();
           }} style={styles.noInputContainer}>
-            <Text numberOfLines={1}>{input.value}</Text>
+            {input.value ? <Text numberOfLines={1}>{input.value}</Text> : <View style={styles.inputFiller}/>}
           </TouchableOpacity>
         </Item> );
       default: {
-        return ( <Item error={error && touched} style={styles.inputContainer}>
+        return ( <Item error={hasError} style={styles.inputContainer}>
           <Label>{label}</Label>
           <Input {...input}/>
         </Item> );
@@ -176,5 +182,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 15
+  },
+  inputFiller: {
+    width: 200,
+    height: 25
   }
 });

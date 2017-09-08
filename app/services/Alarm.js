@@ -5,6 +5,7 @@ import {AudioService} from "./Audio";
 import {NotificationService} from "./Notification";
 import type {Schedule} from "./Schedule";
 import {ScheduleService} from "./Schedule";
+import {AppStatusService} from "./AppStatus";
 
 export class AlarmService {
   static subscribers = [];
@@ -18,6 +19,7 @@ export class AlarmService {
       AlarmService.update(geo);
     });
     NotificationService.start(cancelAlarm);
+    AppStatusService.start();
   }
 
   static update(geo: ?GeoData) {

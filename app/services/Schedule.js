@@ -8,7 +8,6 @@ export const ScheduleTypes = {
 export type Schedule = {
   type: ScheduleTypes.ONCE | ScheduleTypes.DAILY;
   startDate: string,
-  endDate?: string,
   startTime: number,
   endTime: number,
   lastDeactivated: string

@@ -8,6 +8,7 @@ import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
 import moment from "moment";
 import {Theme} from "../../theme";
+import {isDefined} from "../../lib/NullCheck";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
@@ -42,7 +43,8 @@ export class ScheduleForm extends Component {
   }
 
   @autobind
-  renderInput({input, label, type, meta: {touched, error}}) {
+  renderInput({input, label, type, meta: {error}}) {
+    const hasError = isDefined(error);
     switch (type) {
       case formTypes.picker:
         return <Item>
@@ -58,20 +60,20 @@ export class ScheduleForm extends Component {
           </Picker>
         </Item>;
       case formTypes.date:
-        return <Item>
+        return <Item error={hasError}>
           <Label>{label}</Label>
           <DatePicker date={input.value}
                       onDateChange={input.onChange}
                       mode="date"
                       style={styles.datePicker}
                       format="YYYY-MM-DD"
-                      {...pickerProps}/>
+                      {...pickerProps(hasError)}/>
         </Item>;
       case formTypes.time:
-        return <Item>
+        return <Item error={hasError}>
           <Label>{label}</Label>
           <DatePicker date={input.value} mode="time" format="h:mm A" onDateChange={input.onChange}
-                      style={styles.timePicker} {...pickerProps}/>
+                      style={styles.timePicker} {...pickerProps(hasError)}/>
         </Item>;
     }
   }
@@ -95,21 +97,25 @@ const styles = StyleSheet.create({
     fontFamily: "roboto",
     fontSize: 16.5
   },
+  errorText: {
+    color: Theme.brandDanger
+  },
   confirmText: {
     color: Theme.brandPrimary
   },
   datePicker: {width: 120},
   timePicker: {width: 100},
   picker: {width: 120},
-  icon: {fontSize: Theme.iconSizeSmall, color: Theme.pickerIconColor}
+  icon: {fontSize: Theme.iconSizeSmall, color: Theme.pickerIconColor},
+  errorIcon: {color: Theme.brandDanger}
 });
-const pickerProps = {
-  iconComponent: <Icon name="arrow-dropdown" style={styles.icon}/>,
+const pickerProps = (hasError: boolean) => ({
+  iconComponent: <Icon name="arrow-dropdown" style={[styles.icon, hasError ? styles.errorIcon : null]}/>,
   confirmBtnText: "Confirm",
   customStyles: {
     dateInput: styles.noBorder,
-    dateText: styles.formText,
+    dateText: [styles.formText, hasError ? styles.errorText : null],
     btnTextConfirm: styles.confirmText
   },
   cancelBtnText: "Cancel"
-};
+});

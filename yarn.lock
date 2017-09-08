@@ -4391,8 +4391,8 @@ react-native-vector-icons@~4.1.1:
     yargs "^6.3.0"
 
 react-native@^0.48.1:
-  version "0.48.1"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.48.1.tgz#052ba5a86d3bdb748c288124248727d02b1c0939"
+  version "0.48.2"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.48.2.tgz#9907d5a73640ade3920701e7096fc109ba9cc6e4"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
@@ -4507,9 +4507,9 @@ react-redux@^5.0.6:
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
 
-react-test-renderer@16.0.0-beta.5:
-  version "16.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.0.0-beta.5.tgz#6169e2ea96e8d21645662b369c23239974cd1f11"
+react-test-renderer@16.0.0-rc.2:
+  version "16.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.0.0-rc.2.tgz#8430a2c0a65555c1d3f62df182372f56abc71ec3"
   dependencies:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
@@ -4549,9 +4549,9 @@ reactotron-core-client@^1.12.2:
     ramda "^0.24.1"
     ramdasauce "^2.0.0"
 
-reactotron-react-native@^1.12.2:
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/reactotron-react-native/-/reactotron-react-native-1.12.2.tgz#5fc7f9d651a39ec91ee2810a7d3e2f49c81e0243"
+reactotron-react-native@^1.12.3:
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/reactotron-react-native/-/reactotron-react-native-1.12.3.tgz#5e66c7a12b84e23ad4f236441085da283589e1a2"
   dependencies:
     json-stringify-safe "^5.0.1"
     mitt "^1.1.2"
@@ -4649,9 +4649,9 @@ redux-actions@^2.2.1:
     lodash-es "^4.17.4"
     reduce-reducers "^0.1.0"
 
-redux-form@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.0.3.tgz#80157d01df7de6c8eb2297ad1fbbb092bafa34f5"
+redux-form@^7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.0.4.tgz#2297b6bed40fda8bb58132e261ba0976fb4e530c"
   dependencies:
     deep-equal "^1.0.1"
     es6-error "^4.0.0"

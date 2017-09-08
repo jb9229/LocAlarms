@@ -23,7 +23,7 @@ export class Map extends Component {
   fitLocations(locations) {
     if (this.mapView && this.mapReady) {
       if (locations.length > 0) {
-        const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 20000 : 0.005;
+        const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 15000 : 0.02;
         let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
         for (let location of locations) {
           [minLat, maxLat, minLng, maxLng] = [
