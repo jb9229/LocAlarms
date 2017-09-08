@@ -27,7 +27,8 @@ const reducers = {
   [types.editAlarm]: (state: any[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
   [types.deleteAlarm]: (state: any[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
   [types.deactivateAlarm]: (state: any[], {payload: {id, now}}) => state.map((alarm: Alarm) => {
-    return alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm}
+      return alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm;
+    }
   )
 };
 const selectors = {

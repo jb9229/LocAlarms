@@ -67,8 +67,13 @@ export class Map extends Component {
     return (
       <MapView
         style={StyleSheet.absoluteFill}
-        ref={(elem) => {if (!this.mapView) this.mapView = elem}}
-        onMapReady={() => {this.mapReady = true; this.fitLocations(this.props.locations);}}
+        ref={(elem) => {
+          if (!this.mapView) this.mapView = elem;
+        }}
+        onMapReady={() => {
+          this.mapReady = true;
+          this.fitLocations(this.props.locations);
+        }}
         provider={MapView.PROVIDER_GOOGLE}
         followsUserLocation
         loadingEnabled

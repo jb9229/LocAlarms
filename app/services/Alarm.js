@@ -30,7 +30,7 @@ export class AlarmService {
           AudioService.loop(require("../res/audio/analogue.mp3"), AlarmService.ALARM_AUDIO_ID);
           AlarmService.subscribers.forEach((fn) => fn(alarm));
         } else if (shouldActivate && GeoService.coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
-          NotificationService.warnClose(alarm)
+          NotificationService.warnClose(alarm);
         }
       });
     };

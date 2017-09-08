@@ -7,13 +7,13 @@ import _ from "lodash";
 
 const getCurrentRouteName = (navigationState) => {
   if (!navigationState) {
-    return null
+    return null;
   }
   const route = navigationState.routes[navigationState.index];
   if (route.routes) {
-    return getCurrentRouteName(route)
+    return getCurrentRouteName(route);
   }
-  return route.routeName
+  return route.routeName;
 };
 
 @connect((state) => ({nav: state.nav}), null)

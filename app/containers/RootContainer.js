@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BackHandler, Modal, StatusBar, StyleSheet, TouchableOpacity, View as RView} from 'react-native';
+import {Modal, StatusBar, StyleSheet, TouchableOpacity, View as RView} from 'react-native';
 import {ReduxNavigation} from '../navigation/ReduxNavigation';
 import {connect} from 'react-redux';
 import {actionDispatcher} from '../redux';

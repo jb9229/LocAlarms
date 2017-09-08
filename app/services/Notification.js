@@ -6,13 +6,13 @@ import _ from "lodash";
 PushNotification.configure({
 
   // (optional) Called when Token is generated (iOS and Android)
-  onRegister: function(token) {
-    console.log( 'TOKEN:', token );
+  onRegister: function (token) {
+    console.log('TOKEN:', token);
   },
 
   // (required) Called when a remote or local notification is opened or received
-  onNotification: function(notification) {
-    console.log( 'NOTIFICATION:', notification );
+  onNotification: function (notification) {
+    console.log('NOTIFICATION:', notification);
   },
 
   senderID: "YOUR GCM SENDER ID",
@@ -22,7 +22,7 @@ PushNotification.configure({
     sound: true
   },
   popInitialNotification: true,
-  requestPermissions: true,
+  requestPermissions: true
 });
 
 export class NotificationService {

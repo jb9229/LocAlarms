@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
-import {ScheduleService} from "../../services/Schedule";
+import {ScheduleService, ScheduleTypes} from "../../services/Schedule";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Picker, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
@@ -8,7 +8,6 @@ import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
 import moment from "moment";
 import {Theme} from "../../theme";
-import {ScheduleTypes} from "../../services/Schedule";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},

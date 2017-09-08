@@ -5,7 +5,8 @@ export class GeoService {
   static subscribers = [];
   static watchID = navigator.geolocation.watchPosition((location) => {
     GeoService.pushLocation(location);
-  }, () => {});
+  }, () => {
+  });
 
   static requestAuthorization() {
     if (Platform.OS === "ios") navigator.geolocation.requestAuthorization();
@@ -13,7 +14,8 @@ export class GeoService {
 
   static getLocation(): Promise<GeoData> {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, () => {});
+      navigator.geolocation.getCurrentPosition(resolve, () => {
+      });
     });
   }
 

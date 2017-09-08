@@ -56,64 +56,64 @@ export class Home extends Component {
       <Icon name="add"/>
     </Fab>;
     return <Container>
-        <Header>
-          <Left>
-            <TouchableOpacity onPress={() => {
-              this.props.navigation.navigate(Routes.openDrawer);
-            }}>
-              <Icon name="menu" inverse/>
-            </TouchableOpacity>
-          </Left>
-          <Body>
-          <Title>
-            Alarms
-          </Title>
-          </Body>
-          <Right/>
-        </Header>
-        <View>
-          <Animated.ScrollView
-            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
-            ref={(elem) => {
-              if (!this.scrollRef && elem && elem._component) this.scrollRef = elem._component;
-            }}
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={2}>
-            <Animated.View
-              style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
-                transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
-              }]}>
-              <Map locations={alarms.map((alarm: Alarm) => ({
-                ...alarm.location,
-                radius: alarm.radius,
-                title: alarm.name
-              }))}/>
-            </Animated.View>
-            <Content>
-              <View>
-                {(alarms.length > 0) &&
-                <Card>
-                  {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
-                                                       key={i}
-                                                       onEditPanelOpen={() => {
-                                                         this.setState({
-                                                           editPanelOpen: i
-                                                         });
-                                                       }}
-                                                       editPressed={this.editAlarm}
-                                                       deletePressed={this.deleteAlarm}
-                                                       editPanelOpen={this.state.editPanelOpen === i}/>)}
-                </Card>}
-              </View>
-            </Content>
-          </Animated.ScrollView>
-        </View>
-        {alarms.length > 0 ?
-          <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
-            {fab}
-          </Animated.View> : fab}
+      <Header>
+        <Left>
+          <TouchableOpacity onPress={() => {
+            this.props.navigation.navigate(Routes.openDrawer);
+          }}>
+            <Icon name="menu" inverse/>
+          </TouchableOpacity>
+        </Left>
+        <Body>
+        <Title>
+          Alarms
+        </Title>
+        </Body>
+        <Right/>
+      </Header>
+      <View>
+        <Animated.ScrollView
+          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
+          ref={(elem) => {
+            if (!this.scrollRef && elem && elem._component) this.scrollRef = elem._component;
+          }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={2}>
+          <Animated.View
+            style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
+              transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
+            }]}>
+            <Map locations={alarms.map((alarm: Alarm) => ({
+              ...alarm.location,
+              radius: alarm.radius,
+              title: alarm.name
+            }))}/>
+          </Animated.View>
+          <Content>
+            <View>
+              {(alarms.length > 0) &&
+              <Card>
+                {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
+                                                     key={i}
+                                                     onEditPanelOpen={() => {
+                                                       this.setState({
+                                                         editPanelOpen: i
+                                                       });
+                                                     }}
+                                                     editPressed={this.editAlarm}
+                                                     deletePressed={this.deleteAlarm}
+                                                     editPanelOpen={this.state.editPanelOpen === i}/>)}
+              </Card>}
+            </View>
+          </Content>
+        </Animated.ScrollView>
+      </View>
+      {alarms.length > 0 ?
+        <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
+          {fab}
+        </Animated.View> : fab}
 
-      </Container>
+    </Container>;
   }
 }
 

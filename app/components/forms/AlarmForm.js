@@ -3,7 +3,7 @@ import {Body, Button, Content, Form, Input, Item, Label, Text} from 'native-base
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
 import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
-import {Theme} from "../../theme";
+import {Metrics, Theme} from "../../theme";
 import {connect} from "react-redux";
 import type {GeoData, GeoLocation} from "../../services/Geo";
 import {GeoService} from "../../services/Geo";
@@ -12,7 +12,6 @@ import {AddressSearch} from "./AddressSearch";
 import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
-import {Metrics} from "../../theme";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 
@@ -96,7 +95,9 @@ export class AlarmForm extends Component {
       case formTypes.customOnFocus:
         return ( <Item error={error && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
-          <TouchableOpacity onPress={() => {input.onFocus()}} style={styles.noInputContainer}>
+          <TouchableOpacity onPress={() => {
+            input.onFocus();
+          }} style={styles.noInputContainer}>
             <Text numberOfLines={1}>{input.value}</Text>
           </TouchableOpacity>
         </Item> );
