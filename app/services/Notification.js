@@ -32,6 +32,7 @@ export class NotificationService {
     PushNotification.registerNotificationActions(['Cancel']);
     DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
       const actionData = JSON.parse(dataJSON);
+      PushNotification.cancelLocalNotifications({id: actionData.data.id});
       _.remove(NotificationService.activeAlarmNotifications, (id) => id === actionData.data.id);
       cancelAction(actionData.data.id);
     });
@@ -41,8 +42,7 @@ export class NotificationService {
     if (!_.includes(NotificationService.activeAlarmNotifications, alarm.id)) {
       NotificationService.activeAlarmNotifications.push(alarm.id);
       PushNotification.localNotification({
-        autoCancel: false, // (optional) default: true
-        ongoing: true, // (optional) set whether this is an "ongoing" notification
+        ongoing: false, // (optional) set whether this is an "ongoing" notification
         title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
         message: `${alarm.name} is upcoming`, // (required)
         actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,

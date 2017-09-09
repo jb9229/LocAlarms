@@ -33,8 +33,7 @@ const reducers = {
 };
 
 const sagas = {
-  [types.alarmFormSubmit]: [formSubmit],
-  [types.deactivateAlarm]: [deactivateAlarm]
+  [types.alarmFormSubmit]: [formSubmit]
 };
 
 function* formSubmit(actionCreators, action) {
@@ -47,15 +46,7 @@ function* formSubmit(actionCreators, action) {
     call(function* () {
       yield call(delay, 500); // visual delay
       yield put(resetForm(alarmFormName));
-    }),
-    call(AlarmService.update)
-  ]);
-}
-
-function* deactivateAlarm() {
-  yield all([
-    call(AudioService.stop, AlarmService.ALARM_AUDIO_ID),
-    call(AlarmService.update)
+    })
   ]);
 }
 

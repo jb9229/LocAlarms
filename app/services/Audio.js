@@ -1,4 +1,5 @@
 import Sound from "react-native-sound";
+import {isDefined} from "../lib/NullCheck";
 
 // Enable playback in silence mode (iOS only)
 Sound.setCategory('Playback');
@@ -12,14 +13,16 @@ export class AudioService {
    * @param id
    */
   static loop(requireSound: any, id: string) {
-    let sound = new Sound(requireSound, (error: ?any) => {
-      if (error) {
-        return;
-      }
-      sound.setNumberOfLoops(-1);
-      sound.play();
-    });
-    AudioService.sounds.set(id, sound);
+    if (!isDefined(AudioService.sounds.get(id))) {
+      let sound = new Sound(requireSound, (error: ?any) => {
+        if (error) {
+          return;
+        }
+        sound.setNumberOfLoops(-1);
+        sound.play();
+      });
+      AudioService.sounds.set(id, sound);
+    }
   }
 
   static stop(id: string) {

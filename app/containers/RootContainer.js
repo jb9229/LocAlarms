@@ -8,7 +8,7 @@ import {actionDispatcher} from "../redux";
 import {connect} from "react-redux";
 import {namespaces, stateSelector} from "../redux/index";
 
-@connect(stateSelector(namespaces.status), actionDispatcher)
+@connect(stateSelector(namespaces.status, namespaces.alarms), actionDispatcher)
 export class RootContainer extends Component {
   constructor(props) {
     super(props);
@@ -16,13 +16,14 @@ export class RootContainer extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <View>
         <StatusBar barStyle='light-content'/>
-        <AlarmRinger onClose={(id) => {
-          this.props.actions.alarms.deactivateAlarm(id, moment());
-        }}/>
+        <AlarmRinger alarms={this.props.state.alarms}
+                     onClose={(id) => {
+                       this.props.actions.alarms.deactivateAlarm(id, moment());
+                     }}
+                     geo={this.props.state.status.location}/>
         <ReduxNavigation/>
       </View>
     );

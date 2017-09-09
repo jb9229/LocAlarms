@@ -37,9 +37,9 @@ const selector = formValueSelector(alarmFormName);
         errors[field] = 'Required';
       }
     });
-    if(values.schedule.startTime > values.schedule.endTime) {
+    if (values.schedule.startTime > values.schedule.endTime) {
       errors.schedule = {};
-      errors.schedule.startTime = errors.schedule.endTime = 'End time must be after start time'
+      errors.schedule.startTime = errors.schedule.endTime = 'End time must be after start time';
     }
     return errors;
   },
