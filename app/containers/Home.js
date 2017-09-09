@@ -3,14 +3,15 @@ import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
 import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
-import {actionDispatcher, propsMerger, selectors} from "../redux";
+import {actionDispatcher} from "../redux";
 import {Metrics, Theme} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
 import type {Alarm} from "../services/Alarm";
+import {namespaces, stateSelector} from "../redux/index";
 
-@connect((state) => ({alarms: selectors.alarms.all(state)}), actionDispatcher, propsMerger)
+@connect(stateSelector(namespaces.alarms), actionDispatcher)
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
@@ -34,7 +35,7 @@ export class Home extends Component {
 
   @autobind
   deleteAlarm(alarm) {
-    this.props.alarms.actions.deleteAlarm(alarm.id);
+    this.props.actions.alarms.deleteAlarm(alarm.id);
     this.setState({
       editPanelOpen: -1
     });
@@ -49,7 +50,7 @@ export class Home extends Component {
   }
 
   render() {
-    const alarms = this.props.alarms.state;
+    const alarms = this.props.state.alarms;
     const fab = <Fab onPress={() => {
       this.props.navigation.navigate(Routes.alarmEditor);
     }}>

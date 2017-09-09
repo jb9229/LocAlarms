@@ -23,16 +23,13 @@ const actions = {
   [types.deactivateAlarm]: (id: string, now: string) => ({id, now})
 };
 const reducers = {
-  [types.addAlarm]: (state: any[], {payload: alarm}) => [...state, alarm],
-  [types.editAlarm]: (state: any[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
-  [types.deleteAlarm]: (state: any[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
-  [types.deactivateAlarm]: (state: any[], {payload: {id, now}}) => state.map((alarm: Alarm) => {
+  [types.addAlarm]: (state: Alarm[], {payload: alarm}) => [...state, alarm],
+  [types.editAlarm]: (state: Alarm[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
+  [types.deleteAlarm]: (state: Alarm[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
+  [types.deactivateAlarm]: (state: Alarm[], {payload: {id, now}}) => state.map((alarm: Alarm) => {
       return alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm;
     }
   )
-};
-const selectors = {
-  all: (state) => state
 };
 
 const sagas = {
@@ -63,5 +60,5 @@ function* deactivateAlarm() {
 }
 
 export default {
-  types, actions, reducers, sagas, selectors
+  actions, reducers, sagas
 };

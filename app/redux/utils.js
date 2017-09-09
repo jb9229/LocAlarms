@@ -1,7 +1,6 @@
 import {all, takeLatest} from "redux-saga/effects";
 import {createActions, handleActions} from "redux-actions";
 import {combineReducers as combReducers} from "redux";
-import {createSelector} from "reselect";
 import {objectMap} from "../lib/Operators";
 
 export const combineSagas = (obj: { [string]: any }, actionCreators) => all([].concat.apply([], Object.keys(obj).map((key) => {
@@ -16,4 +15,4 @@ export const combineReducers = (reducers, initialState) => combReducers(objectMa
     type: action.type.replace(`${key}/`, '')
   }) : val));
 
-export const combineSelectors = (selectors) => objectMap(selectors, (val, key) => objectMap(val, (selectFn) => createSelector((state) => state[key], selectFn)));
+

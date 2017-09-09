@@ -27,7 +27,7 @@ export class AlarmEditor extends Component {
       </Header>
       <AlarmForm
         onSubmit={(values) => {
-          this.props.alarms.alarmFormSubmit(values, initialAlarm);
+          this.props.actions.alarms.alarmFormSubmit(values, initialAlarm);
           this.props.navigation.goBack();
         }}
         initialAlarm={initialAlarm}/>

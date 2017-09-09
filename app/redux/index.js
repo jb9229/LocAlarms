@@ -1,30 +1,36 @@
 import {applyMiddleware, bindActionCreators, compose} from 'redux';
 import {reducer as navReducer} from "./Navigator";
-import alarmRedux from "./Alarms";
-import {combineActions, combineReducers, combineSagas, combineSelectors} from "./utils";
+import {combineActions, combineReducers, combineSagas} from "./utils";
 import {reducer as formReducer} from "redux-form";
 import {objectMap} from "../lib/Operators";
+import {persistReducer, persistStore} from "redux-persist";
 import Config from '../config/DebugConfig';
 import createSagaMiddleware from 'redux-saga';
-import {persistReducer, persistStore} from "redux-persist";
 import storage from 'redux-persist/es/storage';
 
-const initialState = {
-  alarms: []
-};
-const namespaces = {
+import alarmRedux from "./Alarms";
+import statusRedux from "./Status";
+
+export const namespaces = {
   alarms: "alarms",
   nav: "nav",
-  form: "form"
+  form: "form",
+  status: "status"
+};
+const initialState = {
+  [namespaces.alarms]: [],
+  [namespaces.status]: {ready: false}
 };
 
 export const actionCreators = combineActions({
-  [namespaces.alarms]: alarmRedux.actions
+  [namespaces.alarms]: alarmRedux.actions,
+  [namespaces.status]: statusRedux.actions
 });
 
 function* rootSaga() {
   yield combineSagas({
-    [namespaces.alarms]: alarmRedux.sagas
+    [namespaces.alarms]: alarmRedux.sagas,
+    [namespaces.status]: statusRedux.sagas
   }, actionCreators);
 }
 
@@ -32,13 +38,14 @@ export const createStore = () => {
   const ReduxConfig = {
     key: 'root',
     storage,
-    blacklist: [namespaces.nav, namespaces.form]
+    blacklist: [namespaces.nav, namespaces.form, namespaces.status]
   };
 
   const rootReducer = persistReducer(ReduxConfig, combineReducers({
     [namespaces.nav]: navReducer,
     [namespaces.alarms]: alarmRedux.reducers,
-    [namespaces.form]: formReducer
+    [namespaces.form]: formReducer,
+    [namespaces.status]: statusRedux.reducers
   }, initialState));
   const middleware = [];
   const enhancers = [];
@@ -54,13 +61,12 @@ export const createStore = () => {
   return {store, persistor};
 };
 
-export const selectors = combineSelectors({
-  [namespaces.alarms]: alarmRedux.selectors
-});
 
-export const actionDispatcher = (dispatch) => objectMap(actionCreators, (value) => bindActionCreators(value, dispatch));
+export const actionDispatcher = (dispatch) => ({actions: objectMap(actionCreators, (value) => bindActionCreators(value, dispatch))});
 
-export const propsMerger = (stateProps, dispatchProps, additionalProps) =>
-  Object.assign({}, additionalProps, Object.keys(dispatchProps).reduce((result, key) => {
-    return Object.assign({}, result, {[key]: Object.assign({}, {actions: dispatchProps[key]}, result[key])});
-  }, objectMap(stateProps, (val) => ({state: val}))));
+export const stateSelector = (...namespaces) => ((state) => ({
+  state: namespaces.reduce((x, namespace) => ({
+    ...x,
+    [namespace]: state[namespace]
+  }), {})
+}));
