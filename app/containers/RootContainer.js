@@ -20,6 +20,10 @@ export class RootContainer extends Component {
       <View>
         <StatusBar barStyle='light-content'/>
         <AlarmRinger alarms={this.props.state.alarms}
+                     alarmSound={require("../res/audio/analogue.mp3")}
+                     cancelAlarm={(id) => {
+                       this.props.actions.alarms.deactivateAlarm(id, moment())
+                     }}
                      onClose={(id) => {
                        this.props.actions.alarms.deactivateAlarm(id, moment());
                      }}

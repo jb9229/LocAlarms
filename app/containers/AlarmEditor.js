@@ -5,9 +5,10 @@ import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
 import {TouchableOpacity} from "react-native";
 import idx from "idx";
-import {isDefined} from "../lib/NullCheck";
+import {isDefined} from "../lib/Operators";
+import {namespaces, stateSelector} from "../redux/index";
 
-@connect(null, actionDispatcher)
+@connect(stateSelector(namespaces.status), actionDispatcher)
 export class AlarmEditor extends Component {
   render() {
     const initialAlarm = idx(this.props, props => props.navigation.state.params.alarm);
@@ -26,6 +27,8 @@ export class AlarmEditor extends Component {
         <Right/>
       </Header>
       <AlarmForm
+        location={this.props.state.status.location}
+        connected={this.props.state.status.connected}
         onSubmit={(values) => {
           this.props.actions.alarms.alarmFormSubmit(values, initialAlarm);
           this.props.navigation.goBack();

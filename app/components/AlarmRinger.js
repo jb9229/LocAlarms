@@ -1,45 +1,66 @@
 import React, {Component} from "react";
-import {Modal, StyleSheet, TouchableOpacity, View} from "react-native";
-import {isDefined} from "../lib/NullCheck";
+import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, View} from "react-native";
+import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
-import type {Alarm} from "../services/Alarm";
-import {AlarmService} from "../services/Alarm";
+import type {Alarm} from "../lib/Types";
 import autobind from "autobind-decorator";
 import PropTypes from "prop-types";
 import moment from "moment";
-import type {GeoData} from "../services/Geo";
-import {GeoService} from "../services/Geo";
-import {ScheduleService} from "../services/Schedule";
-import {AudioService} from "../services/Audio";
-import {NotificationService} from "../services/Notification";
+import type {GeoData} from "../lib/Types";
+import {coordsToMeters, inRadius} from "../lib/Geo";
+import {generateActiveSchedule, inWindow} from "../lib/Schedule";
+import Sound from "react-native-sound";
+import Notification from "react-native-push-notification";
 
 export class AlarmRinger extends Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
     alarms: PropTypes.array.isRequired,
-    geo: PropTypes.object
+    geo: PropTypes.object,
+    alarmSound: PropTypes.number,
+    cancelAlarm: PropTypes.func.isRequired
   };
 
   state = {
     activeAlarm: null
   };
 
+  sound: Sound;
+
+  constructor(props) {
+    super(props);
+    this.sound = new Sound(this.props.alarmSound);
+
+    Notification.registerNotificationActions(['Cancel']);
+    DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
+      const actionData = JSON.parse(dataJSON);
+      Notification.cancelLocalNotifications({id: actionData.data.id});
+      this.props.cancelAlarm(actionData.data.id);
+    });
+  }
+
   componentWillReceiveProps(next) {
     const geo: ?GeoData = next.geo;
     if (geo) {
       const now = moment();
       next.alarms.forEach((alarm: Alarm) => {
-        const shouldActivate = ScheduleService.inWindow(now, ScheduleService.generateActiveSchedule(alarm.schedule, now));
-        const inRange = GeoService.inRadius(alarm.location, alarm.radius, geo.coords);
+        const shouldActivate = inWindow(now, generateActiveSchedule(alarm.schedule, now));
+        const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
         if (shouldActivate && inRange) {
           this.setState({
             activeAlarm: alarm
           }, () => {
-            AudioService.loop(require("../res/audio/analogue.mp3"), AlarmService.ALARM_AUDIO_ID);
+            this.sound.play();
           });
-        } else if (shouldActivate && GeoService.coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
-          NotificationService.warnClose(alarm);
+        } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
+          Notification.localNotification({
+            ongoing: false, // (optional) set whether this is an "ongoing" notification
+            title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+            message: `${alarm.name} is upcoming`, // (required)
+            actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
+            data: alarm
+          });
         }
       });
     }
@@ -47,8 +68,8 @@ export class AlarmRinger extends Component {
 
   @autobind
   cancelAlarm() {
-    this.props.onClose(this.state.activeAlarm.id);
-    AudioService.stop(AlarmService.ALARM_AUDIO_ID);
+    this.props.cancelAlarm(this.state.activeAlarm.id);
+    this.sound.stop();
     this.setState({activeAlarm: null});
   }
 

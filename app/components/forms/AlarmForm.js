@@ -5,8 +5,8 @@ import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
 import {connect} from "react-redux";
-import type {GeoData, GeoLocation} from "../../services/Geo";
-import {GeoService} from "../../services/Geo";
+import type {GeoLocation} from "../../lib/Types";
+import {geocode} from "../../lib/Geo";
 import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
 import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
@@ -14,7 +14,8 @@ import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
-import {isDefined} from "../../lib/NullCheck";
+import {isDefined} from "../../lib/Operators";
+import type {GeoData} from "../../lib/Types";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -48,27 +49,27 @@ const selector = formValueSelector(alarmFormName);
 })
 export class AlarmForm extends Component {
   static propTypes = {
-    initialAlarm: PropTypes.object
+    initialAlarm: PropTypes.object,
+    connected: PropTypes.bool,
+    location: PropTypes.object
   };
   fields = attachRender(fieldData, this.renderInput);
+  state = {
+    searchOpen: false
+  };
 
-  constructor(props) {
-    super(props);
-    if (props.initialAlarm) {
-      setFormValues(this.props.change, props.initialAlarm);
+  componentWillMount() {
+    if (this.props.initialAlarm) {
+      setFormValues(this.props.change, this.props.initialAlarm);
     } else {
-      GeoService.getLocation().then((loc: GeoData) => {
-        this.changeAddress(loc.coords);
-        this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
-      });
+      const loc: GeoData = this.props.location;
+      this.changeAddress(loc.coords);
+      this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
     }
-    this.state = {
-      searchOpen: false
-    };
   }
 
   changeAddress(location: GeoLocation) {
-    GeoService.geocode(location).then((data) => {
+    geocode(location).then((data) => {
       this.props.change(this.fields.address.name, idx(data, (x) => x.results[0].formatted_address));
     });
   }
@@ -127,6 +128,7 @@ export class AlarmForm extends Component {
           }}
           visible={this.state.searchOpen}>
           <AddressSearch
+            connected={this.props.connected}
             initialValue={this.props.value[this.fields.address.name]}
             onBack={(data: ?{ loc: GeoLocation, address: string }) => {
               if (data) {

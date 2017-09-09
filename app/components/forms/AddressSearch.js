@@ -1,17 +1,17 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Card, CardItem, Container, Content, Header, Icon, Input, Item, Text, View} from "native-base";
-import type {GeoData} from "../../services/Geo";
-import {GeoService} from "../../services/Geo";
+import {geocode, search} from "../../lib/Geo";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import _ from "lodash";
-import {AppStatusService} from "../../services/AppStatus";
 
 export class AddressSearch extends Component {
   static propTypes = {
     onSelect: PropTypes.func,
     initialValue: PropTypes.string,
-    onBack: PropTypes.func
+    onBack: PropTypes.func,
+    connected: PropTypes.bool,
+    location: PropTypes.object
   };
   locations: string[] = [];
   changeText: (text: string) => void;
@@ -23,7 +23,7 @@ export class AddressSearch extends Component {
       locations: []
     };
     this.changeText = _.debounce((text) => {
-      GeoService.search(text).then((data) => {
+      search(text, this.props.location).then((data) => {
         this.setState({locations: data});
       });
     }, 250);
@@ -43,7 +43,7 @@ export class AddressSearch extends Component {
                  defaultValue={this.props.initialValue}
                  value={this.state.searchText}
                  autoFocus
-                 disabled={!AppStatusService.connected}
+                 disabled={!this.props.connected}
                  onChangeText={(text) => {
                    this.setState({
                      searchText: text
@@ -60,15 +60,14 @@ export class AddressSearch extends Component {
       </Header>
       <Content keyboardShouldPersistTaps="always">
         <Card style={styles.locationList}>
-          {AppStatusService.connected ?
+          {this.props.connected ?
             <View>
               <TouchableOpacity onPress={() => {
-                GeoService.getLocation().then((geo: GeoData) => {
-                  GeoService.geocode(geo.coords).then((data: { results: { formatted_address: string }[] }) => {
-                    this.props.onBack({
-                      loc: geo.coords,
-                      address: data.results[0].formatted_address
-                    });
+                const geo = this.props.location;
+                geocode(geo.coords).then((data: { results: { formatted_address: string }[] }) => {
+                  this.props.onBack({
+                    loc: geo.coords,
+                    address: data.results[0].formatted_address
                   });
                 });
               }}>

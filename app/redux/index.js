@@ -19,7 +19,7 @@ export const namespaces = {
 };
 const initialState = {
   [namespaces.alarms]: [],
-  [namespaces.status]: {ready: false}
+  [namespaces.status]: {ready: false, isConnected: true}
 };
 
 export const actionCreators = combineActions({

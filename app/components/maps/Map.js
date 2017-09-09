@@ -3,9 +3,9 @@ import MapView from 'react-native-maps';
 import PropTypes from "prop-types";
 import {StyleSheet} from "react-native";
 import {AlarmPin} from "./AlarmPin";
-import {filterUndefined, isDefined} from "../../lib/NullCheck";
-import type {GeoData} from "../../services/Geo";
-import {GeoService} from "../../services/Geo";
+import {filterUndefined, isDefined} from "../../lib/Operators";
+import type {GeoData} from "../../lib/Types";
+import _ from "lodash";
 
 export class Map extends Component {
   static propTypes = {
@@ -15,14 +15,16 @@ export class Map extends Component {
       radius: PropTypes.number,
       title: PropTypes.string,
       onDragEnd: PropTypes.func
-    })).isRequired
+    })).isRequired,
+    location: PropTypes.object
   };
   mapView;
   mapReady = false;
 
   fitLocations(locations) {
-    if (this.mapView && this.mapReady) {
-      if (locations.length > 0) {
+    console.log(locations);
+    if (this.mapReady) {
+      if (_.isArray(locations)) {
         const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 15000 : 0.02;
         let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
         for (let location of locations) {
@@ -39,13 +41,11 @@ export class Map extends Component {
           latitudeDelta: PADDING,
           longitudeDelta: PADDING
         }, 500);
-      } else {
-        GeoService.getLocation().then((geo: GeoData) => {
-          this.mapView.animateToRegion({
-            ...geo.coords,
-            latitudeDelta: 0.0001,
-            longitudeDelta: 0.0001
-          });
+      } else if (isDefined(locations)) {
+        this.mapView.animateToRegion({
+          ...locations.coords,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
         });
       }
     }
@@ -53,7 +53,9 @@ export class Map extends Component {
 
   componentWillReceiveProps(props) {
     const locations = filterUndefined(props.locations), oldLocations = this.props.locations;
-    if (locations.length !== oldLocations.length || locations.some((location, index) =>
+    if (locations.length === 0) {
+      this.fitLocations(this.props.location);
+    } else if (locations.length !== oldLocations.length || locations.some((location, index) =>
         location.latitude !== oldLocations[index].latitude ||
         location.longitude !== oldLocations[index].longitude ||
         location.radius !== oldLocations[index].radius)
@@ -72,7 +74,8 @@ export class Map extends Component {
         }}
         onMapReady={() => {
           this.mapReady = true;
-          this.fitLocations(this.props.locations);
+          if (locations.length === 0) this.fitLocations(this.props.location);
+          else this.fitLocations(locations);
         }}
         provider={MapView.PROVIDER_GOOGLE}
         followsUserLocation

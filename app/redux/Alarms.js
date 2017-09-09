@@ -3,10 +3,8 @@ import {all, call, put} from "redux-saga/effects";
 import {reset as resetForm} from "redux-form";
 import {alarmFormName} from "../components/forms/AlarmForm";
 import uuid from "uuid/v4";
-import type {Alarm} from "../services/Alarm";
-import {AlarmService} from "../services/Alarm";
+import type {Alarm} from "../lib/Types";
 import _ from "lodash";
-import {AudioService} from "../services/Audio";
 
 const types = {
   alarmFormSubmit: "alarmFormSubmit",
@@ -42,12 +40,8 @@ function* formSubmit(actionCreators, action) {
   } else {
     yield put(actionCreators.addAlarm(_.merge({}, action.payload.alarm, {id: uuid()})));
   }
-  yield all([
-    call(function* () {
-      yield call(delay, 500); // visual delay
-      yield put(resetForm(alarmFormName));
-    })
-  ]);
+  yield call(delay, 500); // visual delay
+  yield put(resetForm(alarmFormName));
 }
 
 export default {

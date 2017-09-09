@@ -8,10 +8,10 @@ import {Metrics, Theme} from "../theme";
 import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
-import type {Alarm} from "../services/Alarm";
+import type {Alarm} from "../lib/Types";
 import {namespaces, stateSelector} from "../redux/index";
 
-@connect(stateSelector(namespaces.alarms), actionDispatcher)
+@connect(stateSelector(namespaces.alarms, namespaces.status), actionDispatcher)
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
@@ -80,15 +80,15 @@ export class Home extends Component {
           }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={2}>
-          <Animated.View
-            style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
-              transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
-            }]}>
-            <Map locations={alarms.map((alarm: Alarm) => ({
-              ...alarm.location,
-              radius: alarm.radius,
-              title: alarm.name
-            }))}/>
+          <Animated.View style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {
+            transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
+          }]}>
+            <Map location={this.props.state.status.location}
+                 locations={alarms.map((alarm: Alarm) => ({
+                   ...alarm.location,
+                   radius: alarm.radius,
+                   title: alarm.name
+                 }))}/>
           </Animated.View>
           <Content>
             <View>
