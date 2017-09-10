@@ -95,10 +95,13 @@ export class AddressSearch extends Component {
                     </Text>
                   </CardItem>
                 </TouchableOpacity>
-              )}</View> : <CardItem><Icon name="cloud-outline"/>
+              )}</View> :
+            <CardItem>
+              <Icon name="cloud-outline"/>
               <Text numberOfLines={1}>
                 You must be connected to wifi to search
-              </Text></CardItem>
+              </Text>
+            </CardItem>
           }
         </Card>
       </Content>

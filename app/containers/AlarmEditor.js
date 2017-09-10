@@ -3,7 +3,7 @@ import {Body, Container, Header, Icon, Left, Right, Title} from "native-base";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
-import {TouchableNativeFeedback, TouchableOpacity, View} from "react-native";
+import {TouchableOpacity} from "react-native";
 import idx from "idx";
 import {isDefined} from "../lib/Operators";
 import {namespaces, stateSelector} from "../redux/index";
@@ -28,7 +28,7 @@ export class AlarmEditor extends Component {
       </Header>
       <AlarmForm
         location={this.props.state.status.location}
-        connected={this.props.state.status.connected}
+        connected={this.props.state.status.isConnected}
         onSubmit={(values) => {
           this.props.actions.alarms.alarmFormSubmit(values, initialAlarm);
           this.props.navigation.goBack();
