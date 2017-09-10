@@ -1,11 +1,26 @@
+import {beep, buzzer, digital} from "../res";
+
 export const ScheduleTypes = {
   ONCE: "Once",
   DAILY: "Daily"
 };
 export const SoundFiles = {
-  analogue: "Analogue",
-  digital: "Digital"
+  digital: "Digital",
+  buzzer: "Buzzer",
+  beep: "Beep"
 };
+
+export function getSoundFile(name) {
+  switch (name) {
+    case SoundFiles.digital:
+      return digital;
+    case SoundFiles.buzzer:
+      return buzzer;
+    case SoundFiles.beep:
+      return beep;
+  }
+}
+
 export type Schedule = {
   type: ScheduleTypes.ONCE | ScheduleTypes.DAILY;
   startDate: string,

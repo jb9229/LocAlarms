@@ -16,7 +16,7 @@ export default (variables = variable) => {
     },
     ".branded": {
       color: variables.brandPrimary,
-      fontWeight: "900",
+      fontWeight: "900"
     }
   };
 

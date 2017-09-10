@@ -3,7 +3,7 @@ import {Body, Container, Header, Icon, Left, Right, Title} from "native-base";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
-import {TouchableOpacity} from "react-native";
+import {TouchableNativeFeedback, TouchableOpacity, View} from "react-native";
 import idx from "idx";
 import {isDefined} from "../lib/Operators";
 import {namespaces, stateSelector} from "../redux/index";

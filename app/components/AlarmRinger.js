@@ -42,27 +42,34 @@ export class AlarmRinger extends Component {
   componentWillReceiveProps(next) {
     const geo: ?GeoData = next.geo;
     if (geo) {
-      const now = moment();
-      next.alarms.forEach((alarm: Alarm) => {
-        const shouldActivate = inWindow(now, generateActiveSchedule(alarm.schedule, now));
-        const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
-        if (shouldActivate && inRange) {
-          this.setState({
-            activeAlarm: alarm
-          }, () => {
-            this.sound.play();
-          });
-        } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
-          Notification.localNotification({
-            ongoing: false, // (optional) set whether this is an "ongoing" notification
-            title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
-            message: `${alarm.name} is upcoming`, // (required)
-            actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
-            data: alarm
-          });
-        }
-      });
+      this.checkAlarms(next.alarms, geo);
     }
+    if (next.alarmSound !== this.props.alarmSound) {
+      this.sound = new Sound(next.alarmSound);
+    }
+  }
+
+  checkAlarms(alarms, geo) {
+    const now = moment();
+    alarms.forEach((alarm: Alarm) => {
+      const shouldActivate = inWindow(now, generateActiveSchedule(alarm.schedule, now));
+      const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
+      if (shouldActivate && inRange) {
+        this.setState({
+          activeAlarm: alarm
+        }, () => {
+          this.sound.play();
+        });
+      } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
+        Notification.localNotification({
+          ongoing: false, // (optional) set whether this is an "ongoing" notification
+          title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+          message: `${alarm.name} is upcoming`, // (required)
+          actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
+          data: alarm
+        });
+      }
+    });
   }
 
   @autobind

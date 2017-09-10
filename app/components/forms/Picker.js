@@ -27,45 +27,62 @@ export class Picker extends Component {
     cancel: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    if (this.props.mode === PickerModes.radio) {
+      this.state = {
+        modalOpen: false,
+        selectedValue: this.props.value
+      };
+    }
+  }
+
   render() {
     if (this.props.mode === PickerModes.radio) {
       return <View>
-        <Modal animationType="slide"
+        <Modal animationType="fade"
                transparent
                onRequestClose={() => {
                }}
-               visible={true}>
+               visible={this.state.modalOpen}>
           <View style={styles.modal}>
-            <RView style={{
-              width: "100%",
-              paddingHorizontal: 30,
-              flex: 1,
-              paddingVertical: (Metrics.screenHeight - 100 - this.props.values.length * 47) / 2
-            }}>
-              <Card>
+            <RView
+              style={[styles.cardContainer, {paddingVertical: (Metrics.screenHeight - 100 - this.props.values.length * 45) / 2}]}>
+              <Card style={styles.topPadding}>
                 {this.props.values.map((val, i) =>
-                  <TouchableNativeFeedback key={i} onPress={() => {this.props.onChange(val)}}>
+                  <TouchableNativeFeedback key={i} onPress={() => {
+                    if (this.props.onChange) this.props.onChange(val);
+                    this.setState({selectedValue: val});
+                  }}>
                     <CardItem>
                       <Text>{val}</Text>
                       <RView style={styles.rightContainer}>
-                        <Radio selected={this.props.value === val} disabled style={styles.rightItem}/>
+                        <Radio selected={this.state.selectedValue === val} disabled style={styles.rightItem}/>
                       </RView>
                     </CardItem>
                   </TouchableNativeFeedback>
                 )}
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.rightMargin} onPress={this.props.cancel}>
-                      <Text>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.props.confirm}>
-                      <Text branded>OK</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity style={styles.rightMargin} onPress={() => {
+                    if (this.props.cancel) this.props.cancel(this.state.selectedValue);
+                    this.setState({modalOpen: false, selectedValue: this.props.value});
+                  }}>
+                    <Text>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+                    if (this.props.confirm) this.props.confirm(this.state.selectedValue);
+                    this.setState({modalOpen: false});
+                  }}>
+                    <Text branded>OK</Text>
+                  </TouchableOpacity>
+                </View>
               </Card>
             </RView>
           </View>
         </Modal>
-        <TouchableOpacity style={styles.pickerBtn}>
+        <TouchableOpacity style={styles.pickerBtn} onPress={() => {
+          this.setState({modalOpen: true});
+        }}>
           <Text>
             {this.props.value}
           </Text>
@@ -108,5 +125,11 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   footer: {flexDirection: "row", alignSelf: "flex-end", alignItems: "center", paddingRight: 20},
-  rightMargin: {marginRight: 20}
+  rightMargin: {marginRight: 20},
+  topPadding: {paddingTop: 5},
+  cardContainer: {
+    width: "100%",
+    paddingHorizontal: 30,
+    flex: 1
+  }
 });

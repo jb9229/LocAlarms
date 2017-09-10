@@ -23,7 +23,7 @@ export const namespaces = {
 const initialState = {
   [namespaces.alarms]: [],
   [namespaces.status]: {ready: false, isConnected: true},
-  [namespaces.preferences]: {alarmSound: SoundFiles.analogue}
+  [namespaces.preferences]: {alarmSound: SoundFiles.digital}
 };
 
 export const actionCreators = combineActions({
