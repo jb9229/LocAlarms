@@ -1,9 +1,16 @@
 {
-  "presets": ["react-native", "react-native-stage-0/decorator-support"],
-  "plugins": ["idx"],
+  "presets": [
+    "react-native",
+    "react-native-stage-0/decorator-support"
+  ],
+  "plugins": [
+    "idx"
+  ],
   "env": {
     "production": {
-      "plugins": ["ignite-ignore-reactotron", "transform-react-jsx-source"]
+      "plugins": [
+        "transform-react-jsx-source"
+      ]
     },
     "development": {
       "plugins": [
