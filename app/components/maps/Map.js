@@ -15,7 +15,8 @@ export class Map extends Component {
       title: PropTypes.string,
       onDragEnd: PropTypes.func
     })).isRequired,
-    location: PropTypes.object
+    location: PropTypes.object,
+    onPress: PropTypes.func
   };
   mapView;
   mapReady = false;
@@ -70,6 +71,7 @@ export class Map extends Component {
         ref={(elem) => {
           if (!this.mapView) this.mapView = elem;
         }}
+        onPress={this.props.onPress}
         onMapReady={() => {
           this.mapReady = true;
           if (locations.length === 0) this.fitLocations(this.props.location);

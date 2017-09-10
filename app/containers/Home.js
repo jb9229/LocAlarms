@@ -24,6 +24,8 @@ export class Home extends Component {
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
+  fabTranslate = new Animated.Value(0);
+  headerUp = false;
   scrollRef;
 
   constructor(props) {
@@ -47,6 +49,16 @@ export class Home extends Component {
     this.setState({
       editPanelOpen: -1
     });
+  }
+
+  @autobind
+  mapPressed() {
+    Animated.timing(this.fabTranslate, {
+      toValue: this.headerUp ? 0 : 100,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+    this.headerUp = !this.headerUp;
   }
 
   render() {
@@ -84,6 +96,9 @@ export class Home extends Component {
             transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
           }]}>
             <Map location={this.props.state.status.location}
+                 onPress={() => {
+                   if (alarms.length === 0) this.mapPressed();
+                 }}
                  locations={alarms.map((alarm: Alarm) => ({
                    ...alarm.location,
                    radius: alarm.radius,
@@ -110,9 +125,12 @@ export class Home extends Component {
         </Animated.ScrollView>
       </View>
       {alarms.length > 0 ?
-        <Animated.View style={[styles.fab, alarms.length > 0 ? {transform: [{scale: this.fabScale}]} : null]}>
+        <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
           {fab}
-        </Animated.View> : fab}
+        </Animated.View> :
+        <Animated.View style={[styles.fab, {transform: [{translateY: this.fabTranslate}]}]}>
+          {fab}
+        </Animated.View>}
 
     </Container>;
   }
@@ -120,7 +138,7 @@ export class Home extends Component {
 
 const styles = StyleSheet.create({
   noAlarmMap: {
-    height: Metrics.screenHeight - Theme.toolbarHeight
+    height: Metrics.screenHeight
   },
   alarmMap: {
     height: Metrics.screenHeight * 0.85 - Theme.toolbarHeight
