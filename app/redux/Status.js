@@ -24,7 +24,8 @@ const sagas = {
 };
 
 function* startup(actionCreators) {
-  yield all([call(geo, actionCreators), call(network, actionCreators), call(setup)]);
+  yield call(setup);
+  yield all([call(geo, actionCreators), call(network, actionCreators)]);
 }
 
 function* setup() {
@@ -38,7 +39,7 @@ function* setup() {
     onNotification: (notification) => {
       console.log('NOTIFICATION:', notification);
     },
-    senderID: "YOUR GCM SENDER ID",
+    senderID: "204453940088",
     permissions: {
       alert: true,
       badge: true,

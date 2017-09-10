@@ -3,14 +3,14 @@ import type {GeoData, GeoLocation} from "./Types";
 
 export function geocode(location: GeoLocation): Promise<any[]> {
   return getRequest("https://maps.googleapis.com/maps/api/geocode/json", {
-    key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
+    key: "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ",
     latlng: `${location.latitude},${location.longitude}`
   });
 }
 
 export function search(address: string, radius: number, geo: GeoData): Promise<{ formatted_address: string, geometry: { location: { lat: number, lng: number } } }[]> {
   return getRequest("https://maps.googleapis.com/maps/api/place/textsearch/json", Object.assign({
-    key: "AIzaSyAtdwFVNtWYJYMmSsHeOW_dSlNTKiXFv08",
+    key: "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ",
     query: address
   }, radius ? {
     location: `${geo.coords.latitude},${geo.coords.longitude}`,

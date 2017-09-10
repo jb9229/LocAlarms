@@ -3,7 +3,7 @@
   "plugins": ["idx"],
   "env": {
     "production": {
-      "plugins": ["ignite-ignore-reactotron"]
+      "plugins": ["ignite-ignore-reactotron", "transform-react-jsx-source"]
     },
     "development": {
       "plugins": [

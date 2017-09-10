@@ -20,6 +20,7 @@ export class AlarmPin extends Component {
         coordinate={{latitude: this.props.latitude, longitude: this.props.longitude}}
         draggable={Boolean(this.props.onDragEnd)}
         pinColor={Theme.brandPrimary}
+        title={this.props.title}
         onDragEnd={e => {
           if (this.props.onDragEnd) this.props.onDragEnd(e.nativeEvent.coordinate);
         }}/>
