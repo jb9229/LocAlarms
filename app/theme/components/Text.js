@@ -1,3 +1,4 @@
+import {Platform} from "react-native";
 import variable from "../material";
 
 export default (variables = variable) => {
@@ -12,6 +13,10 @@ export default (variables = variable) => {
     ".subtitle": {
       fontSize: variables.titleFontSize - 3,
       fontWeight: "700"
+    },
+    ".branded": {
+      color: variables.brandPrimary,
+      fontWeight: "900",
     }
   };
 

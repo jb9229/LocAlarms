@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {StyleSheet} from "react-native";
 import {AlarmPin} from "./AlarmPin";
 import {filterUndefined, isDefined} from "../../lib/Operators";
-import type {GeoData} from "../../lib/Types";
 import _ from "lodash";
 
 export class Map extends Component {
@@ -22,7 +21,6 @@ export class Map extends Component {
   mapReady = false;
 
   fitLocations(locations) {
-    console.log(locations);
     if (this.mapReady) {
       if (_.isArray(locations)) {
         const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 15000 : 0.02;

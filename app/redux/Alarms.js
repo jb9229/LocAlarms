@@ -1,5 +1,5 @@
 import {delay} from "redux-saga";
-import {all, call, put} from "redux-saga/effects";
+import {call, put} from "redux-saga/effects";
 import {reset as resetForm} from "redux-form";
 import {alarmFormName} from "../components/forms/AlarmForm";
 import uuid from "uuid/v4";

@@ -3,11 +3,10 @@ import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, View} from "rea
 import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
-import type {Alarm} from "../lib/Types";
+import type {Alarm, GeoData} from "../lib/Types";
 import autobind from "autobind-decorator";
 import PropTypes from "prop-types";
 import moment from "moment";
-import type {GeoData} from "../lib/Types";
 import {coordsToMeters, inRadius} from "../lib/Geo";
 import {generateActiveSchedule, inWindow} from "../lib/Schedule";
 import Sound from "react-native-sound";

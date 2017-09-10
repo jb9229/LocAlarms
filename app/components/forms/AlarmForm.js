@@ -5,17 +5,15 @@ import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
 import {connect} from "react-redux";
-import type {GeoLocation} from "../../lib/Types";
+import type {GeoData, GeoLocation} from "../../lib/Types";
 import {geocode} from "../../lib/Geo";
 import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
 import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
-import {objectMap} from "../../lib/Operators";
+import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
-import {isDefined} from "../../lib/Operators";
-import type {GeoData} from "../../lib/Types";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},

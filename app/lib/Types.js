@@ -2,6 +2,10 @@ export const ScheduleTypes = {
   ONCE: "Once",
   DAILY: "Daily"
 };
+export const SoundFiles = {
+  analogue: "Analogue",
+  digital: "Digital"
+};
 export type Schedule = {
   type: ScheduleTypes.ONCE | ScheduleTypes.DAILY;
   startDate: string,

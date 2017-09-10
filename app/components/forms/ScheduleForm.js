@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Field} from "redux-form";
 import {currentTimeToMinutes, stringToTime, timeToString} from "../../lib/Schedule";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
-import {Icon, Item, Label, Picker, Text} from "native-base";
+import {Icon, Item, Label, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
 import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
@@ -10,6 +10,7 @@ import moment from "moment";
 import {Theme} from "../../theme";
 import {isDefined} from "../../lib/Operators";
 import {ScheduleTypes} from "../../lib/Types";
+import {Picker, PickerModes} from "./Picker";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
@@ -50,15 +51,10 @@ export class ScheduleForm extends Component {
       case formTypes.picker:
         return <Item>
           <Label>{label}</Label>
-          <Picker
-            mode="dropdown"
-            iosIcon={<Icon name="arrow-dropdown"/>}
-            selectedValue={input.value}
-            style={styles.picker}
-            onValueChange={input.onChange}>
-            <Picker.Item label={ScheduleTypes.ONCE} value={ScheduleTypes.ONCE}/>
-            <Picker.Item label={ScheduleTypes.DAILY} value={ScheduleTypes.DAILY}/>
-          </Picker>
+          <Picker mode={PickerModes.dropdown}
+                  value={input.value}
+                  values={[ScheduleTypes.ONCE, ScheduleTypes.DAILY]}
+                  onChange={input.onChange}/>
         </Item>;
       case formTypes.date:
         return <Item error={hasError}>

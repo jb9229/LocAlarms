@@ -14,9 +14,6 @@ const {store, persistor} = createStore();
 class App extends Component {
   constructor(props) {
     super(props);
-    // AlarmService.start(() => selectors.alarms.all(store.getState()), (id) => {
-    //   store.dispatch(actionCreators.alarms.deactivateAlarm(id, moment()));
-    // });
   }
 
   render() {
