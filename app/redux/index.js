@@ -10,26 +10,21 @@ import storage from 'redux-persist/es/storage';
 
 import alarmRedux from "./Alarms";
 import statusRedux from "./Status";
-import preferencesRedux from "./Preferences";
-import {SoundFiles} from "../lib/Types";
 
 export const namespaces = {
   alarms: "alarms",
   nav: "nav",
   form: "form",
-  status: "status",
-  preferences: "preferences"
+  status: "status"
 };
 const initialState = {
   [namespaces.alarms]: [],
-  [namespaces.status]: {ready: false, isConnected: true},
-  [namespaces.preferences]: {alarmSound: SoundFiles.digital}
+  [namespaces.status]: {ready: false, isConnected: true}
 };
 
 export const actionCreators = combineActions({
   [namespaces.alarms]: alarmRedux.actions,
-  [namespaces.status]: statusRedux.actions,
-  [namespaces.preferences]: preferencesRedux.actions
+  [namespaces.status]: statusRedux.actions
 });
 
 function* rootSaga() {
@@ -50,8 +45,7 @@ export const createStore = () => {
     [namespaces.nav]: navReducer,
     [namespaces.alarms]: alarmRedux.reducers,
     [namespaces.form]: formReducer,
-    [namespaces.status]: statusRedux.reducers,
-    [namespaces.preferences]: preferencesRedux.reducers
+    [namespaces.status]: statusRedux.reducers
   }, initialState));
   const middleware = [];
   const enhancers = [];

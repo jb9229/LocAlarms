@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, View, Vibration} from "react-native";
+import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, Vibration, View} from "react-native";
 import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
 import type {Alarm, GeoData} from "../lib/Types";
+import {getSoundFile} from "../lib/Types";
 import autobind from "autobind-decorator";
 import PropTypes from "prop-types";
 import moment from "moment";
@@ -18,7 +19,6 @@ export class AlarmRinger extends Component {
     onClose: PropTypes.func.isRequired,
     alarms: PropTypes.array.isRequired,
     geo: PropTypes.object,
-    alarmSound: PropTypes.number,
     cancelAlarm: PropTypes.func.isRequired
   };
 
@@ -26,15 +26,12 @@ export class AlarmRinger extends Component {
     activeAlarm: null
   };
 
-  sound: Sound;
-
+  playingSound: Sound = null;
   warnedAlarms = [];
-  vibrating = false;
+  vibrateId;
 
   constructor(props) {
     super(props);
-    this.sound = new Sound(this.props.alarmSound);
-
     Notification.registerNotificationActions(['Cancel']);
     DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
       const alarm: Alarm = JSON.parse(dataJSON).alarm;
@@ -49,9 +46,6 @@ export class AlarmRinger extends Component {
     if (geo) {
       this.checkAlarms(next.alarms, geo);
     }
-    if (next.alarmSound !== this.props.alarmSound) {
-      this.sound = new Sound(next.alarmSound);
-    }
   }
 
   checkAlarms(alarms, geo) {
@@ -63,8 +57,15 @@ export class AlarmRinger extends Component {
         this.setState({
           activeAlarm: alarm
         }, () => {
-          this.sound.play();
-          if (!this.vibrating) {Vibration.vibrate([2000], true); this.vibrating = true}
+          if (!this.playingSound) {
+            this.playingSound = getSoundFile(alarm.preferences.alarmSound);
+            this.playingSound.play();
+          }
+          if (alarm.preferences.vibrate && !isDefined(this.vibrateId)) {
+            this.vibrateId = setInterval(() => {
+              Vibration.vibrate();
+            }, 750);
+          }
         });
       } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
         this.warnedAlarms.push(alarm);
@@ -82,10 +83,10 @@ export class AlarmRinger extends Component {
   @autobind
   cancelAlarm() {
     this.props.cancelAlarm(this.state.activeAlarm.id);
-    this.sound.stop();
+    this.playingSound.stop();
+    this.playingSound = null;
     this.setState({activeAlarm: null});
-    Vibration.cancel();
-    this.vibrating = false;
+    clearInterval(this.vibrateId)
   }
 
   render() {

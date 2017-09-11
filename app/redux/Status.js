@@ -53,9 +53,9 @@ function* setup() {
 function* geo(actionCreators) {
   const geoObservable = eventChannel(emitter => {
     navigator.geolocation.getCurrentPosition(emitter, () => {
-    });
+    }, {enableHighAccuracy: true});
     const watchID = navigator.geolocation.watchPosition(emitter, () => {
-    });
+    }, {enableHighAccuracy: true});
     return () => {
       navigator.geolocation.clearWatch(watchID);
     };

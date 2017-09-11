@@ -5,7 +5,9 @@ export const formTypes = {
   location: "Location",
   number: "Number",
   string: "Text",
-  picker: "Enum",
+  picker: "Picker",
+  radio: "Radio",
+  checkbox: "Checkbox",
   date: "Date",
   time: "Time",
   customOnFocus: "customOnFocus"

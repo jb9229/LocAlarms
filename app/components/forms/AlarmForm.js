@@ -11,6 +11,7 @@ import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
 import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
+import {fieldData as preferenceField, PreferencesForm} from "./Preferences";
 import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
@@ -20,7 +21,8 @@ const fieldData = createFields({
   location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
   address: {label: "Address", type: formTypes.customOnFocus},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
-  schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)}
+  schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)},
+  preferences: {initialValue: objectMap(preferenceField, val => val.initialValue)}
 });
 
 export const alarmFormName = 'AlarmForm';
@@ -151,6 +153,9 @@ export class AlarmForm extends Component {
           <Field {...this.fields.radius}/>
           <FormSection {...this.fields.schedule}>
             <ScheduleForm/>
+          </FormSection>
+          <FormSection {...this.fields.preferences}>
+            <PreferencesForm/>
           </FormSection>
           <Body>
           <Button style={{margin: 10}} primary onPress={handleSubmit}>

@@ -7,9 +7,8 @@ import moment from "moment";
 import {actionDispatcher} from "../redux";
 import {connect} from "react-redux";
 import {namespaces, stateSelector} from "../redux/index";
-import {getSoundFile} from "../lib/Types";
 
-@connect(stateSelector(namespaces.status, namespaces.alarms, namespaces.preferences), actionDispatcher)
+@connect(stateSelector(namespaces.status, namespaces.alarms), actionDispatcher)
 export class RootContainer extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +20,6 @@ export class RootContainer extends Component {
       <View>
         <StatusBar barStyle='light-content'/>
         <AlarmRinger alarms={this.props.state.alarms}
-                     alarmSound={getSoundFile(this.props.state.preferences.alarmSound)}
                      cancelAlarm={(id) => {
                        this.props.actions.alarms.deactivateAlarm(id, moment());
                      }}

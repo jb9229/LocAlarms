@@ -75,13 +75,7 @@ export class Home extends Component {
           Alarms
         </Title>
         </Body>
-        <Right>
-          <TouchableOpacity onPress={() => {
-            this.props.navigation.navigate(Routes.preferences);
-          }}>
-            <Icon name="settings" inverse/>
-          </TouchableOpacity>
-        </Right>
+        <Right/>
       </Header>
       <View>
         <Animated.ScrollView

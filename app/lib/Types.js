@@ -1,4 +1,5 @@
 import {beep, buzzer, digital} from "../res";
+import Sound from "react-native-sound";
 
 export const ScheduleTypes = {
   ONCE: "Once",
@@ -10,7 +11,7 @@ export const SoundFiles = {
   beep: "Beep"
 };
 
-export function getSoundFile(name) {
+export function getSoundFile(name): Sound {
   switch (name) {
     case SoundFiles.digital:
       return digital;
@@ -29,6 +30,10 @@ export type Schedule = {
   startTime: number,
   endTime: number,
   lastDeactivated: string
+}
+export type Preferences = {
+  vibrate: boolean,
+  alarmSound: string
 }
 export type GeoData = {
   coords: GeoLocation & {
@@ -50,4 +55,5 @@ export type Alarm = {
   location: GeoLocation;
   radius: number;
   schedule: Schedule;
+  preferences: Preferences
 }
