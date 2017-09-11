@@ -1,6 +1,20 @@
 import React, {Component} from 'react';
-import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
-import {Body, Card, Container, Content, Fab, Header, Icon, Right, Title, View} from "native-base";
+import {Animated, Modal, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Body,
+  Card,
+  CardItem,
+  Container,
+  Content,
+  Fab,
+  Header,
+  Icon,
+  Right,
+  Switch,
+  Text,
+  Title,
+  View
+} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
@@ -12,8 +26,9 @@ import type {Alarm} from "../lib/Types";
 import {namespaces, stateSelector} from "../redux/index";
 import {generateActiveSchedule} from "../lib/Schedule";
 import moment from "moment";
+import Color from "color";
 
-@connect(stateSelector(namespaces.alarms, namespaces.status), actionDispatcher)
+@connect(stateSelector(namespaces.alarms, namespaces.status, namespaces.preferences), actionDispatcher)
 export class Home extends Component {
   scroll = new Animated.Value(0);
   fabScale = this.scroll.interpolate({
@@ -32,7 +47,8 @@ export class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editPanelOpen: -1
+      editPanelOpen: -1,
+      menuOpen: false
     };
   }
 
@@ -76,11 +92,32 @@ export class Home extends Component {
           <TouchableOpacity style={styles.horizontalPadding}>
             <Icon name="search" inverse/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.leftPadding}>
+          <TouchableOpacity style={styles.leftPadding} onPress={() => {
+            this.setState({menuOpen: true});
+          }}>
             <Icon name="more" inverse/>
           </TouchableOpacity>
         </Right>
       </Header>
+      <Modal transparent visible={this.state.menuOpen} animationType="fade" onRequestClose={() => {
+      }}>
+        <TouchableOpacity style={[StyleSheet.absoluteFill, {elevation: 100, zIndex: 100}]}
+                          activeOpacity={0}
+                          onPress={() => {
+                            this.setState({menuOpen: false});
+                          }}>
+          <Card style={{position: "absolute", right: 0, top: Theme.toolbarHeight - 5}}>
+            <CardItem>
+              <Text>Show archived alarms</Text>
+              <Switch value={this.props.state.preferences.showArchived}
+                      onValueChange={this.props.actions.preferences.setShowArchived}
+                      thumbTintColor={Theme.brandPrimary}
+                      onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
+                      tintColor="lightgrey"/>
+            </CardItem>
+          </Card>
+        </TouchableOpacity>
+      </Modal>
       <View>
         <Animated.ScrollView
           onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}

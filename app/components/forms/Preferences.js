@@ -8,6 +8,7 @@ import {isDefined} from "../../lib/Operators";
 import {getSoundFile, SoundFiles} from "../../lib/Types";
 import {Picker, PickerModes} from "./Picker";
 import {Theme} from "../../theme";
+import Color from "color";
 
 export const fieldData = createFields({
   alarmSound: {initialValue: SoundFiles.digital, label: "Alarm sound", type: formTypes.radio},
@@ -65,7 +66,7 @@ export class PreferencesForm extends Component {
           <Switch value={input.value}
                   onValueChange={input.onChange}
                   thumbTintColor={Theme.brandPrimary}
-                  onTintColor="lightgrey"
+                  onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
                   tintColor="lightgrey"/>
         </Item>;
     }
