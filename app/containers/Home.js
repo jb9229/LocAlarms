@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, Modal, StyleSheet, TouchableOpacity} from 'react-native';
+import {Animated, Modal, StyleSheet, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
 import {
   Body,
   Card,
@@ -75,7 +75,6 @@ export class Home extends Component {
 
   render() {
     const alarms = this.filterPastAlarm();
-    console.log(alarms);
     const fab = <Fab onPress={() => {
       this.props.navigation.navigate(Routes.alarmEditor);
     }}>
@@ -101,20 +100,22 @@ export class Home extends Component {
       </Header>
       <Modal transparent visible={this.state.menuOpen} animationType="fade" onRequestClose={() => {
       }}>
-        <TouchableOpacity style={[StyleSheet.absoluteFill, {elevation: 100, zIndex: 100}]}
+        <TouchableOpacity style={[StyleSheet.absoluteFill, styles.menuHideDetector]}
                           activeOpacity={0}
                           onPress={() => {
                             this.setState({menuOpen: false});
                           }}>
-          <Card style={{position: "absolute", right: 0, top: Theme.toolbarHeight - 5}}>
+          <Card style={styles.menuCard}>
+            <TouchableNativeFeedback onPress={() => {this.props.actions.preferences.setShowArchived(!this.props.state.preferences.showArchived)}}>
             <CardItem>
               <Text>Show archived alarms</Text>
               <Switch value={this.props.state.preferences.showArchived}
-                      onValueChange={this.props.actions.preferences.setShowArchived}
+                      disabled
                       thumbTintColor={Theme.brandPrimary}
                       onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
                       tintColor="lightgrey"/>
             </CardItem>
+            </TouchableNativeFeedback>
           </Card>
         </TouchableOpacity>
       </Modal>
@@ -181,5 +182,12 @@ const styles = StyleSheet.create({
   },
   leftPadding: {
     paddingLeft: 15
+  },
+  menuHideDetector: {
+    elevation: 100,
+    zIndex: 100
+  },
+  menuCard: {
+    position: "absolute", right: 0, top: Theme.toolbarHeight - 5
   }
 });
