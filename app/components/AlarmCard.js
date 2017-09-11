@@ -50,7 +50,7 @@ export class AlarmCard extends Component {
   @autobind
   getTimeTo(): string {
     const now = moment();
-    for (let schedule of generateActiveSchedule(this.props.alarm.schedule, now, false)) {
+    for (let schedule: {start: Moment, end: Moment} of generateActiveSchedule(this.props.alarm.schedule, now, false)) {
       if (schedule.start.isAfter(now)) {
         return `Activates in ${moment.duration(schedule.start.diff(now)).humanize()}`
       }

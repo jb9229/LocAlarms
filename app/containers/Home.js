@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, StyleSheet} from 'react-native';
+import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
 import {Body, Card, Container, Content, Fab, Header, Icon, Right, Title, View} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
@@ -54,7 +54,7 @@ export class Home extends Component {
 
   filterPastAlarm() {
     const now = moment();
-    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm.schedule, now, false).some((schedule) => schedule.end.isAfter(now)))
+    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm.schedule, now, false).some((schedule) => schedule.end.isAfter(now)));
   }
 
   render() {
@@ -69,10 +69,17 @@ export class Home extends Component {
       <Header>
         <Body>
         <Title>
-          Alarms
+          Your Alarms
         </Title>
         </Body>
-        <Right/>
+        <Right>
+          <TouchableOpacity style={styles.horizontalPadding}>
+            <Icon name="search" inverse/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.leftPadding}>
+            <Icon name="more" inverse/>
+          </TouchableOpacity>
+        </Right>
       </Header>
       <View>
         <Animated.ScrollView
@@ -111,11 +118,9 @@ export class Home extends Component {
           </Content>
         </Animated.ScrollView>
       </View>
-      {alarms.length > 0 ?
-        <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
-          {fab}
-        </Animated.View> : fab}
-
+      {alarms.length > 0 ? <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
+        {fab}
+      </Animated.View> : fab}
     </Container>;
   }
 }
@@ -133,5 +138,11 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     width: 100
+  },
+  horizontalPadding: {
+    paddingHorizontal: 10
+  },
+  leftPadding: {
+    paddingLeft: 15
   }
 });

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Body, Button, Content, Form, Input, Item, Label, Text} from 'native-base';
+import {Body, Button, Content, Form, Icon, Input, Item, Label, Text} from 'native-base';
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
 import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
@@ -158,8 +158,9 @@ export class AlarmForm extends Component {
             <PreferencesForm/>
           </FormSection>
           <Body>
-          <Button style={{margin: 10}} primary onPress={handleSubmit}>
-            <Text>Submit</Text>
+          <Button style={{margin: 10}} primary onPress={handleSubmit} rounded>
+            <Text>Save</Text>
+            <Icon name="checkmark" style={styles.marginLeft} small/>
           </Button>
           </Body>
         </Form>
@@ -191,5 +192,8 @@ const styles = StyleSheet.create({
   inputFiller: {
     width: 200,
     height: 25
+  },
+  marginLeft: {
+    marginLeft: 10
   }
 });

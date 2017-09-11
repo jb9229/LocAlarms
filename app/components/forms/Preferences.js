@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Field} from "redux-form";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
-import {CheckBox, Item, Label, Text} from "native-base";
+import {Item, Label, Switch, Text} from "native-base";
 import {StyleSheet, View} from "react-native";
 import autobind from "autobind-decorator";
 import {isDefined} from "../../lib/Operators";
@@ -11,7 +11,7 @@ import {Theme} from "../../theme";
 
 export const fieldData = createFields({
   alarmSound: {initialValue: SoundFiles.digital, label: "Alarm sound", type: formTypes.radio},
-  vibrate: {initialValue: true, label: "Vibrate", type: formTypes.checkbox}
+  vibrate: {initialValue: true, label: "Vibrate", type: formTypes.switchType}
 });
 
 export class PreferencesForm extends Component {
@@ -59,14 +59,14 @@ export class PreferencesForm extends Component {
                     values={[SoundFiles.digital, SoundFiles.buzzer, SoundFiles.beep]}/>
           </View>
         </Item>;
-      case formTypes.checkbox:
+      case formTypes.switchType:
         return <Item style={styles.item}>
           <Label>{label}</Label>
-          <CheckBox color={Theme.brandPrimary}
-                    checked={input.value}
-                    onPress={() => {
-                      input.onChange(!input.value);
-                    }}/>
+          <Switch value={input.value}
+                  onValueChange={input.onChange}
+                  thumbTintColor={Theme.brandPrimary}
+                  onTintColor="lightgrey"
+                  tintColor="lightgrey"/>
         </Item>;
     }
   }
