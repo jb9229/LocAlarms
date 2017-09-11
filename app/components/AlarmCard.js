@@ -64,12 +64,11 @@ export class AlarmCard extends Component {
           </TouchableOpacity>
         </Animated.View>
         <TouchableOpacity style={styles.right} onPress={this.pressed}>
-          <Animated.View style={[styles.margin, {transform: [{rotate: this.arrowOrientation}]}]}>
+          <Animated.View style={{transform: [{rotate: this.arrowOrientation}]}}>
             <Icon name="ios-arrow-down" small/>
           </Animated.View>
         </TouchableOpacity>
       </View>
-
       </Body>
     </CardItem>;
   }
@@ -102,8 +101,5 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1
-  },
-  margin: {
-    margin: 10
   }
 });

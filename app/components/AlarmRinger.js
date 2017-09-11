@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, View} from "react-native";
+import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, View, Vibration} from "react-native";
 import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
@@ -11,6 +11,7 @@ import {coordsToMeters, inRadius} from "../lib/Geo";
 import {generateActiveSchedule, inWindow} from "../lib/Schedule";
 import Sound from "react-native-sound";
 import Notification from "react-native-push-notification";
+import _ from "lodash";
 
 export class AlarmRinger extends Component {
   static propTypes = {
@@ -27,15 +28,19 @@ export class AlarmRinger extends Component {
 
   sound: Sound;
 
+  warnedAlarms = [];
+  vibrating = false;
+
   constructor(props) {
     super(props);
     this.sound = new Sound(this.props.alarmSound);
 
     Notification.registerNotificationActions(['Cancel']);
     DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
-      const actionData = JSON.parse(dataJSON);
-      Notification.cancelLocalNotifications({id: actionData.data.id});
-      this.props.cancelAlarm(actionData.data.id);
+      const alarm: Alarm = JSON.parse(dataJSON).alarm;
+      Notification.cancelLocalNotifications({data: alarm});
+      this.warnedAlarms = _.without(this.warnedAlarms, alarm);
+      this.props.cancelAlarm(alarm.id);
     });
   }
 
@@ -59,14 +64,16 @@ export class AlarmRinger extends Component {
           activeAlarm: alarm
         }, () => {
           this.sound.play();
+          if (!this.vibrating) {Vibration.vibrate([2000], true); this.vibrating = true}
         });
-      } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5)) {
+      } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
+        this.warnedAlarms.push(alarm);
         Notification.localNotification({
           ongoing: false, // (optional) set whether this is an "ongoing" notification
           title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
           message: `${alarm.name} is upcoming`, // (required)
           actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
-          data: alarm
+          alarm
         });
       }
     });
@@ -77,6 +84,8 @@ export class AlarmRinger extends Component {
     this.props.cancelAlarm(this.state.activeAlarm.id);
     this.sound.stop();
     this.setState({activeAlarm: null});
+    Vibration.cancel();
+    this.vibrating = false;
   }
 
   render() {

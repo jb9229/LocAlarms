@@ -41,9 +41,9 @@ export class Preferences extends Component {
       <Header>
         <Left>
           <TouchableOpacity onPress={() => {
-            this.props.navigation.navigate(Routes.openDrawer);
+            this.props.navigation.goBack();
           }}>
-            <Icon name="menu" inverse/>
+            <Icon name="arrow-back" inverse/>
           </TouchableOpacity>
         </Left>
         <Body>

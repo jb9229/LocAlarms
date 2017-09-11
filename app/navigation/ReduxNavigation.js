@@ -21,7 +21,7 @@ export class ReduxNavigation extends Component {
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', () => {
       const {dispatch, nav} = this.props;
-      if (_.includes([Routes.main, Routes.preferences], getCurrentRouteName(nav))) {
+      if (getCurrentRouteName(nav) === Routes.home) {
         return false;
       }
       dispatch({type: 'Navigation/BACK'});

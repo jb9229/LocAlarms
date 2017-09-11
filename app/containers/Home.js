@@ -70,19 +70,18 @@ export class Home extends Component {
     </Fab>;
     return <Container>
       <Header>
-        <Left>
-          <TouchableOpacity onPress={() => {
-            this.props.navigation.navigate(Routes.openDrawer);
-          }}>
-            <Icon name="menu" inverse/>
-          </TouchableOpacity>
-        </Left>
         <Body>
         <Title>
           Alarms
         </Title>
         </Body>
-        <Right/>
+        <Right>
+          <TouchableOpacity onPress={() => {
+            this.props.navigation.navigate(Routes.preferences);
+          }}>
+            <Icon name="settings" inverse/>
+          </TouchableOpacity>
+        </Right>
       </Header>
       <View>
         <Animated.ScrollView
@@ -138,7 +137,7 @@ export class Home extends Component {
 
 const styles = StyleSheet.create({
   noAlarmMap: {
-    height: Metrics.screenHeight
+    height: Metrics.screenHeight - Theme.toolbarHeight
   },
   alarmMap: {
     height: Metrics.screenHeight * 0.85 - Theme.toolbarHeight
