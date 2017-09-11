@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
 import {Theme} from "../theme";
+import autobind from "autobind-decorator";
 
 const EDIT_PANEL_HEIGHT = 35;
 
@@ -19,19 +20,22 @@ export class AlarmCard extends Component {
     inputRange: [0, EDIT_PANEL_HEIGHT],
     outputRange: ['0deg', '180deg']
   });
+  closed = true;
 
+  @autobind
   pressed() {
-    const closed = this.animatedHeight.__getValue() === 0;
-    if (closed) {
+    if (this.closed) {
       this.props.onEditPanelOpen();
     }
-    const config = {toValue: closed ? EDIT_PANEL_HEIGHT : 0, duration: 300};
+    const config = {toValue: this.closed ? EDIT_PANEL_HEIGHT : 0, duration: 300};
     Animated.timing(this.animatedHeight, config).start();
+    this.closed = !this.closed;
   }
 
   componentWillReceiveProps(next) {
-    if (next.editPanelOpen === false && this.animatedHeight.__getValue() !== 0) {
+    if (next.editPanelOpen === false && !this.closed) {
       Animated.timing(this.animatedHeight, {toValue: 0, duration: 300}).start();
+      this.closed = true;
     }
   }
 
@@ -59,10 +63,8 @@ export class AlarmCard extends Component {
             </View>
           </TouchableOpacity>
         </Animated.View>
-        <TouchableOpacity style={styles.right} onPress={() => {
-          this.pressed();
-        }}>
-          <Animated.View style={{transform: [{rotate: this.arrowOrientation}]}}>
+        <TouchableOpacity style={styles.right} onPress={this.pressed}>
+          <Animated.View style={[styles.margin, {transform: [{rotate: this.arrowOrientation}]}]}>
             <Icon name="ios-arrow-down" small/>
           </Animated.View>
         </TouchableOpacity>
@@ -100,5 +102,8 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1
+  },
+  margin: {
+    margin: 10
   }
 });

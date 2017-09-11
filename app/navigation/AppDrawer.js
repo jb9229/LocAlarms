@@ -11,11 +11,11 @@ export class AppDrawer extends Component {
 }
 
 const drawerProps = {
-  labelStyle: {color: variables.inverseTextColor},
-  activeBackgroundColor: Color(variables.brandPrimary).darken(0.15).string()
+  labelStyle: {color: Color("white").darken(0.95).string(), fontSize: 16},
+  activeBackgroundColor: Color("white").darken(0.1).string()
 };
 const styles = StyleSheet.create({
   drawer: {
-    backgroundColor: variables.brandPrimary
+
   }
 });

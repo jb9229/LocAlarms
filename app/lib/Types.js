@@ -18,6 +18,8 @@ export function getSoundFile(name) {
       return buzzer;
     case SoundFiles.beep:
       return beep;
+    default:
+      return digital;
   }
 }
 
