@@ -36,3 +36,11 @@ export function isDefined(x) {
 export function filterUndefined(array: any[]): any[] {
   return array.filter(allProperties);
 }
+
+export function execEvery(fn, ms) {
+  let now = new Date(), delay = ms - now % ms;
+  setTimeout(() => {
+    fn();
+    setInterval(fn, 60000);
+  }, delay);
+}

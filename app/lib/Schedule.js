@@ -4,7 +4,7 @@ import _ from "lodash";
 import type {Schedule} from "./Types";
 import {ScheduleTypes} from "./Types";
 
-export function generateActiveSchedule(schedule: Schedule, winStart: ?Moment): { start: Moment, end: Moment }[] {
+export function generateActiveSchedule(schedule: Schedule, winStart: ?Moment, filterDeactivated = true): { start: Moment, end: Moment }[] {
   const windowStart = moment(winStart);
   let result = [];
   switch (schedule.type) {
@@ -30,7 +30,7 @@ export function generateActiveSchedule(schedule: Schedule, winStart: ?Moment): {
       break;
     }
   }
-  return result.filter((range) => !(isDefined(schedule.lastDeactivated) && moment(schedule.lastDeactivated).isSame(range.start, "d")));
+  return filterDeactivated ? result.filter((range) => !(isDefined(schedule.lastDeactivated) && moment(schedule.lastDeactivated).isSame(range.start, "d"))) : result;
 }
 
 

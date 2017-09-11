@@ -4,6 +4,9 @@ import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
 import {Theme} from "../theme";
 import autobind from "autobind-decorator";
+import {generateActiveSchedule} from "../lib/Schedule";
+import moment, {Moment, Duration} from "moment";
+import {execEvery} from "../lib/Operators";
 
 const EDIT_PANEL_HEIGHT = 35;
 
@@ -22,6 +25,11 @@ export class AlarmCard extends Component {
   });
   closed = true;
 
+  constructor(props) {
+    super(props);
+    execEvery(() => {this.forceUpdate()}, 60000);
+  }
+
   @autobind
   pressed() {
     if (this.closed) {
@@ -39,11 +47,22 @@ export class AlarmCard extends Component {
     }
   }
 
+  @autobind
+  getTimeTo(): string {
+    const now = moment();
+    for (let schedule of generateActiveSchedule(this.props.alarm.schedule, now, false)) {
+      if (schedule.start.isAfter(now)) {
+        return `Activates in ${moment.duration(schedule.start.diff(now)).humanize()}`
+      }
+    }
+    return "Is active";
+  }
+
   render() {
     return <CardItem bordered>
       <Body>
-      <Title inverse thin large>6:00 PM</Title>
-      <Text subtitle>{this.props.alarm.name}</Text>
+      <Title inverse thin large>{this.props.alarm.name}</Title>
+      <Text subtitle>{this.getTimeTo()}</Text>
       <View style={styles.fullWidth}>
         <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
           <TouchableOpacity style={styles.item} onPress={() => {

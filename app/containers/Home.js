@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
-import {Body, Card, Container, Content, Fab, Header, Icon, Left, Right, Title, View} from "native-base";
+import {Animated, StyleSheet} from 'react-native';
+import {Body, Card, Container, Content, Fab, Header, Icon, Right, Title, View} from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
@@ -10,6 +10,8 @@ import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
 import type {Alarm} from "../lib/Types";
 import {namespaces, stateSelector} from "../redux/index";
+import {generateActiveSchedule} from "../lib/Schedule";
+import moment from "moment";
 
 @connect(stateSelector(namespaces.alarms, namespaces.status), actionDispatcher)
 export class Home extends Component {
@@ -24,7 +26,6 @@ export class Home extends Component {
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
-  fabTranslate = new Animated.Value(0);
   headerUp = false;
   scrollRef;
 
@@ -51,18 +52,14 @@ export class Home extends Component {
     });
   }
 
-  @autobind
-  mapPressed() {
-    Animated.timing(this.fabTranslate, {
-      toValue: this.headerUp ? 0 : 100,
-      duration: 200,
-      useNativeDriver: true
-    }).start();
-    this.headerUp = !this.headerUp;
+  filterPastAlarm() {
+    const now = moment();
+    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm.schedule, now, false).some((schedule) => schedule.end.isAfter(now)))
   }
 
   render() {
-    const alarms = this.props.state.alarms;
+    const alarms = this.filterPastAlarm();
+    console.log(alarms);
     const fab = <Fab onPress={() => {
       this.props.navigation.navigate(Routes.alarmEditor);
     }}>
@@ -89,9 +86,6 @@ export class Home extends Component {
             transform: [{translateY: Animated.divide(this.scroll, 4)}, {scale: this.mapScale}]
           }]}>
             <Map location={this.props.state.status.location}
-                 onPress={() => {
-                   if (alarms.length === 0) this.mapPressed();
-                 }}
                  locations={alarms.map((alarm: Alarm) => ({
                    ...alarm.location,
                    radius: alarm.radius,
@@ -120,10 +114,7 @@ export class Home extends Component {
       {alarms.length > 0 ?
         <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
           {fab}
-        </Animated.View> :
-        <Animated.View style={[styles.fab, {transform: [{translateY: this.fabTranslate}]}]}>
-          {fab}
-        </Animated.View>}
+        </Animated.View> : fab}
 
     </Container>;
   }

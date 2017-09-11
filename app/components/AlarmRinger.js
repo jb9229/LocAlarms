@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {DeviceEventEmitter, Modal, StyleSheet, TouchableOpacity, Vibration, View} from "react-native";
-import {isDefined} from "../lib/Operators";
+import {execEvery, isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
 import type {Alarm, GeoData} from "../lib/Types";
@@ -39,6 +39,9 @@ export class AlarmRinger extends Component {
       this.warnedAlarms = _.without(this.warnedAlarms, alarm);
       this.props.cancelAlarm(alarm.id);
     });
+    execEvery(() => {
+      this.checkAlarms(this.props.alarms, this.props.geo);
+    }, 60000);
   }
 
   componentWillReceiveProps(next) {
@@ -48,6 +51,7 @@ export class AlarmRinger extends Component {
     }
   }
 
+  @autobind
   checkAlarms(alarms, geo) {
     const now = moment();
     alarms.forEach((alarm: Alarm) => {
@@ -86,7 +90,7 @@ export class AlarmRinger extends Component {
     this.playingSound.stop();
     this.playingSound = null;
     this.setState({activeAlarm: null});
-    clearInterval(this.vibrateId)
+    clearInterval(this.vibrateId);
   }
 
   render() {
