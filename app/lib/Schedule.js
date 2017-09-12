@@ -7,10 +7,11 @@ import {ScheduleTypes} from "./Types";
 export function generateActiveSchedule(alarm: Alarm, winStart: ?Moment, filterDeactivated = true): { start: Moment, end: Moment }[] {
   const windowStart = moment(winStart);
   let result = [];
+  const schedule = alarm.schedule;
   if (!alarm.hasSchedule) {
-    result.push({start: windowStart.startOf("d"), end: windowStart.endOf("d")})
+    result.push({start: moment(windowStart).startOf("d"), end: moment(windowStart).endOf("d")});
+    result.push({start: addMoment(windowStart, 1, "d").startOf("d"), end: addMoment(windowStart, 1, "d").endOf("d")});
   } else {
-    const schedule = alarm.schedule;
     switch (schedule.type) {
       case ScheduleTypes.ONCE: {
         const start = moment(schedule.startDate);
