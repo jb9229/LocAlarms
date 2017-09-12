@@ -54,6 +54,7 @@ export type Alarm = {
   name: string;
   location: GeoLocation;
   radius: number;
-  schedule: Schedule;
+  hasSchedule: boolean;
+  schedule: ?Schedule;
   preferences: Preferences
 }

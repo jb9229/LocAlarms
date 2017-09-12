@@ -70,11 +70,11 @@ export class Home extends Component {
 
   filterPastAlarm() {
     const now = moment();
-    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm.schedule, now, false).some((schedule) => schedule.end.isAfter(now)));
+    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm, now, false).some((schedule) => schedule.end.isAfter(now)));
   }
 
   render() {
-    const alarms = this.filterPastAlarm();
+    const alarms = this.props.state.preferences.showArchived ? this.props.state.alarms : this.filterPastAlarm();
     const fab = <Fab onPress={() => {
       this.props.navigation.navigate(Routes.alarmEditor);
     }}>
@@ -106,15 +106,17 @@ export class Home extends Component {
                             this.setState({menuOpen: false});
                           }}>
           <Card style={styles.menuCard}>
-            <TouchableNativeFeedback onPress={() => {this.props.actions.preferences.setShowArchived(!this.props.state.preferences.showArchived)}}>
-            <CardItem>
-              <Text>Show archived alarms</Text>
-              <Switch value={this.props.state.preferences.showArchived}
-                      disabled
-                      thumbTintColor={Theme.brandPrimary}
-                      onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
-                      tintColor="lightgrey"/>
-            </CardItem>
+            <TouchableNativeFeedback onPress={() => {
+              this.props.actions.preferences.setShowArchived(!this.props.state.preferences.showArchived);
+            }}>
+              <CardItem>
+                <Text>Show archived alarms</Text>
+                <Switch value={this.props.state.preferences.showArchived}
+                        disabled
+                        thumbTintColor={Theme.brandPrimary}
+                        onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
+                        tintColor="lightgrey"/>
+              </CardItem>
             </TouchableNativeFeedback>
           </Card>
         </TouchableOpacity>

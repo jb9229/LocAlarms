@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Body, Button, Content, Form, Icon, Input, Item, Label, Text} from 'native-base';
+import {Body, Button, Content, Form, Icon, Input, Item, Label, Switch, Text} from 'native-base';
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
-import {Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Modal, Slider, StyleSheet, TouchableOpacity, View, LayoutAnimation} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
 import {connect} from "react-redux";
@@ -15,12 +15,15 @@ import {fieldData as preferenceField, PreferencesForm} from "./Preferences";
 import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
+import Color from "color";
+import _ from "lodash";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
   location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
   address: {label: "Address", type: formTypes.customOnFocus},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
+  hasSchedule: {label: "Schedule", initialValue: true, type: formTypes.switchType},
   schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)},
   preferences: {initialValue: objectMap(preferenceField, val => val.initialValue)}
 });
@@ -77,6 +80,19 @@ export class AlarmForm extends Component {
   @autobind
   renderInput({input, label, type, meta: {error}}) {
     const hasError = isDefined(error);
+    if (label === this.fields.hasSchedule.label) {
+      return <Item itemDivider>
+        <Text>Schedule</Text>
+        <Switch value={input.value}
+                onValueChange={(x) => {
+                  input.onChange(x);
+                  LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+                }}
+                thumbTintColor={Theme.brandPrimary}
+                onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}
+                tintColor="lightgrey"/>
+      </Item>;
+    }
     switch (type) {
       case formTypes.location:
         return <View style={styles.mapContainer}>
@@ -118,7 +134,7 @@ export class AlarmForm extends Component {
   }
 
   render() {
-    const {change, handleSubmit} = this.props;
+    const {change, handleSubmit, value} = this.props;
     return (
       <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         <Modal
@@ -151,8 +167,9 @@ export class AlarmForm extends Component {
                    });
                  }}/>
           <Field {...this.fields.radius}/>
+          <Field {...this.fields.hasSchedule}/>
           <FormSection {...this.fields.schedule}>
-            <ScheduleForm/>
+            {value.hasSchedule ? <ScheduleForm/> : <View/>}
           </FormSection>
           <FormSection {...this.fields.preferences}>
             <PreferencesForm/>

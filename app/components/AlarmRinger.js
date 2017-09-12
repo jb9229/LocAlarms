@@ -55,7 +55,7 @@ export class AlarmRinger extends Component {
   checkAlarms(alarms, geo) {
     const now = moment();
     alarms.forEach((alarm: Alarm) => {
-      const shouldActivate = inWindow(now, generateActiveSchedule(alarm.schedule, now));
+      const shouldActivate = inWindow(now, generateActiveSchedule(alarm, now));
       const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
       if (shouldActivate && inRange) {
         this.setState({

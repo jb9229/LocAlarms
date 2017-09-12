@@ -63,7 +63,8 @@ function* geo(actionCreators) {
   try {
     while (true) {
       // take(END) will cause the saga to terminate by jumping to the finally block
-      yield put(actionCreators.setLocation(yield take(geoObservable)));
+      const location = yield take(geoObservable);
+      yield put(actionCreators.setLocation(location));
     }
   } finally {
 
@@ -83,7 +84,8 @@ function* network(actionCreators) {
   });
   try {
     while (true) {
-      yield put(actionCreators.setConnected(yield take(isConnected)));
+      const connected = yield take(isConnected);
+      yield put(actionCreators.setConnected(connected));
     }
   } finally {
 

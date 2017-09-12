@@ -77,9 +77,6 @@ export class ScheduleForm extends Component {
 
   render() {
     return <View>
-      <Item itemDivider>
-        <Text>Schedule</Text>
-      </Item>
       <Field {...this.fields.type}/>
       <Field {...this.fields.startDate}/>
       <Field {...this.fields.startTime}/>

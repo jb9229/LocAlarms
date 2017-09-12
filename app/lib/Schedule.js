@@ -1,33 +1,38 @@
 import moment, {Moment} from "moment";
 import {isDefined} from "./Operators";
 import _ from "lodash";
-import type {Schedule} from "./Types";
+import type {Alarm, Schedule} from "./Types";
 import {ScheduleTypes} from "./Types";
 
-export function generateActiveSchedule(schedule: Schedule, winStart: ?Moment, filterDeactivated = true): { start: Moment, end: Moment }[] {
+export function generateActiveSchedule(alarm: Alarm, winStart: ?Moment, filterDeactivated = true): { start: Moment, end: Moment }[] {
   const windowStart = moment(winStart);
   let result = [];
-  switch (schedule.type) {
-    case ScheduleTypes.ONCE: {
-      const start = moment(schedule.startDate);
-      result.push({
-        start: addMoment(start, schedule.startTime, "m"),
-        end: addMoment(start, schedule.endTime, "m")
-      });
-      break;
-    }
-    case ScheduleTypes.DAILY: {
-      let current = windowStart.startOf("d");
-      if (current.isSameOrAfter(moment(schedule.startDate))) {
-        for (let i = 0; i < 5; i++) { // generates 5 days ahead
-          result.push({
-            start: addMoment(current, schedule.startTime, "m"),
-            end: addMoment(current, schedule.endTime, "m")
-          });
-          current = addMoment(current, 1, "d");
-        }
+  if (!alarm.hasSchedule) {
+    result.push({start: windowStart.startOf("d"), end: windowStart.endOf("d")})
+  } else {
+    const schedule = alarm.schedule;
+    switch (schedule.type) {
+      case ScheduleTypes.ONCE: {
+        const start = moment(schedule.startDate);
+        result.push({
+          start: addMoment(start, schedule.startTime, "m"),
+          end: addMoment(start, schedule.endTime, "m")
+        });
+        break;
       }
-      break;
+      case ScheduleTypes.DAILY: {
+        let current = windowStart.startOf("d");
+        if (current.isSameOrAfter(moment(schedule.startDate))) {
+          for (let i = 0; i < 5; i++) { // generates 5 days ahead
+            result.push({
+              start: addMoment(current, schedule.startTime, "m"),
+              end: addMoment(current, schedule.endTime, "m")
+            });
+            current = addMoment(current, 1, "d");
+          }
+        }
+        break;
+      }
     }
   }
   return filterDeactivated ? result.filter((range) => !(isDefined(schedule.lastDeactivated) && moment(schedule.lastDeactivated).isSame(range.start, "d"))) : result;

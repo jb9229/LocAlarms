@@ -4,8 +4,8 @@ import {Body, CardItem, Icon, Text, Title, View} from "native-base";
 import {Animated, StyleSheet, TouchableOpacity} from "react-native";
 import {Theme} from "../theme";
 import autobind from "autobind-decorator";
-import {generateActiveSchedule} from "../lib/Schedule";
-import moment, {Moment, Duration} from "moment";
+import {generateActiveSchedule, inWindow} from "../lib/Schedule";
+import moment, {Moment} from "moment";
 import {execEvery} from "../lib/Operators";
 
 const EDIT_PANEL_HEIGHT = 35;
@@ -24,10 +24,17 @@ export class AlarmCard extends Component {
     outputRange: ['0deg', '180deg']
   });
   closed = true;
+  stop;
 
   constructor(props) {
     super(props);
-    execEvery(() => {this.forceUpdate()}, 60000);
+    this.stop = execEvery(() => {
+      this.forceUpdate();
+    }, 60000);
+  }
+
+  componentWillUnmount() {
+    if (this.stop) this.stop();
   }
 
   @autobind
@@ -50,12 +57,14 @@ export class AlarmCard extends Component {
   @autobind
   getTimeTo(): string {
     const now = moment();
-    for (let schedule: {start: Moment, end: Moment} of generateActiveSchedule(this.props.alarm.schedule, now, false)) {
+    const schedules = generateActiveSchedule(this.props.alarm, now, false);
+    if (inWindow(now, schedules)) {return "Is active"}
+    for (let schedule: { start: Moment, end: Moment } of schedules) {
       if (schedule.start.isAfter(now)) {
-        return `Activates in ${moment.duration(schedule.start.diff(now)).humanize()}`
+        return `Activates in ${moment.duration(schedule.start.diff(now)).humanize()}`;
       }
     }
-    return "Is active";
+    return "Is archived";
   }
 
   render() {
@@ -84,7 +93,7 @@ export class AlarmCard extends Component {
         </Animated.View>
         <TouchableOpacity style={styles.right} onPress={this.pressed}>
           <Animated.View style={{transform: [{rotate: this.arrowOrientation}]}}>
-            <Icon name="ios-arrow-down" small/>
+            <Icon name="ios-arrow-down"/>
           </Animated.View>
         </TouchableOpacity>
       </View>

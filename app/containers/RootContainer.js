@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar, UIManager} from 'react-native';
 import {ReduxNavigation} from '../navigation/ReduxNavigation';
 import {View} from "native-base";
 import {AlarmRinger} from "../components/AlarmRinger";
@@ -13,6 +13,7 @@ export class RootContainer extends Component {
   constructor(props) {
     super(props);
     this.props.actions.status.startup();
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
   render() {

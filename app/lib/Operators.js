@@ -39,8 +39,12 @@ export function filterUndefined(array: any[]): any[] {
 
 export function execEvery(fn, ms) {
   let now = new Date(), delay = ms - now % ms;
+  let id;
   setTimeout(() => {
     fn();
-    setInterval(fn, 60000);
+    id = setInterval(fn, 60000);
   }, delay);
+  return () => {
+    clearInterval(id);
+  }
 }
