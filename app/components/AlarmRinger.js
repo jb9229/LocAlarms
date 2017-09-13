@@ -28,7 +28,7 @@ export class AlarmRinger extends Component {
 
   playingSound: Sound = null;
   warnedAlarms = [];
-  vibrateId;
+  cancelVibrate;
 
   constructor(props) {
     super(props);
@@ -40,8 +40,9 @@ export class AlarmRinger extends Component {
       this.props.cancelAlarm(alarm.id);
     });
     execEvery(() => {
+      console.log(this.props.geo);
       this.checkAlarms(this.props.alarms, this.props.geo);
-    }, 60000);
+    }, 60000, true);
   }
 
   componentWillReceiveProps(next) {
@@ -65,10 +66,10 @@ export class AlarmRinger extends Component {
             this.playingSound = getSoundFile(alarm.preferences.alarmSound);
             this.playingSound.play();
           }
-          if (alarm.preferences.vibrate && !isDefined(this.vibrateId)) {
-            this.vibrateId = setInterval(() => {
+          if (alarm.preferences.vibrate && !isDefined(this.cancelVibrate)) {
+            this.cancelVibrate = execEvery(() => {
               Vibration.vibrate();
-            }, 750);
+            }, 750, true);
           }
         });
       } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
@@ -90,7 +91,7 @@ export class AlarmRinger extends Component {
     this.playingSound.stop();
     this.playingSound = null;
     this.setState({activeAlarm: null});
-    clearInterval(this.vibrateId);
+    if (isDefined(this.cancelVibrate)) {this.cancelVibrate(); this.cancelVibrate = null};
   }
 
   render() {
