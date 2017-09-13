@@ -3,6 +3,8 @@ import {eventChannel} from "redux-saga";
 import {all, call, put, take} from "redux-saga/effects";
 import Sound from "react-native-sound";
 import Notification from "react-native-push-notification";
+import BackgroundGeolocation from "react-native-mauron85-background-geolocation";
+import {AlarmRinger} from "../components/AlarmRinger";
 
 const types = {
   startup: "startup",
@@ -51,11 +53,33 @@ function* setup() {
 }
 
 function* geo(actionCreators) {
+  BackgroundGeolocation.configure({
+    desiredAccuracy: 10,
+    stationaryRadius: 50,
+    distanceFilter: 50,
+    locationTimeout: 30,
+    startForeground: true,
+    debug: __DEV__,
+    startOnBoot: true,
+    stopOnTerminate: false,
+    locationProvider: BackgroundGeolocation.provider.ANDROID_ACTIVITY_PROVIDER,
+    interval: 10000,
+    fastestInterval: 5000,
+    activitiesInterval: 10000,
+    stopOnStillActivity: false
+  });
   const geoObservable = eventChannel(emitter => {
     navigator.geolocation.getCurrentPosition(emitter, () => {
     }, {enableHighAccuracy: true});
     const watchID = navigator.geolocation.watchPosition(emitter, () => {
     }, {enableHighAccuracy: true});
+
+    BackgroundGeolocation.on('location', ({time, latitude, longitude, accuracy, speed, altitude, bearing: heading}) => {
+      const geo = {coords: {latitude, longitude, accuracy, altitude, altitudeAccuracy: 0, heading, speed}, time};
+      AlarmRinger.instance.checkAlarms(null, geo);
+      emitter(geo);
+    });
+    BackgroundGeolocation.start();
     return () => {
       navigator.geolocation.clearWatch(watchID);
     };

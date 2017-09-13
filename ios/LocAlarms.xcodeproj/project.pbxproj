@@ -62,6 +62,7 @@
 		A3FB417EEDDD4D58A420421F /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62CDBA194E7546E98A8F9ECB /* Entypo.ttf */; };
 		A471B319608544209B0118E6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF98783DDBB434A8D7C4834 /* libRNVectorIcons.a */; };
 		2CC5D52E02A849A19FFCB9E3 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07F9C54AC0624098A9BBD69D /* libRNSound.a */; };
+		00B38D4044854A6AA259A2B6 /* libRCTBackgroundGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 517DDD4FF7EB4FD2B972A646 /* libRCTBackgroundGeolocation.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,6 +364,8 @@
 		FD09B03B925D433EA1D24E2F /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
 		37427DD451664BCE8E8B3E7E /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		07F9C54AC0624098A9BBD69D /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		44C86A18CEF1406587D4FE6E /* RCTBackgroundGeolocation.xcodeproj */ = {isa = PBXFileReference; name = "RCTBackgroundGeolocation.xcodeproj"; path = "../node_modules/react-native-mauron85-background-geolocation/ios/RCTBackgroundGeolocation.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		517DDD4FF7EB4FD2B972A646 /* libRCTBackgroundGeolocation.a */ = {isa = PBXFileReference; name = "libRCTBackgroundGeolocation.a"; path = "libRCTBackgroundGeolocation.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -394,6 +397,7 @@
 				A471B319608544209B0118E6 /* libRNVectorIcons.a in Frameworks */,
 				9E3C4F1015288BB4E2220B53 /* libPods-LocAlarms.a in Frameworks */,
 				2CC5D52E02A849A19FFCB9E3 /* libRNSound.a in Frameworks */,
+				00B38D4044854A6AA259A2B6 /* libRCTBackgroundGeolocation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +609,7 @@
 				06F8D5CF6D554810BF9476B1 /* RNDeviceInfo.xcodeproj */,
 				365B738B57DF4A42ADA24C13 /* RNVectorIcons.xcodeproj */,
 				37427DD451664BCE8E8B3E7E /* RNSound.xcodeproj */,
+				44C86A18CEF1406587D4FE6E /* RCTBackgroundGeolocation.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1301,12 +1306,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = LocAlarmsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1331,12 +1338,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = LocAlarmsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1364,6 +1373,7 @@
 					"eact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = LocAlarms/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1392,6 +1402,7 @@
 					"eact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = LocAlarms/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1425,11 +1436,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = "LocAlarms-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1463,11 +1476,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)\..\node_modules\react-native-mauron85-background-geolocation\ios\RCTBackgroundGeolocation",
 				);
 				INFOPLIST_FILE = "LocAlarms-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1498,6 +1513,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.LocAlarms-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1522,6 +1538,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.LocAlarms-tvOSTests";

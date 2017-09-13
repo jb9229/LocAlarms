@@ -28,10 +28,13 @@ export class AlarmRinger extends Component {
 
   playingSound: Sound = null;
   warnedAlarms = [];
-  vibrateId;
+  vibrating = false;
+
+  static instance: AlarmRinger;
 
   constructor(props) {
     super(props);
+    AlarmRinger.instance = this;
     Notification.registerNotificationActions(['Cancel']);
     DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
       const alarm: Alarm = JSON.parse(dataJSON).alarm;
@@ -52,7 +55,8 @@ export class AlarmRinger extends Component {
   }
 
   @autobind
-  checkAlarms(alarms, geo) {
+  checkAlarms(alarmData, geo) {
+    const alarms = isDefined(alarmData) ? alarmData : this.props.alarms;
     const now = moment();
     alarms.forEach((alarm: Alarm) => {
       const shouldActivate = inWindow(now, generateActiveSchedule(alarm, now));
@@ -61,14 +65,13 @@ export class AlarmRinger extends Component {
         this.setState({
           activeAlarm: alarm
         }, () => {
-          if (!this.playingSound) {
+          if (!isDefined(this.playingSound)) {
             this.playingSound = getSoundFile(alarm.preferences.alarmSound);
             this.playingSound.play();
           }
-          if (alarm.preferences.vibrate && !isDefined(this.vibrateId)) {
-            this.vibrateId = setInterval(() => {
-              Vibration.vibrate();
-            }, 750);
+          if (alarm.preferences.vibrate) {
+            this.vibrating = true;
+            Vibration.vibrate(10000);
           }
         });
       } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
@@ -90,7 +93,8 @@ export class AlarmRinger extends Component {
     this.playingSound.stop();
     this.playingSound = null;
     this.setState({activeAlarm: null});
-    clearInterval(this.vibrateId);
+    Vibration.cancel();
+    this.vibrating = false;
   }
 
   render() {
