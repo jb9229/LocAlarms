@@ -71,8 +71,10 @@ export class AlarmRinger extends Component {
         }, () => {
           if (!isDefined(this.playingSound)) {
             this.playingSound = getSoundFile(alarm.preferences.alarmSound);
-            this.playingSound.play(() => {
-              console.log("played");
+            this.playingSound.play((success) => {
+              if (!success) {
+                this.playingSound.play();
+              }
             });
           }
           if (alarm.preferences.vibrate && !isDefined(this.cancelVibrate)) {

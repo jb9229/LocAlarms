@@ -70,7 +70,7 @@ export class Home extends Component {
 
   filterPastAlarm() {
     const now = moment();
-    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm, now, false).some((schedule) => schedule.end.isAfter(now)));
+    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now)));
   }
 
   render() {
@@ -88,10 +88,7 @@ export class Home extends Component {
         </Title>
         </Body>
         <Right>
-          <TouchableOpacity style={styles.horizontalPadding}>
-            <Icon name="search" inverse/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.leftPadding} onPress={() => {
+          <TouchableOpacity style={styles.horizontalPadding} onPress={() => {
             this.setState({menuOpen: true});
           }}>
             <Icon name="more" inverse/>
