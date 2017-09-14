@@ -111,8 +111,10 @@ export class AlarmRinger extends Component {
       this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, this.state.activeAlarm);
     }
     this.props.cancelAlarm(this.state.activeAlarm.id);
-    this.playingSound.stop();
-    this.playingSound = null;
+    if (this.playingSound) {
+      this.playingSound.stop();
+      this.playingSound = null;
+    }
     this.setState({activeAlarm: null});
     if (isDefined(this.cancelVibrate)) {
       this.cancelVibrate();
