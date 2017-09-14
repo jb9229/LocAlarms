@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Body, Button, Content, Form, Icon, Input, Item, Label, Switch, Text} from 'native-base';
 import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
-import {Modal, Slider, StyleSheet, TouchableOpacity, View, LayoutAnimation} from "react-native";
+import {LayoutAnimation, Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
 import {connect} from "react-redux";
@@ -16,7 +16,6 @@ import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 import Color from "color";
-import _ from "lodash";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
@@ -84,9 +83,10 @@ export class AlarmForm extends Component {
       return <Item itemDivider>
         <Text>Schedule</Text>
         <Switch value={input.value}
+                style={styles.marginLeft}
                 onValueChange={(x) => {
                   input.onChange(x);
-                  LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+                  LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
                 }}
                 thumbTintColor={Theme.brandPrimary}
                 onTintColor={Color(Theme.brandPrimary).lighten(0.8).string()}

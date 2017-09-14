@@ -28,16 +28,23 @@ export class AlarmRinger extends Component {
 
   playingSound: Sound = null;
   warnedAlarms = [];
+  activateAlarmNotifications = [];
   cancelVibrate;
 
   constructor(props) {
     super(props);
-    Notification.registerNotificationActions(['Cancel']);
+    Notification.registerNotificationActions(['Cancel', 'Stop']);
     DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
-      const alarm: Alarm = JSON.parse(dataJSON).alarm;
-      Notification.cancelLocalNotifications({data: alarm});
-      this.warnedAlarms = _.without(this.warnedAlarms, alarm);
-      this.props.cancelAlarm(alarm.id);
+      const data = JSON.parse(dataJSON);
+      const alarm: Alarm = data.alarm;
+      Notification.cancelLocalNotifications({alarm});
+      if (data.action === "Stop") {
+        this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, alarm);
+        this.cancelAlarm();
+      } else {
+        this.warnedAlarms = _.without(this.warnedAlarms, alarm);
+        this.props.cancelAlarm(alarm.id);
+      }
     });
     execEvery(() => {
       console.log(this.props.geo);
@@ -56,27 +63,37 @@ export class AlarmRinger extends Component {
   checkAlarms(alarms, geo) {
     const now = moment();
     alarms.forEach((alarm: Alarm) => {
-      const shouldActivate = inWindow(now, generateActiveSchedule(alarm, now));
+      const inSchedule = inWindow(now, generateActiveSchedule(alarm, now));
       const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
-      if (shouldActivate && inRange) {
+      if (inSchedule && inRange) {
         this.setState({
           activeAlarm: alarm
         }, () => {
-          if (!this.playingSound) {
+          if (!isDefined(this.playingSound)) {
             this.playingSound = getSoundFile(alarm.preferences.alarmSound);
-            this.playingSound.play();
+            this.playingSound.play(() => {
+              console.log("played");
+            });
           }
           if (alarm.preferences.vibrate && !isDefined(this.cancelVibrate)) {
             this.cancelVibrate = execEvery(() => {
               Vibration.vibrate();
             }, 750, true);
           }
+          if (!_.includes(this.activateAlarmNotifications, alarm)) {
+            this.activateAlarmNotifications.push(alarm);
+            Notification.localNotification({
+              ongoing: false,
+              message: `${alarm.name} is ringing`,
+              actions: '["Stop"]',
+              alarm
+            });
+          }
         });
-      } else if (shouldActivate && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
+      } else if (inSchedule && coordsToMeters(alarm.location, geo.coords) <= (alarm.radius * 1.5) && !_.includes(this.warnedAlarms, alarm)) {
         this.warnedAlarms.push(alarm);
         Notification.localNotification({
           ongoing: false, // (optional) set whether this is an "ongoing" notification
-          title: `${alarm.name} is upcoming`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
           message: `${alarm.name} is upcoming`, // (required)
           actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
           alarm
@@ -87,11 +104,18 @@ export class AlarmRinger extends Component {
 
   @autobind
   cancelAlarm() {
+    if (_.includes(this.activateAlarmNotifications, this.state.activeAlarm)) {
+      Notification.cancelLocalNotifications({alarm: this.state.activeAlarm});
+      this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, this.state.activeAlarm);
+    }
     this.props.cancelAlarm(this.state.activeAlarm.id);
     this.playingSound.stop();
     this.playingSound = null;
     this.setState({activeAlarm: null});
-    if (isDefined(this.cancelVibrate)) {this.cancelVibrate(); this.cancelVibrate = null};
+    if (isDefined(this.cancelVibrate)) {
+      this.cancelVibrate();
+      this.cancelVibrate = null;
+    }
   }
 
   render() {
