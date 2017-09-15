@@ -145,6 +145,7 @@ export class AlarmForm extends Component {
           visible={this.state.searchOpen}>
           <AddressSearch
             connected={this.props.connected}
+            location={this.props.location}
             initialValue={this.props.value[this.fields.address.name]}
             onBack={(data: ?{ loc: GeoLocation, address: string }) => {
               if (data) {

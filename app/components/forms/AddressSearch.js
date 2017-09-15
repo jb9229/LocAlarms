@@ -23,7 +23,7 @@ export class AddressSearch extends Component {
       locations: []
     };
     this.changeText = _.debounce((text) => {
-      search(text, this.props.location).then((data) => {
+      search(text, null, this.props.location).then((data) => {
         this.setState({locations: data});
       });
     }, 250);
