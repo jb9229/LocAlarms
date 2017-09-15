@@ -9,8 +9,13 @@ export function generateActiveSchedule(alarm: Alarm, winStart: ?Moment, filterDe
   let result = [];
   const schedule = alarm.schedule;
   if (!alarm.hasSchedule) {
-    result.push({start: moment(windowStart).startOf("d"), end: moment(windowStart).endOf("d")});
-    result.push({start: addMoment(windowStart, 1, "d").startOf("d"), end: addMoment(windowStart, 1, "d").endOf("d")});
+    if (!isDefined(alarm.schedule.lastDeactivated)) {
+      result.push({start: moment(windowStart).startOf("d"), end: moment(windowStart).endOf("d")});
+      result.push({start: addMoment(windowStart, 1, "d").startOf("d"), end: addMoment(windowStart, 1, "d").endOf("d")});
+    } else {
+      const lastDeactivated = moment(alarm.schedule.lastDeactivated);
+      result.push({start: addMoment(lastDeactivated, 1, "d"), end: addMoment(lastDeactivated, 2, "d")})
+    }
   } else {
     switch (schedule.type) {
       case ScheduleTypes.ONCE: {

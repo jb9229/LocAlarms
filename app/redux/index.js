@@ -1,4 +1,4 @@
-import {applyMiddleware, bindActionCreators, compose} from 'redux';
+import {applyMiddleware, bindActionCreators, compose, createStore as reduxCreate} from 'redux';
 import {reducer as navReducer} from "./Navigator";
 import {combineActions, combineReducers, combineSagas} from "./utils";
 import {reducer as formReducer} from "redux-form";
@@ -59,7 +59,7 @@ export const createStore = () => {
   middleware.push(sagaMiddleware);
   enhancers.push(applyMiddleware(...middleware));
 
-  const createAppropriateStore = Config.useReactotron ? console.tron.createStore : createStore;
+  const createAppropriateStore = Config.useReactotron ? console.tron.createStore : reduxCreate;
   const store = createAppropriateStore(rootReducer, compose(...enhancers));
   let persistor = persistStore(store, ReduxConfig);
   sagaMiddleware.run(rootSaga);
