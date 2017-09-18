@@ -3,6 +3,8 @@ import {eventChannel} from "redux-saga";
 import {all, call, put, take} from "redux-saga/effects";
 import Sound from "react-native-sound";
 import Notification from "react-native-push-notification";
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import {isDefined} from "../lib/Operators";
 
 const types = {
   startup: "startup",
@@ -51,24 +53,36 @@ function* setup() {
 }
 
 function* geo(actionCreators) {
-  const geoObservable = eventChannel(emitter => {
-    navigator.geolocation.getCurrentPosition(emitter, () => {
-    }, {enableHighAccuracy: true});
-    const watchID = navigator.geolocation.watchPosition(emitter, () => {
-    }, {enableHighAccuracy: true});
-    return () => {
-      navigator.geolocation.clearWatch(watchID);
-    };
-  });
-  try {
-    while (true) {
-      // take(END) will cause the saga to terminate by jumping to the finally block
-      const location = yield take(geoObservable);
-      yield put(actionCreators.setLocation(location));
-    }
-  } finally {
+  const locEnabled = yield forceLocOn();
+  if (!isDefined(locEnabled.error)) {
+    const geoObservable = eventChannel(emitter => {
+      navigator.geolocation.getCurrentPosition(emitter, console.log, {enableHighAccuracy: true});
+      const watchID = navigator.geolocation.watchPosition(emitter, () => {
+      }, {enableHighAccuracy: true});
+      return () => {
+        navigator.geolocation.clearWatch(watchID);
+      };
+    });
+    try {
+      while (true) {
+        // take(END) will cause the saga to terminate by jumping to the finally block
+        const location = yield take(geoObservable);
+        yield put(actionCreators.setLocation(location));
+      }
+    } finally {
 
+    }
   }
+}
+
+function forceLocOn() {
+  return LocationServicesDialogBox.checkLocationServicesIsEnabled({
+    message: "<h2>Turn on location?</h2>You must enable location services for alarm detection to work",
+    ok: "YES",
+    cancel: "",
+    enableHighAccuracy: true,
+    showDialog: true
+  }).catch(forceLocOn);
 }
 
 function* network(actionCreators) {

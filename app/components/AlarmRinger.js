@@ -40,7 +40,7 @@ export class AlarmRinger extends Component {
       Notification.cancelLocalNotifications({alarm});
       if (data.action === "Stop") {
         this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, alarm);
-        this.cancelAlarm();
+        if (this.state.activeAlarm === alarm) this.cancelAlarm();
       } else {
         this.warnedAlarms = _.without(this.warnedAlarms, alarm);
         this.props.cancelAlarm(alarm.id);
@@ -110,7 +110,7 @@ export class AlarmRinger extends Component {
       Notification.cancelLocalNotifications({alarm: this.state.activeAlarm});
       this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, this.state.activeAlarm);
     }
-    this.props.cancelAlarm(this.state.activeAlarm.id);
+    if (isDefined(this.state.activeAlarm)) this.props.cancelAlarm(this.state.activeAlarm.id);
     if (this.playingSound) {
       this.playingSound.stop();
       this.playingSound = null;

@@ -28,6 +28,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.0.0-rc.3",
     "react-native": "^0.48.3",
+    "react-native-android-location-services-dialog-box": "^2.2.1",
     "react-native-background-timer": "^1.2.0",
     "react-native-config": "^0.6.1",
     "react-native-datepicker": "^1.6.0",

@@ -150,6 +150,7 @@ dependencies {
         force = true
     }
     compile project(':react-native-sound')
+    compile project(':react-native-android-location-services-dialog-box')
     compile project(':react-native-maps')
     compile project(':react-native-vector-icons')
     compile project(':react-native-background-timer')

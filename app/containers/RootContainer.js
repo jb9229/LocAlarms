@@ -12,8 +12,11 @@ import {namespaces, stateSelector} from "../redux/index";
 export class RootContainer extends Component {
   constructor(props) {
     super(props);
-    this.props.actions.status.startup();
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
+  componentWillMount() {
+    this.props.actions.status.startup();
   }
 
   render() {

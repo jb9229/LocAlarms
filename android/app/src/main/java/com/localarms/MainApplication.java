@@ -4,6 +4,7 @@ import android.app.Application;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.ReactApplication;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
         new BackgroundTimerPackage(),
+        new LocationServicesDialogBoxPackage(),
         new ReactNativePushNotificationPackage(),
         new RNSoundPackage(),
         new MapsPackage(),
