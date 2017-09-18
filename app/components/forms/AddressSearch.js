@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
-import {Card, CardItem, Container, Content, Header, Icon, Input, Item, Text, View} from "native-base";
+import {Card, CardItem, Container, Content, Grid, Header, Icon, Input, Item, Row, Text, View} from "native-base";
 import {geocode, search} from "../../lib/Geo";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import _ from "lodash";
@@ -73,7 +73,7 @@ export class AddressSearch extends Component {
               }}>
                 <CardItem>
                   <Icon name="locate"/>
-                  <Text numberOfLines={1}>
+                  <Text numberOfLines={1} style={styles.large}>
                     Your location
                   </Text>
                 </CardItem>
@@ -90,9 +90,18 @@ export class AddressSearch extends Component {
                 }} key={i}>
                   <CardItem>
                     <Icon name="pin"/>
-                    <Text numberOfLines={1}>
-                      {data.formatted_address}
-                    </Text>
+                    {data.formatted_address.indexOf(data.name) === -1 ?
+                      <Grid>
+                        <Row>
+                          <Text numberOfLines={1} style={styles.large}>{data.name}</Text>
+                        </Row>
+                        <Row>
+                          <Text numberOfLines={1}>
+                            {data.formatted_address}
+                          </Text>
+                        </Row>
+                      </Grid> :
+                      <Text numberOfLines={1} style={styles.large}>{data.formatted_address}</Text>}
                   </CardItem>
                 </TouchableOpacity>
               )}</View> :
@@ -112,5 +121,6 @@ export class AddressSearch extends Component {
 const styles = StyleSheet.create({
   locationList: {
     paddingRight: 40
-  }
+  },
+  large: {fontSize: 18}
 });

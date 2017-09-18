@@ -18,7 +18,7 @@ import autobind from "autobind-decorator";
 import Color from "color";
 
 const fieldData = createFields({
-  name: {label: "Name", required: true, initialValue: "Your alarm", type: formTypes.string},
+  name: {label: "Name", required: true, initialValue: "", type: formTypes.string},
   location: {initialValue: {latitude: 43.661331, longitude: -79.398625}, type: formTypes.location},
   address: {label: "Address", type: formTypes.customOnFocus},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
@@ -77,7 +77,7 @@ export class AlarmForm extends Component {
   }
 
   @autobind
-  renderInput({input, label, type, meta: {error}}) {
+  renderInput({input, label, type, meta: {error, touched}}) {
     const hasError = isDefined(error);
     if (label === this.fields.hasSchedule.label) {
       return <Item itemDivider>
@@ -103,7 +103,7 @@ export class AlarmForm extends Component {
           }, input.value)]}/>
         </View>;
       case formTypes.number:
-        return (<Item style={styles.noInputContainer}>
+        return <Item style={styles.noInputContainer}>
           <Label style={styles.sliderLabel}>{label}</Label>
           <Text style={styles.sliderText}>100m</Text>
           <Slider style={styles.slider}
@@ -114,22 +114,21 @@ export class AlarmForm extends Component {
                   maximumValue={1000}
                   value={input.value}/>
           <Text style={styles.sliderText}>1000m</Text>
-        </Item>);
+        </Item>;
       case formTypes.customOnFocus:
-        return ( <Item error={hasError} style={styles.inputContainer}>
+        return <Item error={hasError} style={styles.inputContainer}>
           <Label>{label}</Label>
           <TouchableOpacity onPress={() => {
             input.onFocus();
           }} style={styles.noInputContainer}>
             {input.value ? <Text numberOfLines={1}>{input.value}</Text> : <View style={styles.inputFiller}/>}
           </TouchableOpacity>
-        </Item> );
-      default: {
-        return ( <Item error={hasError} style={styles.inputContainer}>
+        </Item>;
+      default: return <Item error={hasError && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
           <Input {...input}/>
-        </Item> );
-      }
+        </Item>;
+
     }
   }
 

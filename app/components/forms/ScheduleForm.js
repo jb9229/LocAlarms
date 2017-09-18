@@ -30,7 +30,7 @@ export const fieldData = createFields({
   },
   endTime: {
     label: "End Time",
-    initialValue: currentTimeToMinutes(),
+    initialValue: currentTimeToMinutes(1),
     format: timeToString,
     parse: stringToTime,
     type: formTypes.time

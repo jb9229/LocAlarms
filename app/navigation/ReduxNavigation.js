@@ -3,7 +3,6 @@ import {BackHandler} from "react-native";
 import {addNavigationHelpers} from 'react-navigation';
 import {connect} from 'react-redux';
 import AppNavigation, {Routes} from './AppNavigation';
-import _ from "lodash";
 
 const getCurrentRouteName = (navigationState) => {
   if (!navigationState) {

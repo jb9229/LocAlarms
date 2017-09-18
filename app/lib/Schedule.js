@@ -66,15 +66,18 @@ export function timeToString(x: number) {
 }
 
 export function stringToTime(x: string) {
-  let [hours, _, minutes, _1, time] = x.split(/([: ])/);
+  let [hours, a, minutes, b, time] = x.split(/([: ])/);
   [hours, minutes] = [parseInt(hours), parseInt(minutes)];
   if (time === "PM") hours += 12;
   else if (time === "AM" && hours === 12) hours = 0;
   return hours * 60 + minutes;
 }
 
-export function currentTimeToMinutes() {
+export function currentTimeToMinutes(hoursToAdd=0) {
+  const toMins = (moment: Moment) => moment.get("hours") * 60 + moment.get("minutes");
   const now = moment();
-  return now.get("hours") * 60 + now.get("minutes");
+  const added = moment(now).add(hoursToAdd, "h");
+  if (toMins(added) < toMins(now)) return 1439;
+  else return toMins(added);
 }
 

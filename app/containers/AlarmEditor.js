@@ -3,10 +3,10 @@ import {Body, Container, Header, Icon, Left, Right, Title} from "native-base";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
-import {TouchableOpacity} from "react-native";
 import idx from "idx";
 import {isDefined} from "../lib/Operators";
 import {namespaces, stateSelector} from "../redux/index";
+import {TouchableOpacity} from "react-native";
 
 @connect(stateSelector(namespaces.status), actionDispatcher)
 export class AlarmEditor extends Component {

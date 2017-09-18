@@ -24,7 +24,6 @@ export class Map extends Component {
   fitLocations(locations) {
     if (this.mapReady) {
       if (_.isArray(locations)) {
-        const PADDING = locations.some(loc => isDefined(loc.radius)) ? Math.max(...locations.map((loc) => loc.radius)) / 15000 : 0.02;
         let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
         for (let location of locations) {
           [minLat, maxLat, minLng, maxLng] = [
@@ -34,12 +33,14 @@ export class Map extends Component {
             Math.max(maxLng, location.longitude)
           ];
         }
-        this.mapView.animateToRegion({
-          latitude: (minLat + maxLat) / 2,
-          longitude: (minLng + maxLng) / 2,
-          latitudeDelta: PADDING,
-          longitudeDelta: PADDING
-        }, 500);
+        if ((maxLat - minLat) <= 0.01 && (maxLng - minLng) <= 0.01)
+          this.mapView.animateToRegion({
+            latitude: (maxLat + minLat) / 2,
+            longitude: (maxLng + minLng) / 2,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          });
+        else this.mapView.fitToCoordinates(locations, {animated: true});
       } else if (isDefined(locations)) {
         this.mapView.animateToRegion({
           ...locations.coords,

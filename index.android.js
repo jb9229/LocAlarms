@@ -1,5 +1,5 @@
 import './app/config/ReactotronConfig';
-import * as React from "react";
+import React from "react";
 import {AppRegistry} from 'react-native';
 import App from './app/containers/App';
 
