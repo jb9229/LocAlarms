@@ -142,6 +142,7 @@ export class Home extends Component {
               <Card>
                 {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
                                                      key={i}
+                                                     onPress={() => {}}
                                                      onEditPanelOpen={() => {
                                                        this.setState({
                                                          editPanelOpen: i

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Body, CardItem, Icon, Text, Title, View} from "native-base";
-import {Animated, StyleSheet, TouchableOpacity} from "react-native";
+import {Animated, StyleSheet, TouchableNativeFeedback, TouchableOpacity} from "react-native";
 import {Theme} from "../theme";
 import autobind from "autobind-decorator";
 import {generateActiveSchedule, inWindow} from "../lib/Schedule";
@@ -16,7 +16,8 @@ export class AlarmCard extends Component {
     onEditPanelOpen: PropTypes.func,
     editPanelOpen: PropTypes.bool,
     editPressed: PropTypes.func,
-    deletePressed: PropTypes.func
+    deletePressed: PropTypes.func,
+    onPress: PropTypes.func
   };
   animatedHeight = new Animated.Value(0);
   arrowOrientation = this.animatedHeight.interpolate({
@@ -58,7 +59,9 @@ export class AlarmCard extends Component {
   getTimeTo(): string {
     const now = moment();
     const schedules = generateActiveSchedule(this.props.alarm, now);
-    if (inWindow(now, schedules)) {return "Is active"}
+    if (inWindow(now, schedules)) {
+      return "Is active";
+    }
     for (let schedule: { start: Moment, end: Moment } of schedules) {
       if (schedule.start.isAfter(now)) {
         return `Activates in ${moment.duration(schedule.start.diff(now)).humanize()}`;
@@ -68,7 +71,8 @@ export class AlarmCard extends Component {
   }
 
   render() {
-    return <CardItem bordered>
+    return <TouchableNativeFeedback onPress={this.pressed}>
+      <CardItem bordered>
       <Body>
       <Title inverse thin large>{this.props.alarm.name}</Title>
       <Text subtitle>{this.getTimeTo()}</Text>
@@ -91,23 +95,24 @@ export class AlarmCard extends Component {
             </View>
           </TouchableOpacity>
         </Animated.View>
-        <TouchableOpacity style={styles.right} onPress={this.pressed}>
-          <Animated.View style={{transform: [{rotate: this.arrowOrientation}]}}>
+          <Animated.View style={[{transform: [{rotate: this.arrowOrientation}]}, styles.right]}>
             <Icon name="ios-arrow-down"/>
           </Animated.View>
-        </TouchableOpacity>
       </View>
       </Body>
-    </CardItem>;
+    </CardItem>
+    </TouchableNativeFeedback>;
   }
 }
 
 const styles = StyleSheet.create({
   editPanel: {
-    flexDirection: "row"
+    flexDirection: "row",
+    backgroundColor: "transparent"
   },
   fullWidth: {
-    width: "100%"
+    width: "100%",
+    backgroundColor: "transparent"
   },
   right: {
     alignSelf: "flex-end"
@@ -116,10 +121,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     flexDirection: "row",
     alignItems: "flex-end",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: "transparent"
   },
   editPanelIcon: {
-    marginRight: 10
+    marginRight: 10,
+    backgroundColor: "transparent"
   },
   green: {
     color: Theme.brandSuccess
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
     color: Theme.brandDanger
   },
   item: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "transparent"
   }
 });
