@@ -5,6 +5,7 @@ import {StyleSheet} from "react-native";
 import {AlarmPin} from "./AlarmPin";
 import {filterUndefined, isDefined} from "../../lib/Operators";
 import _ from "lodash";
+import idx from "idx";
 
 export class Map extends Component {
   static propTypes = {
@@ -51,21 +52,27 @@ export class Map extends Component {
     }
   }
 
+  componentDidMount() {
+    this.checkShouldFit(this.props);
+  }
+
   componentWillReceiveProps(props) {
-    const locations = filterUndefined(props.locations), oldLocations = this.props.locations;
+    this.checkShouldFit(props, this.props);
+  }
+
+  checkShouldFit(props, oldProps) {
+    const locations = filterUndefined(props.locations), oldLocations = idx(oldProps, (old) => old.locations);
     if (locations.length === 0) {
-      this.fitLocations(this.props.location);
-    } else if (locations.length !== oldLocations.length || locations.some((location, index) =>
-        location.latitude !== oldLocations[index].latitude ||
-        location.longitude !== oldLocations[index].longitude ||
-        location.radius !== oldLocations[index].radius)
-    ) {
+      this.fitLocations(props.location);
+    } else if (locations !== oldLocations) {
       this.fitLocations(locations);
     }
   }
 
   render() {
     const locations = filterUndefined(this.props.locations);
+    console.log(this.props.locations);
+    console.log(locations);
     return (
       <MapView
         style={StyleSheet.absoluteFill}
@@ -75,8 +82,7 @@ export class Map extends Component {
         onPress={this.props.onPress}
         onMapReady={() => {
           this.mapReady = true;
-          if (locations.length === 0) this.fitLocations(this.props.location);
-          else this.fitLocations(locations);
+          this.checkShouldFit(this.props);
         }}
         provider={MapView.PROVIDER_GOOGLE}
         followsUserLocation

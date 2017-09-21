@@ -3,7 +3,7 @@ import {Field} from "redux-form";
 import {currentTimeToMinutes, stringToTime, timeToString} from "../../lib/Schedule";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
 import {Icon, Item, Label, Text} from "native-base";
-import {StyleSheet, View} from "react-native";
+import {StyleSheet, TouchableNativeFeedback, TouchableOpacity, View} from "react-native";
 import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
 import moment from "moment";
@@ -69,8 +69,12 @@ export class ScheduleForm extends Component {
       case formTypes.time:
         return <Item error={hasError}>
           <Label>{label}</Label>
-          <DatePicker date={input.value} mode="time" format="h:mm A" onDateChange={input.onChange}
-                      style={styles.timePicker} {...pickerProps(hasError)}/>
+          <DatePicker date={input.value}
+                      mode="time"
+                      format="h:mm A"
+                      onDateChange={input.onChange}
+                      style={styles.timePicker}
+                      {...pickerProps(hasError)}/>
         </Item>;
     }
   }
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
 const pickerProps = (hasError: boolean) => ({
   iconComponent: <Icon name="arrow-dropdown" style={[styles.icon, hasError ? styles.errorIcon : null]}/>,
   confirmBtnText: "Confirm",
+  TouchableComponent: TouchableOpacity,
   customStyles: {
     dateInput: styles.noBorder,
     dateText: [styles.formText, hasError ? styles.errorText : null],

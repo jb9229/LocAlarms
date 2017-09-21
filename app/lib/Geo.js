@@ -1,16 +1,17 @@
 import {getRequest, Http} from "./Http";
 import type {GeoData, GeoLocation} from "./Types";
 
+const key = "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ";
 export function geocode(location: GeoLocation): Promise<any[]> {
   return getRequest("https://maps.googleapis.com/maps/api/geocode/json", {
-    key: "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ",
+    key,
     latlng: `${location.latitude},${location.longitude}`
   });
 }
 
 export function search(address: string, radius: number, geo: GeoData): Promise<{ formatted_address: string, geometry: { location: { lat: number, lng: number } } }[]> {
   return getRequest("https://maps.googleapis.com/maps/api/place/textsearch/json", Object.assign({
-    key: "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ",
+    key,
     query: address
   }, radius ? {
     location: `${geo.coords.latitude},${geo.coords.longitude}`,

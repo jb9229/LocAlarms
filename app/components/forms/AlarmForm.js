@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Body, Button, Content, Form, Icon, Input, Item, Label, Switch, Text} from 'native-base';
-import {Field, FormSection, formValueSelector, reduxForm, propTypes} from 'redux-form';
+import {Field, FormSection, formValueSelector, propTypes, reduxForm} from 'redux-form';
 import {LayoutAnimation, Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
@@ -16,7 +16,6 @@ import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 import Color from "color";
-import _ from "lodash";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "", type: formTypes.string},
@@ -98,10 +97,11 @@ export class AlarmForm extends Component {
     }
     switch (type) {
       case formTypes.location:
+        const name = this.props.value[this.fields.name.name];
         return <View style={styles.mapContainer}>
           <Map locations={[Object.assign({
             onDragEnd: input.onChange,
-            title: this.props.value[this.fields.name.name],
+            title: isDefined(name) ? name : "",
             radius: this.props.value[this.fields.radius.name]
           }, input.value)]}/>
         </View>;
@@ -127,7 +127,8 @@ export class AlarmForm extends Component {
             {input.value ? <Text numberOfLines={1}>{input.value}</Text> : <View style={styles.inputFiller}/>}
           </TouchableOpacity>
         </Item>;
-      default: return <Item error={hasError && touched} style={styles.inputContainer}>
+      default:
+        return <Item error={hasError && touched} style={styles.inputContainer}>
           <Label>{label}</Label>
           <Input {...input}/>
         </Item>;
