@@ -73,11 +73,11 @@ export function stringToTime(x: string) {
   return hours * 60 + minutes;
 }
 
-export function currentTimeToMinutes(hoursToAdd=0) {
+export function currentTimeToMinutes(roundUnit, hoursToAdd=0) {
   const toMins = (moment: Moment) => moment.get("hours") * 60 + moment.get("minutes");
   const now = moment();
   const added = moment(now).add(hoursToAdd, "h");
   if (toMins(added) < toMins(now)) return 1439;
-  else return toMins(added);
+  else return toMins(added.startOf(roundUnit));
 }
 

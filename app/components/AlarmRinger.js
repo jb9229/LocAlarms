@@ -39,16 +39,17 @@ export class AlarmRinger extends Component {
       const alarm: Alarm = data.alarm;
       Notification.cancelLocalNotifications({alarm});
       if (data.action === "Stop") {
-        this.activateAlarmNotifications = _.without(this.activateAlarmNotifications, alarm);
-        if (this.state.activeAlarm === alarm) this.cancelAlarm();
+        this.cancelAlarm();
       } else {
         this.warnedAlarms = _.without(this.warnedAlarms, alarm);
         this.props.cancelAlarm(alarm.id);
       }
     });
     execEvery(() => {
-      console.log(this.props.geo);
-      this.checkAlarms(this.props.alarms, this.props.geo);
+      navigator.geolocation.getCurrentPosition((loc) => {
+        console.log(loc);
+        this.checkAlarms(this.props.alarms, loc)
+      });
     }, 60000, true);
   }
 
@@ -117,6 +118,7 @@ export class AlarmRinger extends Component {
     }
     this.setState({activeAlarm: null});
     if (isDefined(this.cancelVibrate)) {
+      Vibration.cancel();
       this.cancelVibrate();
       this.cancelVibrate = null;
     }

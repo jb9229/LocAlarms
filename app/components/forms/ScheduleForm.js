@@ -23,14 +23,14 @@ export const fieldData = createFields({
   },
   startTime: {
     label: "Start Time",
-    initialValue: currentTimeToMinutes(),
+    initialValue: () => currentTimeToMinutes("h"),
     type: formTypes.time,
     format: timeToString,
     parse: stringToTime
   },
   endTime: {
     label: "End Time",
-    initialValue: currentTimeToMinutes(1),
+    initialValue: () => currentTimeToMinutes("h", 1),
     format: timeToString,
     parse: stringToTime,
     type: formTypes.time

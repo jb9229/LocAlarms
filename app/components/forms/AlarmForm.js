@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Body, Button, Content, Form, Icon, Input, Item, Label, Switch, Text} from 'native-base';
-import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
+import {Field, FormSection, formValueSelector, reduxForm, propTypes} from 'redux-form';
 import {LayoutAnimation, Modal, Slider, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Map} from "../maps/Map";
 import {Metrics, Theme} from "../../theme";
@@ -9,13 +9,14 @@ import type {GeoData, GeoLocation} from "../../lib/Types";
 import {geocode} from "../../lib/Geo";
 import idx from "idx";
 import {AddressSearch} from "./AddressSearch";
-import {attachRender, createFields, formTypes, setFormValues} from "../../lib/ReduxForm";
+import {attachRender, createFields, extractInitialValue, formTypes, setFormValues} from "../../lib/ReduxForm";
 import {fieldData as scheduleField, ScheduleForm} from "./ScheduleForm";
 import {fieldData as preferenceField, PreferencesForm} from "./Preferences";
 import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 import Color from "color";
+import _ from "lodash";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "", type: formTypes.string},
@@ -23,7 +24,7 @@ const fieldData = createFields({
   address: {label: "Address", type: formTypes.customOnFocus},
   radius: {label: "Radius", initialValue: 100, type: formTypes.number},
   hasSchedule: {label: "Schedule", initialValue: true, type: formTypes.switchType},
-  schedule: {initialValue: objectMap(scheduleField, val => val.initialValue)},
+  schedule: {initialValue: () => objectMap(scheduleField, extractInitialValue)},
   preferences: {initialValue: objectMap(preferenceField, val => val.initialValue)}
 });
 
@@ -40,17 +41,18 @@ const selector = formValueSelector(alarmFormName);
         errors[field] = 'Required';
       }
     });
-    if (values.schedule.startTime > values.schedule.endTime) {
+    if (values.schedule && values.schedule.startTime > values.schedule.endTime) {
       errors.schedule = {};
       errors.schedule.startTime = errors.schedule.endTime = 'End time must be after start time';
     }
     return errors;
   },
-  initialValues: objectMap(fieldData, (value) => value.initialValue),
-  keepDirtyOnReinitialize: true
+  keepDirtyOnReinitialize: false,
+  enableReinitialize: true
 })
 export class AlarmForm extends Component {
   static propTypes = {
+    ...propTypes,
     initialAlarm: PropTypes.object,
     connected: PropTypes.bool,
     location: PropTypes.object
@@ -66,6 +68,7 @@ export class AlarmForm extends Component {
     } else {
       const loc: GeoData = this.props.location;
       this.changeAddress(loc.coords);
+      setFormValues(this.props.change, objectMap(fieldData, extractInitialValue));
       this.props.change(this.fields.location.name, {latitude: loc.coords.latitude, longitude: loc.coords.longitude});
     }
   }

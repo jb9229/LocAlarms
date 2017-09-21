@@ -1,4 +1,5 @@
 import {objectMap} from "./Operators";
+import _ from "lodash";
 
 export const formTypes = {
   email: "Email",
@@ -25,4 +26,8 @@ export function createFields(fieldData) {
 
 export function attachRender(fields, render) {
   return objectMap(fields, (val) => ({...val, component: render}));
+}
+
+export function extractInitialValue(fieldData) {
+  return _.isFunction(fieldData.initialValue) ? fieldData.initialValue() : fieldData.initialValue;
 }
