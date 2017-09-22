@@ -71,8 +71,6 @@ export class Map extends Component {
 
   render() {
     const locations = filterUndefined(this.props.locations);
-    console.log(this.props.locations);
-    console.log(locations);
     return (
       <MapView
         style={StyleSheet.absoluteFill}

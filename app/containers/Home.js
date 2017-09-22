@@ -70,11 +70,11 @@ export class Home extends Component {
 
   filterPastAlarm() {
     const now = moment();
-    return this.props.state.alarms.filter((alarm: Alarm) => generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now)));
+    return this.props.state.alarms.map((alarm) => ({...alarm, isArchived: generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now))}))
   }
 
   render() {
-    const alarms = this.props.state.preferences.showArchived ? this.props.state.alarms : this.filterPastAlarm();
+    const alarms = this.filterPastAlarm().filter((alarm) => this.props.state.preferences.showArchived ? true : alarm.isArchived);
     const fab = <Fab onPress={() => {
       this.props.navigation.navigate(Routes.alarmEditor);
     }}>

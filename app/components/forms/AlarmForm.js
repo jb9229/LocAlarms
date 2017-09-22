@@ -16,6 +16,7 @@ import {isDefined, objectMap} from "../../lib/Operators";
 import PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 import Color from "color";
+import _ from "lodash";
 
 const fieldData = createFields({
   name: {label: "Name", required: true, initialValue: "", type: formTypes.string},
@@ -33,6 +34,7 @@ const selector = formValueSelector(alarmFormName);
 @connect(state => ({value: selector(state, ...Object.values(fieldData).map(field => field.name))}), null)
 @reduxForm({
   form: alarmFormName,
+  initialValues: objectMap(fieldData, (value) => value.initialValue), // redundancy to preserve correct data types
   validate: values => {
     const errors = {};
     Object.values(fieldData).filter(val => val.required).map(data => data.name).forEach(field => {
@@ -99,11 +101,12 @@ export class AlarmForm extends Component {
       case formTypes.location:
         const name = this.props.value[this.fields.name.name];
         return <View style={styles.mapContainer}>
-          <Map locations={[Object.assign({
+          <Map locations={[{
             onDragEnd: input.onChange,
             title: isDefined(name) ? name : "",
-            radius: this.props.value[this.fields.radius.name]
-          }, input.value)]}/>
+            radius: this.props.value[this.fields.radius.name],
+            ...input.value
+          }]}/>
         </View>;
       case formTypes.number:
         return <Item style={styles.noInputContainer}>
@@ -139,7 +142,7 @@ export class AlarmForm extends Component {
   render() {
     const {change, handleSubmit, value} = this.props;
     return (
-      <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
+      <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="none">
         <Modal
           animationType={"slide"}
           transparent={false}
