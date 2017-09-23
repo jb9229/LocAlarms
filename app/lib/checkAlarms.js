@@ -10,10 +10,14 @@ import {execEvery, isDefined} from "./Operators";
 import {actionCreators} from "../redux/index";
 import Notification from "react-native-push-notification";
 
-let playingSound, cancelVibrate, activateAlarmNotifications = [], warnedAlarms, activeAlarm, subscribers = [];
+let playingSound, cancelVibrate, activateAlarmNotifications = [], warnedAlarms, activeAlarm, activeSubscribers = [], cancelSubscribers = [];
 
-export function subscribe(fn) {
-  subscribers.push(fn);
+export function subscribeActive(fn) {
+  activeSubscribers.push(fn);
+}
+
+export function subscribeCancel(fn) {
+  cancelSubscribers.push(fn);
 }
 
 Notification.registerNotificationActions(['Cancel', 'Stop']);
@@ -30,6 +34,7 @@ DeviceEventEmitter.addListener('notificationActionReceived', ({dataJSON}) => {
 });
 
 export function cancelAlarm() {
+  cancelSubscribers.forEach((fn) => fn());
   if (_.includes(activateAlarmNotifications, activeAlarm)) {
     Notification.cancelLocalNotifications({alarm: activeAlarm});
     activateAlarmNotifications = _.without(activateAlarmNotifications, activeAlarm);
@@ -50,8 +55,10 @@ function dispatchStoreCancel(id) {
   store.dispatch(actionCreators.alarms.deactivateAlarm(id, moment()));
 }
 
-export async function checkAlarms() {
-  const {alarms} = store.getState();
+export async function checkAlarms(alarmList: ?Alarm[]) {
+  let alarms;
+  if (!isDefined(alarmList)) alarms = store.getState().alarms;
+  else alarms = alarmList;
   const geo = await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
@@ -61,7 +68,7 @@ export async function checkAlarms() {
       const inRange = inRadius(alarm.location, alarm.radius, geo.coords);
       if (inSchedule && inRange) {
         activeAlarm = alarm;
-        subscribers.forEach((fn) => {
+        activeSubscribers.forEach((fn) => {
           fn(alarm);
         });
         if (!isDefined(playingSound)) {

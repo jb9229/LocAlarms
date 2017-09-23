@@ -3,37 +3,29 @@ import {Modal, StyleSheet, TouchableOpacity, View} from "react-native";
 import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
-import type {GeoData} from "../lib/Types";
 import autobind from "autobind-decorator";
 import PropTypes from "prop-types";
-import {cancelAlarm, checkAlarms, subscribe} from "../lib/checkAlarms";
+import {cancelAlarm, checkAlarms, subscribeActive, subscribeCancel} from "../lib/checkAlarms";
 
 export class AlarmRinger extends Component {
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    alarms: PropTypes.array.isRequired,
-    geo: PropTypes.object,
-    cancelAlarm: PropTypes.func.isRequired
-  };
-
   state = {
     activeAlarm: null
   };
 
   constructor(props) {
     super(props);
-    subscribe((alarm) => {
+    subscribeActive((alarm) => {
       this.setState({
         activeAlarm: alarm
       });
     });
+    subscribeCancel(() => {
+      this.setState({activeAlarm: null});
+    })
   }
 
   componentWillReceiveProps(next) {
-    const geo: ?GeoData = next.geo;
-    if (geo) {
-      checkAlarms();
-    }
+    checkAlarms(next.alarms);
   }
 
   @autobind
