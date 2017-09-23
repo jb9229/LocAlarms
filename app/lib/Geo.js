@@ -1,4 +1,4 @@
-import {getRequest, Http} from "./Http";
+import {getRequest} from "./Http";
 import type {GeoData, GeoLocation} from "./Types";
 
 const key = "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ";
