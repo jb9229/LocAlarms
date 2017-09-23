@@ -36,3 +36,4 @@ console.ignoredYellowBox = ['Setting a timer'];
 export default DebugConfig.useReactotron
   ? console.tron.overlay(App)
   : App;
+export {store}
