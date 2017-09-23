@@ -17,6 +17,9 @@ export class RootContainer extends Component {
 
   componentWillMount() {
     this.props.actions.status.startup();
+    navigator.geolocation.getCurrentPosition((loc) => {
+      this.props.actions.status.setLocation(loc);
+    })
   }
 
   render() {

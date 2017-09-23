@@ -26,11 +26,12 @@ public class Alarm extends BroadcastReceiver {
 
   }
 
-  public void setAlarm(Context context) {
-    System.out.println("set alarm!!!!!");
-    AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    Intent i = new Intent(context, Alarm.class);
-    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-    am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60, pi);
+  public void setAlarm(final Context context) {
+    if (System.currentTimeMillis() - AlarmService.lastActive >= 2 * 60 * 1000) {
+      AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+      Intent i = new Intent(context, Alarm.class);
+      PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+      am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60, pi);
+    }
   }
 }

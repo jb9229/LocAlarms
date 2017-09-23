@@ -9,17 +9,19 @@ import com.facebook.react.jstasks.HeadlessJsTaskConfig;
 import javax.annotation.Nullable;
 
 public class AlarmService extends HeadlessJsTaskService {
-  long lastActive = 0;
+  static long lastActive = 0;
 
   @Override
   protected @Nullable
   HeadlessJsTaskConfig getTaskConfig(Intent intent) {
     long current = System.currentTimeMillis();
-    if ((current - lastActive) >= 30 * 1000)
+    if ((current - lastActive) >= 30 * 1000) {
+      lastActive = current;
       return new HeadlessJsTaskConfig(
         "checkAlarms",
         null,
         10000, true);
+    }
     else return null;
   }
 
