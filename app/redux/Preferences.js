@@ -12,4 +12,4 @@ const reducers = {
 
 export default {
   actions, reducers
-}
+};

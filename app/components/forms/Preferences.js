@@ -37,11 +37,6 @@ export class PreferencesForm extends Component {
     if (isDefined(this.state.sound)) this.state.sound.stop();
   }
 
-
-  constructor(props) {
-    super(props);
-  }
-
   @autobind
   renderInput({input, label, type}) {
     switch (type) {

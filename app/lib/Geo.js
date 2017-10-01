@@ -2,6 +2,7 @@ import {getRequest} from "./Http";
 import type {GeoData, GeoLocation} from "./Types";
 
 const key = "AIzaSyDKUfvIkz5ygXIOjLmuBwcLk07CPYQ-bkQ";
+
 export function geocode(location: GeoLocation): Promise<any[]> {
   return getRequest("https://maps.googleapis.com/maps/api/geocode/json", {
     key,

@@ -73,34 +73,34 @@ export class AlarmCard extends Component {
   render() {
     return <TouchableNativeFeedback onPress={this.pressed}>
       <CardItem bordered>
-      <Body>
-      <Title inverse thin large>{this.props.alarm.name}</Title>
-      <Text subtitle>{this.getTimeTo()}</Text>
-      <View style={styles.fullWidth}>
-        <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
-          <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.editPressed(this.props.alarm);
-          }}>
-            <View style={styles.editPanelItem}>
-              <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/>
-              <Text style={styles.green}>Edit</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {
-            this.props.deletePressed(this.props.alarm);
-          }}>
-            <View style={styles.editPanelItem}>
-              <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/>
-              <Text style={styles.red}>Delete</Text>
-            </View>
-          </TouchableOpacity>
-        </Animated.View>
+        <Body>
+        <Title inverse thin large>{this.props.alarm.name}</Title>
+        <Text subtitle>{this.getTimeTo()}</Text>
+        <View style={styles.fullWidth}>
+          <Animated.View style={[styles.editPanel, {height: this.animatedHeight}]}>
+            <TouchableOpacity style={styles.item} onPress={() => {
+              this.props.editPressed(this.props.alarm);
+            }}>
+              <View style={styles.editPanelItem}>
+                <Icon name="build" small style={[styles.editPanelIcon, styles.green]}/>
+                <Text style={styles.green}>Edit</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item} onPress={() => {
+              this.props.deletePressed(this.props.alarm);
+            }}>
+              <View style={styles.editPanelItem}>
+                <Icon name="trash" small style={[styles.editPanelIcon, styles.red]}/>
+                <Text style={styles.red}>Delete</Text>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
           <Animated.View style={[{transform: [{rotate: this.arrowOrientation}]}, styles.right]}>
             <Icon name="ios-arrow-down"/>
           </Animated.View>
-      </View>
-      </Body>
-    </CardItem>
+        </View>
+        </Body>
+      </CardItem>
     </TouchableNativeFeedback>;
   }
 }

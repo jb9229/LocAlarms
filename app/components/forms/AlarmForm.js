@@ -102,10 +102,10 @@ export class AlarmForm extends Component {
         const name = this.props.value[this.fields.name.name];
         return <View style={styles.mapContainer}>
           <Map locations={[{
+            ...input.value,
             onDragEnd: input.onChange,
             title: isDefined(name) ? name : "",
-            radius: this.props.value[this.fields.radius.name],
-            ...input.value
+            radius: this.props.value[this.fields.radius.name]
           }]}/>
         </View>;
       case formTypes.number:
@@ -141,6 +141,7 @@ export class AlarmForm extends Component {
 
   render() {
     const {change, handleSubmit, value} = this.props;
+    console.log(this.props);
     return (
       <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="none">
         <Modal
@@ -176,7 +177,7 @@ export class AlarmForm extends Component {
           <Field {...this.fields.radius}/>
           <Field {...this.fields.hasSchedule}/>
           <FormSection {...this.fields.schedule}>
-            {value.hasSchedule ? <ScheduleForm/> : <View/>}
+            {value.hasSchedule ? <ScheduleForm change={(field, data) => this.props.change(`${this.fields.schedule.name}.${field}`, data)}/> : <View/>}
           </FormSection>
           <FormSection {...this.fields.preferences}>
             <PreferencesForm/>

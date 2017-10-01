@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -114,9 +115,13 @@ public class GeoLocationService extends Service {
 
   private Notification getCompatNotification() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-    builder.setSmallIcon(R.mipmap.ic_launcher)
-      .setContentTitle("Service Started")
-      .setTicker("Tracking Location")
+    String str = "Is using your location in the background";
+    builder
+      .setSmallIcon(R.drawable.ic_gps_icon)
+      .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+      .setContentTitle("Geo Alarms")
+      .setContentText(str)
+      .setTicker(str)
       .setWhen(System.currentTimeMillis());
     Intent startIntent = new Intent(getApplicationContext(), MainActivity.class);
     PendingIntent contentIntent = PendingIntent.getActivity(this, 1000, startIntent, 0);

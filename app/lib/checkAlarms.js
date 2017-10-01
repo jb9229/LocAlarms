@@ -86,6 +86,7 @@ export async function checkAlarms(alarmList: ?Alarm[], geoData: GeoData) {
           Notification.localNotification({
             ongoing: false,
             message: `${alarm.name} is ringing`,
+            smallIcon: "ic_alarm_icon",
             actions: '["Stop"]',
             alarm
           });
@@ -95,6 +96,7 @@ export async function checkAlarms(alarmList: ?Alarm[], geoData: GeoData) {
         warnedAlarms.push(alarm);
         Notification.localNotification({
           ongoing: false, // (optional) set whether this is an "ongoing" notification
+          smallIcon: "ic_alarm_icon",
           message: `${alarm.name} is upcoming`, // (required)
           actions: '["Cancel"]',  // (Android only) See the doc for notification actions to know more,
           alarm

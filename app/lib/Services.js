@@ -1,11 +1,10 @@
-import { NativeModules, DeviceEventEmitter } from 'react-native';
-import {Toast} from "native-base";
+import {DeviceEventEmitter, NativeModules} from 'react-native';
 import type {GeoData} from "./Types";
 import {checkAlarms} from "./checkAlarms";
 
 type locServiceType = {
-  startService: () => Promise,
-  stopService: () => Promise,
+  startService: () => void,
+  stopService: () => void,
   vibrate: () => void,
   cancelVibrate: () => void
 }
@@ -13,7 +12,7 @@ type locServiceType = {
 const locService: locServiceType = NativeModules.GeoLocation;
 const start = () => locService.startService().then(() => {
   DeviceEventEmitter.addListener("updateLocation", (geoData: GeoData) => {
-    checkAlarms(null, geoData)
+    checkAlarms(null, geoData);
   });
 });
-export {start as startService, locService}
+export {start as startService, locService};

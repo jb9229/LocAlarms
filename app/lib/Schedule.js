@@ -1,7 +1,7 @@
 import moment, {Moment} from "moment";
 import {isDefined} from "./Operators";
 import _ from "lodash";
-import type {Alarm, Schedule} from "./Types";
+import type {Alarm} from "./Types";
 import {ScheduleTypes} from "./Types";
 
 export function generateActiveSchedule(alarm: Alarm, winStart: ?Moment, filterDeactivated = true): { start: Moment, end: Moment }[] {
@@ -14,7 +14,7 @@ export function generateActiveSchedule(alarm: Alarm, winStart: ?Moment, filterDe
       result.push({start: addMoment(windowStart, 1, "d").startOf("d"), end: addMoment(windowStart, 1, "d").endOf("d")});
     } else {
       const lastDeactivated = moment(alarm.schedule.lastDeactivated);
-      result.push({start: addMoment(lastDeactivated, 1, "d"), end: addMoment(lastDeactivated, 2, "d")})
+      result.push({start: addMoment(lastDeactivated, 1, "d"), end: addMoment(lastDeactivated, 2, "d")});
     }
   } else {
     switch (schedule.type) {
@@ -73,7 +73,7 @@ export function stringToTime(x: string) {
   return hours * 60 + minutes;
 }
 
-export function currentTimeToMinutes(roundUnit, hoursToAdd=0) {
+export function currentTimeToMinutes(roundUnit, hoursToAdd = 0) {
   const toMins = (moment: Moment) => moment.get("hours") * 60 + moment.get("minutes");
   const now = moment();
   const added = moment(now).add(hoursToAdd, "h");

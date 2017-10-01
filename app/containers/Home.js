@@ -41,7 +41,6 @@ export class Home extends Component {
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
-  headerUp = false;
   scrollRef;
 
   constructor(props) {
@@ -70,7 +69,10 @@ export class Home extends Component {
 
   filterPastAlarm() {
     const now = moment();
-    return this.props.state.alarms.map((alarm) => ({...alarm, isArchived: generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now))}))
+    return this.props.state.alarms.map((alarm) => ({
+      ...alarm,
+      isArchived: generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now))
+    }));
   }
 
   render() {
@@ -84,7 +86,7 @@ export class Home extends Component {
       <Header>
         <Body>
         <Title>
-          Your Alarms
+          Geo Alarms
         </Title>
         </Body>
         <Right>
@@ -142,7 +144,8 @@ export class Home extends Component {
               <Card>
                 {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
                                                      key={i}
-                                                     onPress={() => {}}
+                                                     onPress={() => {
+                                                     }}
                                                      onEditPanelOpen={() => {
                                                        this.setState({
                                                          editPanelOpen: i

@@ -12,7 +12,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 
@@ -36,8 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
         new ReactNativePushNotificationPackage(),
         new RNSoundPackage(),
         new MapsPackage(),
-        new VectorIconsPackage(),
-        new ReactNativeConfigPackage()
+        new VectorIconsPackage()
       );
     }
   };

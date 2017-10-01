@@ -1,4 +1,3 @@
-import {Platform} from "react-native";
 import variable from "../material";
 
 export default (variables = variable) => {

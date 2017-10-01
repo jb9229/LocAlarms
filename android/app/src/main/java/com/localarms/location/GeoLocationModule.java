@@ -51,7 +51,7 @@ public class GeoLocationModule extends ReactContextBaseJavaModule {
     try {
       Intent intent = new Intent(GeoLocationService.FOREGROUND);
       intent.setClass(this.getReactApplicationContext(), GeoLocationService.class);
-      this.getReactApplicationContext().startService(intent);
+      getReactApplicationContext().startService(intent);
     } catch (Exception e) {
       promise.reject(e);
       return;

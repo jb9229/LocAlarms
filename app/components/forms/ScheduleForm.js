@@ -2,8 +2,8 @@ import React, {Component} from "react";
 import {Field} from "redux-form";
 import {currentTimeToMinutes, stringToTime, timeToString} from "../../lib/Schedule";
 import {attachRender, createFields, formTypes} from "../../lib/ReduxForm";
-import {Icon, Item, Label, Text} from "native-base";
-import {StyleSheet, TouchableNativeFeedback, TouchableOpacity, View} from "react-native";
+import {Icon, Item, Label} from "native-base";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 import DatePicker from "react-native-datepicker";
 import autobind from "autobind-decorator";
 import moment from "moment";
@@ -11,6 +11,8 @@ import {Theme} from "../../theme";
 import {isDefined} from "../../lib/Operators";
 import {ScheduleTypes} from "../../lib/Types";
 import {Picker, PickerModes} from "./Picker";
+import PropTypes from "prop-types";
+import _ from "lodash";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},
@@ -38,11 +40,11 @@ export const fieldData = createFields({
 });
 
 export class ScheduleForm extends Component {
-  fields = attachRender(fieldData, this.renderInput);
+  static propTypes = {
+    change: PropTypes.func
+  };
 
-  constructor(props) {
-    super(props);
-  }
+  fields = attachRender(fieldData, this.renderInput);
 
   @autobind
   renderInput({input, label, type, meta: {error}}) {

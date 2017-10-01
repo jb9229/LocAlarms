@@ -11,7 +11,10 @@ export const combineSagas = (obj: { [string]: any }, actionCreators) => all([].c
 export const combineActions = (actionMap: any) => createActions(actionMap);
 export const combineReducers = (reducers, initialState) => combReducers(objectMap(reducers,
   (val, key) => initialState[key] ?
-    (state, action) => handleActions(val, initialState[key])(state, {...action, type: action.type.replace(`${key}/`, '')})
+    (state, action) => handleActions(val, initialState[key])(state, {
+      ...action,
+      type: action.type.replace(`${key}/`, '')
+    })
     : val));
 
 
