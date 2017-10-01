@@ -61,7 +61,7 @@ export const createStore = () => {
 
   const createAppropriateStore = Config.useReactotron ? console.tron.createStore : reduxCreate;
   const store = createAppropriateStore(rootReducer, compose(...enhancers));
-  let persistor = persistStore(store, ReduxConfig);
+  let persistor = persistStore(store);
   sagaMiddleware.run(rootSaga);
   return {store, persistor};
 };

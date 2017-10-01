@@ -4,8 +4,8 @@ import {isDefined} from "../lib/Operators";
 import Color from "color";
 import {Theme} from "../theme";
 import autobind from "autobind-decorator";
-import PropTypes from "prop-types";
 import {cancelAlarm, checkAlarms, subscribeActive, subscribeCancel} from "../lib/checkAlarms";
+import {startService} from "../lib/Services";
 
 export class AlarmRinger extends Component {
   state = {
@@ -14,6 +14,7 @@ export class AlarmRinger extends Component {
 
   constructor(props) {
     super(props);
+    startService();
     subscribeActive((alarm) => {
       this.setState({
         activeAlarm: alarm
@@ -21,7 +22,7 @@ export class AlarmRinger extends Component {
     });
     subscribeCancel(() => {
       this.setState({activeAlarm: null});
-    })
+    });
   }
 
   componentWillReceiveProps(next) {

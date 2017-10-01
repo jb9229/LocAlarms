@@ -97,8 +97,8 @@ android {
         applicationId "com.localarms"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 3
-        versionName "3-alpha"
+        versionCode 5
+        versionName "3-alpha.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -145,15 +145,30 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-android-location-services-dialog-box')
     compile project(':react-native-push-notification')
-    compile ('com.google.android.gms:play-services-gcm:9.2.0') {
+    compile ('com.google.android.gms:play-services-gcm:11.0.0') {
         force = true
     }
+
+    compile ('com.google.android.gms:play-services-location:11.0.0') {
+        force = true
+    }
+    compile ('com.google.android.gms:play-services-base:11.0.0') {
+        force = true
+    }
+    compile ('com.google.android.gms:play-services-maps:11.0.0') {
+        force = true
+    }
+
     compile project(':react-native-sound')
-    compile project(':react-native-android-location-services-dialog-box')
-    compile project(':react-native-maps')
+    compile(project(':react-native-maps')) {
+        exclude group: 'com.google.android.gms', module: 'play-services-base'
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+
+
     compile project(':react-native-vector-icons')
-    compile project(':react-native-background-timer')
     compile project(':react-native-config')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"

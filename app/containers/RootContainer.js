@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StatusBar, UIManager} from 'react-native';
 import {ReduxNavigation} from '../navigation/ReduxNavigation';
-import {View} from "native-base";
+import {Root, View} from "native-base";
 import {AlarmRinger} from "../components/AlarmRinger";
 import {actionDispatcher} from "../redux";
 import {connect} from "react-redux";
@@ -26,7 +26,9 @@ export class RootContainer extends Component {
       <View>
         <StatusBar barStyle='light-content'/>
         <AlarmRinger alarms={this.props.state.alarms}/>
-        <ReduxNavigation/>
+        <Root>
+          <ReduxNavigation/>
+        </Root>
       </View>
     );
   }

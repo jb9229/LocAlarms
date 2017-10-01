@@ -1,5 +1,4 @@
 import _ from "lodash";
-import BackgroundTimer from "react-native-background-timer";
 
 export function objectMap(obj, valMap, keyMap: ?(key) => any) {
   return Object.keys(obj).reduce((val, x) => {
@@ -38,20 +37,12 @@ export function filterUndefined(array: any[]): any[] {
   return array.filter(allProperties);
 }
 
-export function execEvery(fn, ms, useBg = false) {
+export function execEvery(fn, ms) {
   let now = new Date(), delay = ms - now % ms;
   let id;
-  if (useBg) {
-    BackgroundTimer.setTimeout(() => {
-      fn();
-      id = BackgroundTimer.setInterval(fn, ms)
-    }, delay);
-    return () => {BackgroundTimer.clearInterval(id)}
-  } else {
-    setTimeout(() => {
-      fn();
-      id = setInterval(fn, ms);
-    });
-    return () => clearInterval(id);
-  }
+  setTimeout(() => {
+    fn();
+    id = setInterval(fn, ms);
+  }, delay);
+  return () => clearInterval(id);
 }

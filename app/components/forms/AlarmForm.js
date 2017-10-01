@@ -118,7 +118,7 @@ export class AlarmForm extends Component {
                   onSlidingComplete={input.onChange}
                   minimumValue={100}
                   maximumValue={1000}
-                  value={input.value}/>
+                  value={_.isInteger(input.value) ? input.value : 100}/>
           <Text style={styles.sliderText}>1000m</Text>
         </Item>;
       case formTypes.customOnFocus:

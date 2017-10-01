@@ -1,16 +1,18 @@
 import {store} from "../containers/App";
 import moment from "moment";
-import {DeviceEventEmitter, Vibration} from "react-native";
-import type {Alarm} from "./Types";
+import {DeviceEventEmitter} from "react-native";
+import type {Alarm, GeoData} from "./Types";
 import {getSoundFile} from "./Types";
 import {generateActiveSchedule, inWindow} from "./Schedule";
 import {coordsToMeters, inRadius} from "./Geo";
 import _ from "lodash";
-import {execEvery, isDefined} from "./Operators";
+import {isDefined} from "./Operators";
 import {actionCreators} from "../redux/index";
 import Notification from "react-native-push-notification";
+import {locService} from "./Services";
 
-let playingSound, cancelVibrate, activateAlarmNotifications = [], warnedAlarms, activeAlarm, activeSubscribers = [], cancelSubscribers = [];
+let playingSound, activateAlarmNotifications = [], warnedAlarms, activeAlarm, activeSubscribers = [],
+  cancelSubscribers = [];
 
 export function subscribeActive(fn) {
   activeSubscribers.push(fn);
@@ -44,24 +46,21 @@ export function cancelAlarm() {
     playingSound.stop();
     playingSound = null;
   }
-  if (isDefined(cancelVibrate)) {
-    Vibration.cancel();
-    cancelVibrate();
-    cancelVibrate = null;
-  }
+  locService.cancelVibrate();
 }
 
 function dispatchStoreCancel(id) {
   store.dispatch(actionCreators.alarms.deactivateAlarm(id, moment()));
 }
 
-export async function checkAlarms(alarmList: ?Alarm[]) {
-  let alarms;
+export async function checkAlarms(alarmList: ?Alarm[], geoData: GeoData) {
+  let alarms, geo;
   if (!isDefined(alarmList)) alarms = store.getState().alarms;
   else alarms = alarmList;
-  const geo = await new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
+  if (!isDefined(geoData)) geo = await new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition(resolve);
   });
+  else geo = geoData;
   const now = moment();
   alarms.forEach((alarm: Alarm) => {
       const inSchedule = inWindow(now, generateActiveSchedule(alarm, now));
@@ -79,10 +78,8 @@ export async function checkAlarms(alarmList: ?Alarm[]) {
             }
           });
         }
-        if (alarm.preferences.vibrate && !isDefined(cancelVibrate)) {
-          cancelVibrate = execEvery(() => {
-            Vibration.vibrate();
-          }, 750, true);
+        if (alarm.preferences.vibrate) {
+          locService.vibrate();
         }
         if (!_.includes(activateAlarmNotifications, alarm)) {
           activateAlarmNotifications.push(alarm);
