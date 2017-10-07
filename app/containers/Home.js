@@ -29,7 +29,6 @@ import Color from "color";
 import _ from "lodash";
 import {AlarmList} from "../components/AlarmList";
 import {execEvery} from "../lib/Operators";
-import {shouldActivate} from "../lib/checkAlarms";
 
 @connect(stateSelector(namespaces.alarms, namespaces.status, namespaces.preferences), actionDispatcher)
 export class Home extends Component {
@@ -170,15 +169,15 @@ export class Home extends Component {
             <AlarmList alarms={alarms} editPressed={this.editAlarm} deletePressed={this.deleteAlarm}
                        longPressed={(alarm) => {
                          if (alarm.timeTo === -1)
-                         Alert.alert(null, "Reactivate alarm?", [
-                           {text: 'No'},
-                           {
-                             text: 'Yes',
-                             onPress: () => {
-                               this.props.actions.alarms.reactivateAlarm(alarm.id);
-                             }, style: 'cancel'
-                           }
-                         ], {cancelable: true});
+                           Alert.alert(null, "Reactivate alarm?", [
+                             {text: 'No'},
+                             {
+                               text: 'Yes',
+                               onPress: () => {
+                                 this.props.actions.alarms.reactivateAlarm(alarm.id);
+                               }, style: 'cancel'
+                             }
+                           ], {cancelable: true});
                        }}/>
           </Content>
         </Animated.ScrollView>

@@ -176,7 +176,8 @@ export class AlarmForm extends Component {
           <Field {...this.fields.radius}/>
           <Field {...this.fields.hasSchedule}/>
           <FormSection {...this.fields.schedule}>
-            {value.hasSchedule ? <ScheduleForm change={(field, data) => this.props.change(`${this.fields.schedule.name}.${field}`, data)}/> : <View/>}
+            {value.hasSchedule ? <ScheduleForm
+              change={(field, data) => this.props.change(`${this.fields.schedule.name}.${field}`, data)}/> : <View/>}
           </FormSection>
           <FormSection {...this.fields.preferences}>
             <PreferencesForm/>

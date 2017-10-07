@@ -20,19 +20,22 @@ export class AlarmList extends Component {
       </Button>;
     return <View>
       {this.props.alarms.length > 0 &&
-      <List dataSource={new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.props.alarms)}
-            renderRow={(data: Alarm & { timeTo: number }) =>
-              <View style={styles.bordered}>
-                <AlarmCard alarm={data}
-                           timeTo={data.timeTo}
-                           longPressed={() => {this.props.longPressed(data)}}
-                           pressed={() => this.props.editPressed(data)}/>
-              </View>}
-            style={styles.whiteBg}
-            renderLeftHiddenRow={renderDelete}
-            renderRightHiddenRow={renderDelete}
-            leftOpenValue={75}
-            rightOpenValue={-75}/>}
+      <List
+        dataSource={new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(this.props.alarms)}
+        renderRow={(data: Alarm & { timeTo: number }) =>
+          <View style={styles.bordered}>
+            <AlarmCard alarm={data}
+                       timeTo={data.timeTo}
+                       longPressed={() => {
+                         this.props.longPressed(data);
+                       }}
+                       pressed={() => this.props.editPressed(data)}/>
+          </View>}
+        style={styles.whiteBg}
+        renderLeftHiddenRow={renderDelete}
+        renderRightHiddenRow={renderDelete}
+        leftOpenValue={75}
+        rightOpenValue={-75}/>}
     </View>;
   }
 }

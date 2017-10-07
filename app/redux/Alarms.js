@@ -26,8 +26,14 @@ const reducers = {
   [types.addAlarm]: (state: Alarm[], {payload: alarm}) => [...state, alarm],
   [types.editAlarm]: (state: Alarm[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
   [types.deleteAlarm]: (state: Alarm[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
-  [types.deactivateAlarm]: (state: Alarm[], {payload: {id, now}}) => state.map((alarm: Alarm) => alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm),
-  [types.reactivateAlarm]: (state: Alarm[], {payload: id}) => state.map((alarm: Alarm) => alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: null}} : alarm)
+  [types.deactivateAlarm]: (state: Alarm[], {payload: {id, now}}) => state.map((alarm: Alarm) => alarm.id === id ? {
+    ...alarm,
+    schedule: {...alarm.schedule, lastDeactivated: now}
+  } : alarm),
+  [types.reactivateAlarm]: (state: Alarm[], {payload: id}) => state.map((alarm: Alarm) => alarm.id === id ? {
+    ...alarm,
+    schedule: {...alarm.schedule, lastDeactivated: null}
+  } : alarm)
 };
 
 const sagas = {

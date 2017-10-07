@@ -34,7 +34,7 @@ export function isDefined(x) {
  * @param array
  */
 export function filterUndefined(array: any[]): any[] {
-  return isDefined(array) ? array.filter(allProperties): [];
+  return isDefined(array) ? array.filter(allProperties) : [];
 }
 
 export function execEvery(fn, ms) {

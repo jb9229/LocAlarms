@@ -42,7 +42,7 @@ export class Map extends Component {
           ];
         }
         if ((maxLat - minLat) <= 0.01 && (maxLng - minLng) <= 0.01) {
-          const delta = Math.max(...locations.map((loc) => loc.radius))/30000;
+          const delta = Math.max(...locations.map((loc) => loc.radius)) / 30000;
           this.mapView.animateToRegion({
             latitude: (maxLat + minLat) / 2,
             longitude: (maxLng + minLng) / 2,
