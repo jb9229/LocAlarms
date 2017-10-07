@@ -42,11 +42,12 @@ export class Map extends Component {
           ];
         }
         if ((maxLat - minLat) <= 0.01 && (maxLng - minLng) <= 0.01) {
+          const delta = Math.max(...locations.map((loc) => loc.radius))/30000;
           this.mapView.animateToRegion({
             latitude: (maxLat + minLat) / 2,
             longitude: (maxLng + minLng) / 2,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
+            latitudeDelta: delta,
+            longitudeDelta: delta
           });
         }
         else if (locations.length > 0) this.mapView.fitToCoordinates(locations, {animated: true});

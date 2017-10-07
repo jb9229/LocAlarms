@@ -11,7 +11,7 @@ import {actionCreators} from "../redux/index";
 import Notification from "react-native-push-notification";
 import {locService} from "./Services";
 
-let playingSound, activateAlarmNotifications = [], warnedAlarms, activeAlarm, activeSubscribers = [],
+let playingSound, activateAlarmNotifications = [], warnedAlarms = [], activeAlarm, activeSubscribers = [],
   cancelSubscribers = [];
 
 export function subscribeActive(fn) {

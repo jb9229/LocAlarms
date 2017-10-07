@@ -111,15 +111,15 @@ export class AlarmForm extends Component {
       case formTypes.number:
         return <Item style={styles.noInputContainer}>
           <Label style={styles.sliderLabel}>{label}</Label>
-          <Text style={styles.sliderText}>100m</Text>
+          <Text style={styles.sliderText}>500m</Text>
           <Slider style={styles.slider}
                   thumbTintColor={Theme.brandPrimary}
                   maximumTrackTintColor={Theme.brandPrimary}
                   onSlidingComplete={input.onChange}
-                  minimumValue={100}
-                  maximumValue={1000}
-                  value={_.isInteger(input.value) ? input.value : 100}/>
-          <Text style={styles.sliderText}>1000m</Text>
+                  minimumValue={500}
+                  maximumValue={5000}
+                  value={_.isNumber(input.value) ? input.value : 100}/>
+          <Text style={styles.sliderText}>5000m</Text>
         </Item>;
       case formTypes.customOnFocus:
         return <Item error={hasError} style={styles.inputContainer}>
