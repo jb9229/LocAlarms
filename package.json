@@ -38,7 +38,7 @@
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "redux-form": "^7.0.4",
+    "redux-form": "^7.1.0",
     "redux-persist": "^5.0.0-rc.2",
     "redux-saga": "^0.15.6",
     "uuid": "^3.1.0"
@@ -50,7 +50,7 @@
     "babel-preset-es2015": "^7.0.0-beta.2",
     "babel-preset-react-native": "^4.0.0",
     "babel-preset-react-native-stage-0": "^1.0.1",
-    "enzyme": "^3.0.0",
+    "enzyme": "^3.1.0",
     "jest": "21.2.1",
     "react-addons-test-utils": "~16.0.0-alpha.3",
     "react-dom": "^16.0.0",

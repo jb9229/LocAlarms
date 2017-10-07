@@ -12,7 +12,6 @@ import {isDefined} from "../../lib/Operators";
 import {ScheduleTypes} from "../../lib/Types";
 import {Picker, PickerModes} from "./Picker";
 import PropTypes from "prop-types";
-import _ from "lodash";
 
 export const fieldData = createFields({
   type: {label: "Type", initialValue: ScheduleTypes.ONCE, type: formTypes.picker},

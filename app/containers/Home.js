@@ -13,58 +13,62 @@ import {
   Switch,
   Text,
   Title,
+  Toast,
   View
 } from "native-base";
 import {Map} from "../components/maps/Map";
 import {connect} from "react-redux";
-import {actionDispatcher} from "../redux";
+import {actionDispatcher, namespaces, stateSelector} from "../redux";
 import {Metrics, Theme} from "../theme";
-import {AlarmCard} from "../components/AlarmCard";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
 import type {Alarm} from "../lib/Types";
-import {namespaces, stateSelector} from "../redux/index";
 import {generateActiveSchedule} from "../lib/Schedule";
 import moment from "moment";
 import Color from "color";
+import _ from "lodash";
+import {AlarmList} from "../components/AlarmList";
 
 @connect(stateSelector(namespaces.alarms, namespaces.status, namespaces.preferences), actionDispatcher)
 export class Home extends Component {
   scroll = new Animated.Value(0);
-  fabScale = this.scroll.interpolate({
-    inputRange: [0, 30],
-    outputRange: [1, 0.01], // bug on android where scale 0 causes issues
-    extrapolate: "clamp"
-  });
   mapScale = this.scroll.interpolate({
     inputRange: [-35, 0],
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
   scrollRef;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      editPanelOpen: -1,
-      menuOpen: false
-    };
-  }
-
-  @autobind
-  deleteAlarm(alarm) {
-    this.props.actions.alarms.deleteAlarm(alarm.id);
-    this.setState({
-      editPanelOpen: -1
-    });
-  }
+  state = {
+    menuOpen: false,
+    ignoredIds: []
+  };
 
   @autobind
   editAlarm(alarm) {
     this.props.navigation.navigate(Routes.alarmEditor, {alarm});
-    this.setState({
-      editPanelOpen: -1
+  }
+
+  @autobind
+  deleteAlarm(alarm: Alarm) {
+    const delay = 5000;
+    const id = setTimeout(() => {
+      this.props.deletePressed(alarm);
+    }, delay);
+    Toast.show({
+      text: `${alarm.name} was deleted`,
+      position: 'bottom',
+      buttonText: 'Undo',
+      onClose: () => {
+        clearTimeout(id);
+        this.setState((prev) => ({
+          ignoredIds: _.without(prev.ignoredIds, alarm.id)
+        }));
+      },
+      duration: delay
     });
+    this.setState((prev) => ({
+      ignoredIds: [...prev.ignoredIds, alarm.id]
+    }));
   }
 
   filterPastAlarm() {
@@ -72,16 +76,12 @@ export class Home extends Component {
     return this.props.state.alarms.map((alarm) => ({
       ...alarm,
       isArchived: generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now))
-    }));
+    })).filter((alarm) => this.props.state.preferences.showArchived ? true : alarm.isArchived)
+      .filter((alarm) => !_.includes(this.state.ignoredIds, alarm.id));
   }
 
   render() {
-    const alarms = this.filterPastAlarm().filter((alarm) => this.props.state.preferences.showArchived ? true : alarm.isArchived);
-    const fab = <Fab onPress={() => {
-      this.props.navigation.navigate(Routes.alarmEditor);
-    }}>
-      <Icon name="add"/>
-    </Fab>;
+    const alarms = this.filterPastAlarm();
     return <Container>
       <Header>
         <Body>
@@ -139,29 +139,15 @@ export class Home extends Component {
                  }))}/>
           </Animated.View>
           <Content>
-            <View>
-              {(alarms.length > 0) &&
-              <Card>
-                {alarms.map((alarm, i) => <AlarmCard alarm={alarm}
-                                                     key={i}
-                                                     onPress={() => {
-                                                     }}
-                                                     onEditPanelOpen={() => {
-                                                       this.setState({
-                                                         editPanelOpen: i
-                                                       });
-                                                     }}
-                                                     editPressed={this.editAlarm}
-                                                     deletePressed={this.deleteAlarm}
-                                                     editPanelOpen={this.state.editPanelOpen === i}/>)}
-              </Card>}
-            </View>
+            <AlarmList alarms={alarms} editPressed={this.editAlarm} deletePressed={this.deleteAlarm}/>
           </Content>
         </Animated.ScrollView>
       </View>
-      {alarms.length > 0 ? <Animated.View style={[styles.fab, {transform: [{scale: this.fabScale}]}]}>
-        {fab}
-      </Animated.View> : fab}
+      <Fab onPress={() => {
+        this.props.navigation.navigate(Routes.alarmEditor);
+      }}>
+        <Icon name="add"/>
+      </Fab>
     </Container>;
   }
 }
@@ -173,6 +159,7 @@ const styles = StyleSheet.create({
   alarmMap: {
     height: Metrics.screenHeight * 0.85 - Theme.toolbarHeight
   },
+  whiteBg: {backgroundColor: "white"},
   fab: {
     position: "absolute",
     bottom: 0,
