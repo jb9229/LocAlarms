@@ -23,8 +23,8 @@ import {Metrics, Theme} from "../theme";
 import {Routes} from "../navigation/AppNavigation";
 import autobind from 'autobind-decorator';
 import type {Alarm} from "../lib/Types";
-import {generateActiveSchedule} from "../lib/Schedule";
-import moment from "moment";
+import {generateActiveSchedule, inWindow} from "../lib/Schedule";
+import moment, {Moment} from "moment";
 import Color from "color";
 import _ from "lodash";
 import {AlarmList} from "../components/AlarmList";
@@ -52,7 +52,7 @@ export class Home extends Component {
   deleteAlarm(alarm: Alarm) {
     const delay = 5000;
     const id = setTimeout(() => {
-      this.props.deletePressed(alarm);
+      this.props.actions.alarms.deleteAlarm(alarm.id);
     }, delay);
     Toast.show({
       text: `${alarm.name} was deleted`,
@@ -71,17 +71,37 @@ export class Home extends Component {
     }));
   }
 
-  filterPastAlarm() {
+  processAlarms() {
     const now = moment();
-    return this.props.state.alarms.map((alarm) => ({
-      ...alarm,
-      isArchived: generateActiveSchedule(alarm, now).some((schedule) => schedule.end.isAfter(now))
-    })).filter((alarm) => this.props.state.preferences.showArchived ? true : alarm.isArchived)
-      .filter((alarm) => !_.includes(this.state.ignoredIds, alarm.id));
+
+    const schedules = this.props.state.alarms.reduce((obj, alarm: Alarm) => ({
+      ...obj,
+      [alarm.id]: generateActiveSchedule(alarm, now)
+    }), {});
+
+    return this.props.state.alarms
+      .filter((alarm) => this.props.state.preferences.showArchived || schedules[alarm.id].some((schedule) => schedule.end.isAfter(now)))
+      .filter((alarm) => !_.includes(this.state.ignoredIds, alarm.id))
+      .sort((a: Alarm, b: Alarm) => {
+        return this.getTimeTo(a, now, schedules[a.id]) - this.getTimeTo(b, now, schedules[b.id]);
+      });
+  }
+
+  @autobind
+  getTimeTo(alarm, now, schedules=generateActiveSchedule(alarm, now)): string {
+    if (inWindow(now, schedules)) {
+      return 0;
+    }
+    for (let schedule: { start: Moment, end: Moment } of schedules) {
+      if (schedule.start.isAfter(now)) {
+        return moment.duration(schedule.start.diff(now)).asMilliseconds();
+      }
+    }
+    return -1;
   }
 
   render() {
-    const alarms = this.filterPastAlarm();
+    const alarms = this.processAlarms();
     return <Container>
       <Header>
         <Body>

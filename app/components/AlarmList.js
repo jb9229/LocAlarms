@@ -36,7 +36,7 @@ export class AlarmList extends Component {
     }));
     const renderDelete = alarm =>
       <Button full danger onPress={() => {
-        this.deleteAlarm(alarm);
+        this.props.deletePressed(alarm);
       }}>
         <Icon active name="trash"/>
       </Button>;
@@ -44,22 +44,27 @@ export class AlarmList extends Component {
       {alarms.length > 0 &&
       <List dataSource={new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(alarms)}
             renderRow={(data: Alarm & { time: Moment }) =>
-              <View style={{borderBottomColor: "#aaaaaa", borderBottomWidth: 2 * StyleSheet.hairlineWidth}}>
+              <View style={styles.bordered}>
               <AlarmCard alarm={data}
                          time={data.time}
-                         pressed={() => this.props.editPressed(data)}
-                         style={{
-                           borderColor: "#aaaaaa",
-                           borderWidth: 5
-                         }}/>
+                         pressed={() => this.props.editPressed(data)}/>
               </View>
                 }
             renderLeftHiddenRow={renderDelete}
             renderRightHiddenRow={renderDelete}
             leftOpenValue={75}
-            style={{backgroundColor: "white"}}
+            style={styles.whiteBg}
             rightOpenValue={-75}/>
       }
     </View>;
   }
 }
+
+const styles = StyleSheet.create({
+  whiteBg: {
+    backgroundColor: "white"
+  },
+  bordered: {
+    borderBottomColor: "#aaaaaa", borderBottomWidth: 2 * StyleSheet.hairlineWidth
+  }
+})

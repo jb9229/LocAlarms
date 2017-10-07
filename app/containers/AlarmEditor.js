@@ -1,12 +1,13 @@
 import React, {Component} from "react";
-import {Body, Container, Header, Icon, Left, Right, Title} from "native-base";
+import {Body, Container, Header, Left, Right, Title} from "native-base";
 import {connect} from "react-redux";
 import {actionDispatcher} from "../redux";
 import {AlarmForm} from "../components/forms/AlarmForm";
 import idx from "idx";
 import {isDefined} from "../lib/Operators";
 import {namespaces, stateSelector} from "../redux/index";
-import {TouchableOpacity} from "react-native";
+import {HeaderBackButton} from "react-navigation";
+import {StyleSheet, View} from "react-native";
 
 @connect(stateSelector(namespaces.status), actionDispatcher)
 export class AlarmEditor extends Component {
@@ -15,11 +16,14 @@ export class AlarmEditor extends Component {
     return <Container>
       <Header>
         <Left>
-          <TouchableOpacity onPress={() => {
-            this.props.navigation.goBack();
-          }}>
-            <Icon name="arrow-back" inverse/>
-          </TouchableOpacity>
+          <View style={styles.headerBack}>
+            <HeaderBackButton
+              pressColorAndroid="#f0f0f0"
+              tintColor="white"
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}/>
+          </View>
         </Left>
         <Body>
         <Title>{isDefined(initialAlarm) ? "Edit Alarm" : "Add Alarm"}</Title>
@@ -37,3 +41,7 @@ export class AlarmEditor extends Component {
     </Container>;
   }
 }
+
+const styles = StyleSheet.create({
+  headerBack: {marginLeft: -10}
+});
