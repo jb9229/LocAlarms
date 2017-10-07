@@ -6,6 +6,7 @@ import {AlarmPin} from "./AlarmPin";
 import {filterUndefined, isDefined} from "../../lib/Operators";
 import _ from "lodash";
 import idx from "idx";
+import autobind from "autobind-decorator";
 
 export class Map extends Component {
   static propTypes = {
@@ -21,9 +22,15 @@ export class Map extends Component {
   };
   mapView;
   mapReady = false;
+  timeoutId;
 
+  @autobind
   fitLocations(locations) {
-    if (this.mapReady) {
+    if (this.mapReady && isDefined(locations) && !isDefined(this.timeoutId)) {
+      this.timeoutId = setTimeout(() => {
+        this.timeoutId = null;
+      }, 1500);
+
       if (_.isArray(locations)) {
         let [minLat, maxLat, minLng, maxLng] = [Infinity, -Infinity, Infinity, -Infinity];
         for (let location of locations) {
@@ -34,17 +41,19 @@ export class Map extends Component {
             Math.max(maxLng, location.longitude)
           ];
         }
-        if ((maxLat - minLat) <= 0.01 && (maxLng - minLng) <= 0.01)
+        if ((maxLat - minLat) <= 0.01 && (maxLng - minLng) <= 0.01) {
           this.mapView.animateToRegion({
             latitude: (maxLat + minLat) / 2,
             longitude: (maxLng + minLng) / 2,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01
           });
-        else this.mapView.fitToCoordinates(locations, {animated: true});
-      } else if (isDefined(locations)) {
+        }
+        else if (locations.length > 0) this.mapView.fitToCoordinates(locations, {animated: true});
+      } else if (isDefined(locations.coords)) {
         this.mapView.animateToRegion({
-          ...locations.coords,
+          latitude: locations.coords.latitude,
+          longitude: locations.coords.longitude,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01
         });
@@ -61,9 +70,10 @@ export class Map extends Component {
   }
 
   checkShouldFit(props, oldProps) {
-    const locations = filterUndefined(props.locations), oldLocations = idx(oldProps, (old) => old.locations);
+    const locations = filterUndefined(props.locations),
+      oldLocations = filterUndefined(idx(oldProps, (old) => old.locations));
     if (locations.length === 0) {
-      this.fitLocations(props.location);
+      navigator.geolocation.getCurrentPosition(this.fitLocations);
     } else if (locations !== oldLocations) {
       this.fitLocations(locations);
     }

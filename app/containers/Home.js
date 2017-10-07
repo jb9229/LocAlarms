@@ -28,6 +28,7 @@ import moment, {Moment} from "moment";
 import Color from "color";
 import _ from "lodash";
 import {AlarmList} from "../components/AlarmList";
+import {execEvery} from "../lib/Operators";
 
 @connect(stateSelector(namespaces.alarms, namespaces.status, namespaces.preferences), actionDispatcher)
 export class Home extends Component {
@@ -37,11 +38,21 @@ export class Home extends Component {
     outputRange: [1.1, 1],
     extrapolateRight: "clamp"
   });
-  scrollRef;
   state = {
     menuOpen: false,
-    ignoredIds: []
+    ignoredIds: [],
+    time: moment().startOf("m")
   };
+
+  stop = execEvery(() => {
+    this.setState({
+      time: moment().startOf("m")
+    });
+  }, 60000);
+
+  componentWillUnmount() {
+    this.stop();
+  }
 
   @autobind
   editAlarm(alarm) {
@@ -72,18 +83,17 @@ export class Home extends Component {
   }
 
   processAlarms() {
-    const now = moment();
-
+    const now = this.state.time;
     const schedules = this.props.state.alarms.reduce((obj, alarm: Alarm) => ({
       ...obj,
       [alarm.id]: generateActiveSchedule(alarm, now)
     }), {});
-
     return this.props.state.alarms
       .filter((alarm) => this.props.state.preferences.showArchived || schedules[alarm.id].some((schedule) => schedule.end.isAfter(now)))
       .filter((alarm) => !_.includes(this.state.ignoredIds, alarm.id))
-      .sort((a: Alarm, b: Alarm) => {
-        return this.getTimeTo(a, now, schedules[a.id]) - this.getTimeTo(b, now, schedules[b.id]);
+      .map((alarm) => ({...alarm, timeTo: this.getTimeTo(alarm, now, schedules[alarm.id])}))
+      .sort((a: Alarm & {timeTo: number}, b: Alarm & {timeTo: number}) => {
+        return a.timeTo - b.timeTo;
       });
   }
 
@@ -143,9 +153,6 @@ export class Home extends Component {
       <View>
         <Animated.ScrollView
           onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
-          ref={(elem) => {
-            if (!this.scrollRef && elem && elem._component) this.scrollRef = elem._component;
-          }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={2}>
           <Animated.View style={[alarms.length > 0 ? styles.alarmMap : styles.noAlarmMap, {

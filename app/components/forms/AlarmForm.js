@@ -141,7 +141,6 @@ export class AlarmForm extends Component {
 
   render() {
     const {change, handleSubmit, value} = this.props;
-    console.log(this.props);
     return (
       <Content keyboardShouldPersistTaps="handled" keyboardDismissMode="none">
         <Modal
