@@ -11,23 +11,23 @@ const types = {
   addAlarm: "addAlarm",
   editAlarm: "editAlarm",
   deleteAlarm: "deleteAlarm",
-  deactivateAlarm: "deactivateAlarm"
+  deactivateAlarm: "deactivateAlarm",
+  reactivateAlarm: "reactivateAlarm"
 };
 const actions = {
   [types.alarmFormSubmit]: (alarm, initialAlarm?) => ({alarm, initialAlarm}),
   [types.addAlarm]: null,
   [types.editAlarm]: null,
   [types.deleteAlarm]: null,
-  [types.deactivateAlarm]: (id: string, now: string) => ({id, now})
+  [types.deactivateAlarm]: (id: string, now: string) => ({id, now}),
+  [types.reactivateAlarm]: null
 };
 const reducers = {
   [types.addAlarm]: (state: Alarm[], {payload: alarm}) => [...state, alarm],
   [types.editAlarm]: (state: Alarm[], {payload: alarm}) => state.map((elem: Alarm) => elem.id === alarm.id ? alarm : elem),
   [types.deleteAlarm]: (state: Alarm[], {payload: id}) => state.filter((elem: Alarm) => elem.id !== id),
-  [types.deactivateAlarm]: (state: Alarm[], {payload: {id, now}}) => state.map((alarm: Alarm) => {
-      return alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm;
-    }
-  )
+  [types.deactivateAlarm]: (state: Alarm[], {payload: {id, now}}) => state.map((alarm: Alarm) => alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: now}} : alarm),
+  [types.reactivateAlarm]: (state: Alarm[], {payload: id}) => state.map((alarm: Alarm) => alarm.id === id ? {...alarm, schedule: {...alarm.schedule, lastDeactivated: null}} : alarm)
 };
 
 const sagas = {

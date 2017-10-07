@@ -9,7 +9,8 @@ export class AlarmList extends Component {
   static propTypes = {
     alarms: PropTypes.array,
     editPressed: PropTypes.func,
-    deletePressed: PropTypes.func
+    deletePressed: PropTypes.func,
+    longPressed: PropTypes.func
   };
 
   render() {
@@ -24,6 +25,7 @@ export class AlarmList extends Component {
               <View style={styles.bordered}>
                 <AlarmCard alarm={data}
                            timeTo={data.timeTo}
+                           longPressed={() => {this.props.longPressed(data)}}
                            pressed={() => this.props.editPressed(data)}/>
               </View>}
             style={styles.whiteBg}

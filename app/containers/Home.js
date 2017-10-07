@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, Modal, StyleSheet, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
+import {Alert, Animated, Modal, StyleSheet, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
 import {
   Body,
   Card,
@@ -29,6 +29,7 @@ import Color from "color";
 import _ from "lodash";
 import {AlarmList} from "../components/AlarmList";
 import {execEvery} from "../lib/Operators";
+import {shouldActivate} from "../lib/checkAlarms";
 
 @connect(stateSelector(namespaces.alarms, namespaces.status, namespaces.preferences), actionDispatcher)
 export class Home extends Component {
@@ -92,13 +93,13 @@ export class Home extends Component {
       .filter((alarm) => this.props.state.preferences.showArchived || schedules[alarm.id].some((schedule) => schedule.end.isAfter(now)))
       .filter((alarm) => !_.includes(this.state.ignoredIds, alarm.id))
       .map((alarm) => ({...alarm, timeTo: this.getTimeTo(alarm, now, schedules[alarm.id])}))
-      .sort((a: Alarm & {timeTo: number}, b: Alarm & {timeTo: number}) => {
+      .sort((a: Alarm & { timeTo: number }, b: Alarm & { timeTo: number }) => {
         return a.timeTo - b.timeTo;
       });
   }
 
   @autobind
-  getTimeTo(alarm, now, schedules=generateActiveSchedule(alarm, now)): string {
+  getTimeTo(alarm, now, schedules = generateActiveSchedule(alarm, now)): string {
     if (inWindow(now, schedules)) {
       return 0;
     }
@@ -166,7 +167,19 @@ export class Home extends Component {
                  }))}/>
           </Animated.View>
           <Content>
-            <AlarmList alarms={alarms} editPressed={this.editAlarm} deletePressed={this.deleteAlarm}/>
+            <AlarmList alarms={alarms} editPressed={this.editAlarm} deletePressed={this.deleteAlarm}
+                       longPressed={(alarm) => {
+                         if (alarm.timeTo === -1)
+                         Alert.alert(null, "Reactivate alarm?", [
+                           {text: 'No'},
+                           {
+                             text: 'Yes',
+                             onPress: () => {
+                               this.props.actions.alarms.reactivateAlarm(alarm.id);
+                             }, style: 'cancel'
+                           }
+                         ], {cancelable: true});
+                       }}/>
           </Content>
         </Animated.ScrollView>
       </View>

@@ -8,6 +8,7 @@ export class AlarmCard extends Component {
   static propTypes = {
     alarm: PropTypes.object.isRequired,
     pressed: PropTypes.func,
+    longPressed: PropTypes.func,
     timeTo: PropTypes.number.isRequired
   };
 
@@ -18,7 +19,7 @@ export class AlarmCard extends Component {
   }
 
   render() {
-    return <TouchableOpacity onPress={this.props.pressed}>
+    return <TouchableOpacity onPress={this.props.pressed} onLongPress={this.props.longPressed}>
       <View>
         <CardItem>
           <Body>
