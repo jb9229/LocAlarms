@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -110,7 +109,6 @@ public class GeoLocationModule extends ReactContextBaseJavaModule {
 
     map.putMap("coords", coordMap);
     map.putDouble("timestamp", message.getTime());
-    Log.d("Module", map.toString());
 
     getReactApplicationContext()
       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)

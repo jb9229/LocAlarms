@@ -64,23 +64,21 @@ public class GeoLocationService extends Service {
       Manifest.permission.ACCESS_FINE_LOCATION);
     if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
       locationListener.onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, locationListener);
+      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100, locationListener);
       new Timer().scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
-          Log.d("interval thing", Long.toString(System.currentTimeMillis()));
-          locationListener.onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+          if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationListener.onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+          }
         }
       }, 60000 - System.currentTimeMillis() % 60000, 60000);
-    } else {
-      Log.d("Service", "Permission denied");
     }
   }
 
   private void sendMessage(Location location) {
     try {
       Intent intent = new Intent("GeoLocationUpdate");
-      // You can also include some extra data.
       intent.putExtra("message", location);
       LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     } catch (Exception e) {
@@ -90,7 +88,6 @@ public class GeoLocationService extends Service {
 
   @Override
   public void onDestroy() {
-    Log.d("Service", "onDestroy");
     locationManager.removeUpdates(locationListener);
     this.end = true;
     super.onDestroy();
@@ -99,7 +96,6 @@ public class GeoLocationService extends Service {
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     startForeground(GEOLOCATION_NOTIFICATION_ID, getCompatNotification());
-    Log.d("Service", "onStart" + backgroundThread);
     if (backgroundThread != null) {
       this.end = false;
       backgroundThread.start();

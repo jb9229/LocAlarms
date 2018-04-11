@@ -3,7 +3,7 @@ import type {GeoData} from "./Types";
 import {checkAlarms} from "./checkAlarms";
 
 type locServiceType = {
-  startService: () => void,
+  startService: () => Promise<void>,
   stopService: () => void,
   vibrate: () => void,
   cancelVibrate: () => void
